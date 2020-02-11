@@ -30,15 +30,5 @@ allprojects {
     }
 }
 
-task buildDepencies {
-    println "[Auth API $version] Building API classes..."
-    dependsOn(':auth-api:compileJava')
-    dependsOn(':auth-api:publishToMavenLocal')
-
-    println "[Auth API UI $version] Building Swagger UI..."
-    dependsOn(':auth-api-ui:generateSwaggerUI')
-
-    println "[Service $version] Building source..."
-}
-
-compileJava.dependsOn(tasks.buildDependents)
+compileJava.dependsOn(':auth-api:publishToMavenLocal')
+compileJava.dependsOn(':auth-api-ui:generateSwaggerUI')

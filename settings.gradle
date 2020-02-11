@@ -1,4 +1,4 @@
-rootProject.name = 'uu-auth'
+rootProject.name = 'uservist'
 
 include 'auth-api'
 include 'auth-api-ui'
