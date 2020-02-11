@@ -1,0 +1,5 @@
+rootProject.name = 'uu-auth'
+
+include 'auth-api'
+include 'auth-api-ui'
+
