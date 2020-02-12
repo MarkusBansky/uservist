@@ -42,22 +42,22 @@ task sourceJar(type: Jar, dependsOn: classes) {
 
 //apply plugin: "maven-publish"
 //
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            artifact(sourceJar) { // calls the task above
-//                artifactId "api"
-//                groupId maven_group
-//                extension "jar"
-//                classifier "sources"
-//            }
-//            artifactId "api"
-//            groupId maven_group
-//            from components.java
-//        }
-//    }
-//
-//    repositories {
-//        mavenLocal()
-//    }
-//}
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact(sourceJar) { // calls the task above
+                artifactId "api"
+                groupId "com.markiian-benovskyi.auth-api"
+                extension "jar"
+                classifier "sources"
+            }
+            artifactId "api"
+            groupId "com.markiian-benovskyi.auth-api"
+            from components.java
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}

@@ -61,10 +61,14 @@ components:
       type: object
       required:
         - token
+        - service
       properties:
         token:
           type: string
           description: User's unique session token.
+        service:
+          type: string
+          description: Service unique key identifier.
 
     GeneralError:
       description:
@@ -634,4 +638,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSessionToken'
+        401:
+          description: Unauthorized. User credentials are incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
 
+  /validate:
+    post:
+      summary: Validate user authentication.
+      operationId: validate
+      tags:
+        - Authentication
+      description: Calls to validate user token and service key for a valid session.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSessionToken'
+      responses:
+        200:
+          description: User identified successfully.
+        401:
+          description: Unauthorized. User session is incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
