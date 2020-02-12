@@ -1,6 +1,6 @@
 # uservist
 
-![](https://markiian-benovskyi.com/wp-content/uploads/2020/02/uservist-logo.png)
+![](https://markiian-benovskyi.com/wp-content/uploads/2020/02/uservist-logo@2x.png)
 
 ## What is this ?
 
