@@ -1,22 +1,37 @@
-plugins {
-    id 'java'
-    id 'org.openapi.generator' version '4.2.0'
-    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
-    id 'net.researchgate.release' version '2.6.0'
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo1.maven.org/maven2" }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url "https://oss.sonatype.org/content/repositories/releases/"
+        }
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath "org.openapitools:openapi-generator-gradle-plugin:4.3.0-SNAPSHOT"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
+        classpath "net.researchgate:gradle-release:2.6.0"
+    }
 }
 
-group groupName
-version '0.0.1'
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'net.researchgate.release'
+apply plugin: 'org.openapi.generator'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compileClasspath("org.openapitools:openapi-generator-gradle-plugin:4.2.0")
-
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     implementation("io.swagger.core.v3:swagger-core:${swaggerVersion}")
+    implementation("io.swagger.core.v3:swagger-annotations:${swaggerVersion}")
     implementation("org.openapitools:jackson-databind-nullable:0.1.0")
 }
 
@@ -30,7 +45,7 @@ openApiGenerate {
 
     configOptions = [
             dateLibrary: "java8",
-            interfaceOnly: true
+            interfaceOnly: "true"
     ]
 }
 
