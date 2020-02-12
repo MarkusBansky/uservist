@@ -17,9 +17,10 @@ dependencies {
 
 allprojects {
     ext {
+        openapiGeneratorVersion = "4.2.3"
+
         springBootVersion = "2.2.4.RELEASE"
-        springFoxVersion = "2.9.2"
-        swaggerVersion = "2.1.1"
+        swaggerVersion = "2.0.0-rc2"
 
         groupName = "com.markiian.benovskyi"
         maven_group = "com.markiian.benovskyi.auth-api"
