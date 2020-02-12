@@ -24,6 +24,10 @@ tags:
     description:
       Each user can have access to specific services with a specific role,
       then it can authenticate and receive a token.
+  - name: Authentication
+    description:
+      Authenticate user with username and password, and the unique identifier of the system.
+      Or validate user token and return user information for that specific service.
 
 components:
   securitySchemes:
@@ -34,6 +38,33 @@ components:
 
 
   schemas:
+
+    UserAuthenticationBody:
+      description: Body authentication request used to call the authenticate endpoint to log in user and create session.
+      type: object
+      properties:
+        username:
+          type: string
+          description: The user identifier as a unique username.
+        password:
+          type: string
+          description: User's password hashed with SHA256.
+        hardwareId:
+          type: string
+          description: A unique user identifier for this specific machine.
+        key:
+          type: string
+          description: Service key identifier.
+
+    UserSessionToken:
+      description: Represents a unique session token specific to this user, this service and a unique session uuid.
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: User's unique session token.
 
     GeneralError:
       description:
@@ -141,6 +172,36 @@ components:
             String key of SHA256, that is unique for each service.
             It is used to identify the service authentication request alongside user token.
           type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Session:
+      description:
+        Describes a unique user logged session object. This is unique to user, service, hardwareId.
+      type: object
+      required:
+        - user
+        - service
+        - hardwareId
+      properties:
+        id:
+          description: Unique identifier.
+          type: integer
+          format: int64
+        user:
+          $ref: '#/components/schemas/User'
+        service:
+          $ref: '#/components/schemas/Service'
+        hardwareId:
+          type: string
+          description: Unique hardware identifier.
+        lastUserIp:
+          type: string
+          description: The latest IP address that user requested login.
         createdAt:
           type: string
           format: date-time
@@ -553,5 +614,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralError'
 
-security:
-  - JWTAuth: []
+  /authenticate:
+    post:
+      summary: Authenticate user.
+      operationId: authenticate
+      tags:
+        - Authentication
+      description:
+        Try to authenticate user with username, password and unique identifier generated based on their machine.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAuthenticationBody'
+      responses:
+        200:
+          description: User identified successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSessionToken'
+
