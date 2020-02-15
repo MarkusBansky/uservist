@@ -1,38 +1,42 @@
 plugins {
+    id 'java'
+    id "org.flywaydb.flyway" version "6.2.3"
     id 'org.springframework.boot' version '2.3.0.M1'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'java'
 }
 
 group 'com.markiian.benovskyi'
 version '0.0.1'
 
-configurations {
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
-}
-
-
 repositories {
     mavenCentral()
+    mavenLocal()
     maven { url 'https://repo.spring.io/milestone' }
 }
 
 
 dependencies {
+    // Spring packages
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.data:spring-data-jpa'
+
+    // Postgres Database
     runtimeOnly 'org.postgresql:postgresql'
+
+    // Testing
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
+    // The auth api
+    implementation 'com.markiian.benovskyi.auth:auth-api:0.0.1'
 }
 
 test {
     useJUnitPlatform()
 }
 
+// Make this project to depend on auth api publication and swagger UI
 compileJava.dependsOn(':auth-api:publishToMavenLocal')
 compileJava.dependsOn(':auth-api-ui:generateSwaggerUI')

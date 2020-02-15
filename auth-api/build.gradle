@@ -1,8 +1,19 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath "org.openapitools:openapi-generator-gradle-plugin:4.3.0-SNAPSHOT"
+    }
+}
+
 plugins {
     id "java"
     id "maven-publish"
-    id "org.openapi.generator" version "4.2.3"
+//    id "org.openapi.generator" version "4.2.3"
 }
+
+apply plugin: 'org.openapi.generator'
 
 repositories {
     mavenCentral()
@@ -10,6 +21,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:2.2.4.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa:2.2.4.RELEASE")
     implementation("io.swagger:swagger-core:1.6.0")
     implementation("org.openapitools:jackson-databind-nullable:0.1.0")
 }
@@ -22,9 +34,11 @@ openApiGenerate {
     apiPackage = "com.markiian.benovskyi.api"
     modelPackage = "com.markiian.benovskyi.model"
 
+    enablePostProcessFile = true
     configOptions = [
             dateLibrary: "java8",
-            interfaceOnly: "true"
+            interfaceOnly: "true",
+            useSpringJpa: "true"
     ]
 }
 
@@ -46,13 +60,14 @@ publishing {
     publications {
         maven(MavenPublication) {
             artifact(sourceJar) { // calls the task above
-                artifactId "api"
-                groupId "com.markiian-benovskyi.auth-api"
-                extension "jar"
-                classifier "sources"
+                artifactId = "auth-api"
+                groupId = "com.markiian.benovskyi.auth"
+                extension = "jar"
+                classifier = "sources"
             }
-            artifactId "api"
-            groupId "com.markiian-benovskyi.auth-api"
+            artifactId = "auth-api"
+            groupId = "com.markiian.benovskyi.auth"
+            version = "0.0.1"
             from components.java
         }
     }
