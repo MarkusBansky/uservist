@@ -1,4 +1,4 @@
-package com.markiian.benovskyi.auth.persistence.dao;
+package com.markiian.benovskyi.auth.persistance.dao;
 
 import com.markiian.benovskyi.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
