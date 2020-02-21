@@ -1,0 +1,73 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Markiian">
+        <comment>Create ServiceRoles table</comment>
+        <createTable tableName="service_roles">
+            <column name="service_role_id" type="bigserial" />
+            <column name="user_id" type="bigint" />
+            <column name="service_id" type="bigint" />
+            <column name="role" type="varchar(200)" />
+            <column name="created_at" type="timestamptz" />
+            <column name="updated_at" type="timestamptz" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Markiian">
+        <comment>Add Primary Key to ServiceRoles table</comment>
+        <addPrimaryKey tableName="service_roles" columnNames="service_role_id" constraintName="service_role_id_pk" />
+    </changeSet>
+
+    <changeSet id="3.1" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="service_roles" columnName="user_id" />
+    </changeSet>
+
+    <changeSet id="3.2" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="service_roles" columnName="service_id" />
+    </changeSet>
+
+    <changeSet id="3.3" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="service_roles" columnName="role" />
+    </changeSet>
+
+    <changeSet id="3.4" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="service_roles" columnName="created_at" />
+    </changeSet>
+
+    <changeSet id="3.5" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="service_roles" columnName="updated_at" />
+    </changeSet>
+
+    <changeSet id="4.1" author="Markiian">
+        <comment>Add foreign key</comment>
+        <addForeignKeyConstraint
+                baseColumnNames="user_id" baseTableName="service_roles"
+                referencedColumnNames="user_id" referencedTableName="users"
+                constraintName="service_roles_user_id_fk"/>
+    </changeSet>
+
+    <changeSet id="4.2" author="Markiian">
+        <comment>Add foreign key</comment>
+        <addForeignKeyConstraint
+                baseColumnNames="service_id" baseTableName="service_roles"
+                referencedColumnNames="service_id" referencedTableName="services"
+                constraintName="service_roles_service_id_fk"/>
+    </changeSet>
+
+    <changeSet id="5.1" author="Markiian">
+        <comment>Add unique index for user_id and service_id</comment>
+        <createIndex tableName="service_roles" indexName="service_roles_user_service_uindex" unique="true">
+            <column name="user_id" />
+            <column name="service_id" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

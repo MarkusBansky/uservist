@@ -70,7 +70,7 @@ components:
           type: string
           description: Service unique key identifier.
 
-    GeneralErrorDtoDto:
+    GeneralErrorDto:
       description:
         Object that is returned in case of any error happening on the server side.
         The code is HTTP code.
@@ -214,13 +214,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralErrorDtoDto'
+                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralErrorDtoDto'
+                $ref: '#/components/schemas/GeneralErrorDto'
 
     post:
       summary: Create new service.
@@ -374,6 +374,11 @@ paths:
       description:
         Returns a full list of users available in the system.
         If user that makes request has enough permissions.
+      parameters:
+        - name: page
+          in: query
+          description: Page of users, 10 users per page.
+          required: true
       responses:
         200:
           description: Successfully returns a list of users.
@@ -614,7 +619,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserSessionToken'
+                $ref: '#/components/schemas/UserSessionTokenDto'
         401:
           description: Unauthorized. User credentials are incorrect.
           content:

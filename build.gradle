@@ -1,12 +1,14 @@
 plugins {
     id 'java'
-    id "org.flywaydb.flyway" version "6.2.3"
-    id 'org.springframework.boot' version '2.3.0.M1'
+    id 'org.liquibase.gradle' version '2.0.2'
+    id "org.springframework.boot" version "2.2.4.RELEASE"
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 }
 
 group 'com.markiian.benovskyi'
 version '0.0.1'
+
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -17,9 +19,11 @@ repositories {
 
 dependencies {
     // Spring packages
+    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.2.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.data:spring-data-jpa'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.2'
 
     // Postgres Database
     runtimeOnly 'org.postgresql:postgresql'
@@ -38,5 +42,6 @@ test {
 }
 
 // Make this project to depend on auth api publication and swagger UI
+//compileJava.dependsOn(':auth-api:openApiGenerate')
 compileJava.dependsOn(':auth-api:publishToMavenLocal')
 compileJava.dependsOn(':auth-api-ui:generateSwaggerUI')
