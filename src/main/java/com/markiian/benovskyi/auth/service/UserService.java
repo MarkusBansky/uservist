@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +33,15 @@ public class UserService {
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
         Page<User> users = userDao.findAll(pageRequest);
         return users.stream().map(userMapper::toDto).collect(Collectors.toList());
+    }
+
+    public Optional<UserDto> getUserById(Long id) {
+        Optional<User> user = userDao.findByUserId(id);
+        if (user.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(userMapper.toDto(user.get()));
     }
 
     public UserDto createNewUser(UserDto userDto) throws InstanceAlreadyExistsException {

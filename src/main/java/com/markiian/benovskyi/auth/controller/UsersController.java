@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -45,13 +46,13 @@ public class UsersController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> usersGetAll() {
+    public ResponseEntity<List<UserDto>> usersGetAll(@NotNull @Valid Integer page) {
         return ResponseEntity.ok(userService.getAllUsers(page));
     }
 
     @Override
     public ResponseEntity<UserDto> usersGetById(Long id) {
-        return null;
+        return ResponseEntity.of(userService.getUserById(id));
     }
 
     @Override

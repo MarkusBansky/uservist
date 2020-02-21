@@ -11,6 +11,8 @@
             <column name="name" value="uservist" />
             <column name="description" value="User authentication service" />
             <column name="key" value="a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997" />
+            <column name="updated_at" valueComputed="now()" />
+            <column name="created_at" valueComputed="now()" />
         </insert>
 
         <rollback>

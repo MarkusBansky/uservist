@@ -375,10 +375,12 @@ paths:
         Returns a full list of users available in the system.
         If user that makes request has enough permissions.
       parameters:
-        - name: page
-          in: query
+        - in: query
+          name: page
           description: Page of users, 10 users per page.
           required: true
+          schema:
+            type: integer
       responses:
         200:
           description: Successfully returns a list of users.

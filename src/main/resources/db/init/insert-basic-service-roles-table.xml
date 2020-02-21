@@ -8,9 +8,11 @@
         <comment>Insert basic roles for users</comment>
 
         <insert tableName="service_roles">
-            <column name="user_id" valueComputed="(SELECT user_id FROM users WHERE username='uservist')" />
-            <column name="service_id" valueComputed="(SELECT service_id FROM services WHERE name='uservist')" />
+            <column name="user_id" valueComputed="(SELECT user_id FROM users.users WHERE username='uservist')" />
+            <column name="service_id" valueComputed="(SELECT service_id FROM users.services WHERE name='uservist')" />
             <column name="role" value="ADMIN" />
+            <column name="updated_at" valueComputed="now()" />
+            <column name="created_at" valueComputed="now()" />
         </insert>
 
         <rollback>
