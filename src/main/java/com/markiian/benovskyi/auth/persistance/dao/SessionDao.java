@@ -11,5 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface SessionDao extends JpaRepository<Session, Long> {
-    public Optional<Session> findByUserAndServiceAndHardwareId(User user, Service service, String hardwareId);
+    Optional<Session> findByToken(String token);
+    Optional<Session> findByUser_UsernameAndService_KeyAndHardwareId(String username, String key, String hardwareId);
 }

@@ -66,9 +66,6 @@ components:
         token:
           type: string
           description: User's unique session token.
-        service:
-          type: string
-          description: Service unique key identifier.
 
     GeneralErrorDto:
       description:
@@ -180,9 +177,9 @@ components:
         hardwareId:
           type: string
           description: Unique hardware identifier.
-        lastUserIp:
+        token:
           type: string
-          description: The latest IP address that user requested login.
+          description: Generated token.
         createdAt:
           type: string
           format: date-time

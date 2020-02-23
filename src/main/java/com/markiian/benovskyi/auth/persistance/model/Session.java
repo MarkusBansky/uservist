@@ -8,7 +8,10 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user_service_session")
+@Table(name = "user_service_session", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"token"}),
+        @UniqueConstraint(columnNames = {"user_id", "service_id", "hardware_id"})
+})
 public class Session {
 
     @Id
@@ -63,7 +66,7 @@ public class Session {
         return this;
     }
 
-    @Column(nullable = false)
+    @Column(name = "hardware_id", nullable = false)
     private String hardwareId;
 
     public String getHardwareId() {
@@ -80,6 +83,22 @@ public class Session {
     }
 
     @Column(nullable = false)
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Session withToken(String token) {
+        this.token = token;
+        return this;
+    }
+
+    @Column(name = "expired_at", nullable = false)
     private OffsetDateTime expiresAt;
 
     public OffsetDateTime getExpiresAt() {
@@ -132,13 +151,14 @@ public class Session {
                 getService().equals(that.getService()) &&
                 getHardwareId().equals(that.getHardwareId()) &&
                 getExpiresAt().equals(that.getExpiresAt()) &&
+                getToken().equals(that.getToken()) &&
                 Objects.equals(getUpdatedAt(), that.getUpdatedAt()) &&
                 Objects.equals(getCreatedAt(), that.getCreatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSessionId(), getUser(), getService(), getHardwareId(), getExpiresAt(), getUpdatedAt(), getCreatedAt());
+        return Objects.hash(getSessionId(), getUser(), getService(), getHardwareId(), getToken(), getExpiresAt(), getUpdatedAt(), getCreatedAt());
     }
 
     @Override
@@ -148,6 +168,7 @@ public class Session {
                 ", user=" + user +
                 ", service=" + service +
                 ", hardwareId='" + hardwareId + '\'' +
+                ", token='" + token + '\'' +
                 ", expiresAt=" + expiresAt +
                 ", updatedAt=" + updatedAt +
                 ", createdAt=" + createdAt +

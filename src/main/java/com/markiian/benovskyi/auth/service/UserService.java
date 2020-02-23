@@ -35,6 +35,10 @@ public class UserService {
         return users.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
+    public void deleteUser(Long id) {
+        Optional<User> user = userDao.findByUserId(id);
+    }
+
     public Optional<UserDto> getUserById(Long id) {
         Optional<User> user = userDao.findByUserId(id);
         if (user.isEmpty()) {

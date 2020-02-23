@@ -8,7 +8,10 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "services")
+@Table(name = "services", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"key"}),
+        @UniqueConstraint(columnNames = {"name"})
+})
 public class Service {
 
     @Id

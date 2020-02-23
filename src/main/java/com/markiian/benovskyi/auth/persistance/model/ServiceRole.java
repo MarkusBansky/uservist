@@ -9,7 +9,9 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "service_roles")
+@Table(name = "service_roles", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "service_id"})
+})
 public class ServiceRole {
 
     @Id
@@ -64,6 +66,7 @@ public class ServiceRole {
         return this;
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
