@@ -5,5 +5,6 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="${202002}/add-token-to-sessions.xml" />
+    <include file="${202002}/change-service-roles-to-many.xml" />
 
 </databaseChangeLog>

@@ -15,7 +15,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class UservistAuthenticationManager implements AuthenticationManager {
@@ -58,9 +60,9 @@ public class UservistAuthenticationManager implements AuthenticationManager {
             throw new AuthenticationServiceException("Invalid service key");
         }
 
-        Optional<ServiceRole> role = serviceRoleDao.findByUserAndService(user.get(), service.get());
+        List<ServiceRole> roles = serviceRoleDao.findAllByUserAndService(user.get(), service.get());
 
-        if (role.isEmpty()) {
+        if (roles.size() == 0) {
             throw new AuthenticationCredentialsNotFoundException("Invalid user, no access to this service");
         }
 
@@ -68,7 +70,11 @@ public class UservistAuthenticationManager implements AuthenticationManager {
         UservistAuthenticationToken newAuthentication = new UservistAuthenticationToken(
                 auth.getPrincipal(), "",
                 ((UserAuthenticationDto) auth.getDetails()).password(""),
-                AuthorityUtils.createAuthorityList(role.get().getRole().getValue())
+                AuthorityUtils.createAuthorityList(roles
+                        .stream()
+                        .map(r -> r.getRole().getValue())
+                        .collect(Collectors.joining(","))
+                .split(","))
         );
 
         return newAuthentication;

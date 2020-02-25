@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface ServiceRoleDao extends JpaRepository<ServiceRole, Long> {
     List<ServiceRole> findAllByUser(User user);
-    Optional<ServiceRole> findByUserAndService(User user, Service service);
+    List<ServiceRole> findAllByUserAndService(User user, Service service);
 }
