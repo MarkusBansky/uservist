@@ -116,6 +116,11 @@ components:
         passwordHash:
           description: Encrypted users pasword hash.
           type: string
+        serviceRoles:
+          description: User roles for services.
+          type: array
+          items:
+            $ref: '#/components/schemas/UserServiceRoleDto'
         createdAt:
           description: The date and time this user was created at.
           type: string
@@ -156,6 +161,26 @@ components:
         updatedAt:
           type: string
           format: date-time
+
+    UserServiceRoleDto:
+      description:
+        Describes an object with service key and a list of roles for this service for a specific user.
+      type: object
+      required:
+        - userId
+        - serviceKey
+        - roles
+      properties:
+        userId:
+          type: integer
+          format: int64
+        serviceKey:
+          type: integer
+          format: int64
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRoleDto'
 
     SessionDto:
       description:
@@ -599,7 +624,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralErrorDto'
 
-  /authenticate:
+  /current:
+    get:
+      summary: Get authenticated user info.
+      operationId: getCurrentUser
+      tags:
+        - Authentication
+      description:
+        Get current authenticated user information. Returns user information with user roles for this service.
+      responses:
+        200:
+          description: User found and available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+
+  /login:
     post:
       summary: Authenticate user.
       operationId: authenticate

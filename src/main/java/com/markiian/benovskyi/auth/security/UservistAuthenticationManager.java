@@ -6,18 +6,17 @@ import com.markiian.benovskyi.auth.persistance.dao.UserDao;
 import com.markiian.benovskyi.auth.persistance.model.Service;
 import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.User;
+import com.markiian.benovskyi.auth.util.RoleUtil;
 import com.markiian.benovskyi.model.UserAuthenticationDto;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class UservistAuthenticationManager implements AuthenticationManager {
@@ -70,12 +69,7 @@ public class UservistAuthenticationManager implements AuthenticationManager {
         UservistAuthenticationToken newAuthentication = new UservistAuthenticationToken(
                 auth.getPrincipal(), "",
                 ((UserAuthenticationDto) auth.getDetails()).password(""),
-                AuthorityUtils.createAuthorityList(roles
-                        .stream()
-                        .map(r -> r.getRole().getValue())
-                        .collect(Collectors.joining(","))
-                .split(","))
-        );
+                RoleUtil.getAuthoritiesFromServiceRoles(roles));
 
         return newAuthentication;
     }

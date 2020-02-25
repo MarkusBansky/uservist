@@ -4,10 +4,14 @@ import com.markiian.benovskyi.auth.mapper.UserMapper;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
 import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.model.UserDto;
+import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -17,6 +21,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final int PAGE_SIZE = 10;
 
@@ -35,8 +41,11 @@ public class UserService {
         return users.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id) throws NotFoundException {
         Optional<User> user = userDao.findByUserId(id);
+        if (user.isEmpty() || user.get().getUsername().equals("uservist")) {
+            throw new NotFoundException("User not found");
+        }
     }
 
     public Optional<UserDto> getUserById(Long id) {
@@ -44,6 +53,9 @@ public class UserService {
         if (user.isEmpty()) {
             return Optional.empty();
         }
+
+        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        LOGGER.info("User delete request private details: {}", details);
 
         return Optional.of(userMapper.toDto(user.get()));
     }

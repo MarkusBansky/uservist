@@ -1,6 +1,7 @@
 package com.markiian.benovskyi.auth.controller;
 
 import com.markiian.benovskyi.api.UsersApi;
+import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.service.UserService;
 import com.markiian.benovskyi.auth.util.ResponseUtil;
 import com.markiian.benovskyi.model.InlineObject;
@@ -18,6 +19,7 @@ import javax.management.InstanceAlreadyExistsException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -50,25 +52,27 @@ public class UsersController implements UsersApi {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> usersDeleteById(Long id) {
-        Object service = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        LOGGER.info("{}", service);
-//        userService.deleteUser(id, roles);
+        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        LOGGER.info("User delete request private details: {}", details);
+
+//        userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODER')")
     public ResponseEntity<List<UserDto>> usersGetAll(@NotNull @Valid Integer page) {
         return ResponseEntity.ok(userService.getAllUsers(page));
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODER')")
     public ResponseEntity<UserDto> usersGetById(Long id) {
         return ResponseEntity.of(userService.getUserById(id));
     }
 
     @Override
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserDto> usersUpdateById(Long id, @Valid UserDto userDto) {
         return null;
     }

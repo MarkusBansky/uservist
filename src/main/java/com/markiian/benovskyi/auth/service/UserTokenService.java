@@ -1,13 +1,16 @@
 package com.markiian.benovskyi.auth.service;
 
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
+import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;
 import com.markiian.benovskyi.auth.persistance.dao.SessionDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
 import com.markiian.benovskyi.auth.persistance.model.Service;
+import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.Session;
 import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.service.misc.AbstractTokenService;
+import com.markiian.benovskyi.auth.util.RoleUtil;
 import com.markiian.benovskyi.model.UserAuthenticationDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,18 +18,16 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class UserTokenService extends AbstractTokenService {
@@ -34,15 +35,16 @@ public class UserTokenService extends AbstractTokenService {
     private final UserDao userDao;
     private final ServiceDao serviceDao;
     private final SessionDao sessionDao;
+    private final ServiceRoleDao serviceRoleDao;
 
-    private final String AUTHORITIES_KEY = "roles";
     private final String USERNAME_KEY = "username";
     private final String SERVICE_KEY = "service";
 
-    public UserTokenService(SessionDao sessionDao, UserDao userDao, ServiceDao serviceDao) {
+    public UserTokenService(SessionDao sessionDao, UserDao userDao, ServiceDao serviceDao, ServiceRoleDao serviceRoleDao) {
         this.sessionDao = sessionDao;
         this.userDao = userDao;
         this.serviceDao = serviceDao;
+        this.serviceRoleDao = serviceRoleDao;
     }
 
     public void saveUserSession(Authentication authentication, String token) throws Exception {
@@ -77,16 +79,12 @@ public class UserTokenService extends AbstractTokenService {
      */
     public String generateToken(Authentication authentication) {
         UserAuthenticationDto authDto = (UserAuthenticationDto) authentication.getDetails();
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
 
         byte[] keyBytes = Decoders.BASE64.decode(SIGNING_KEY);
         Key key = Keys.hmacShaKeyFor(keyBytes);
 
         return Jwts.builder()
                 .claim(USERNAME_KEY, authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
                 .claim(SERVICE_KEY, authDto.getKey())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -127,19 +125,18 @@ public class UserTokenService extends AbstractTokenService {
     }
 
     public UservistAuthenticationToken getAuthenticationFromToken(final String token, String remoteAddress) {
-        Optional<Claims> claims = getClaims(token);
-        if (claims.isEmpty()) {
+        String username = getUsernameFromToken(token);
+        String serviceKey = getServiceKeyFromToken(token);
+
+        Optional<User> user = userDao.findByUsername(username);
+        Optional<Service> service = serviceDao.findByKey(serviceKey);
+
+        if (user.isEmpty() || service.isEmpty()) {
             return null;
         }
 
-        final String username = claims.get().get(USERNAME_KEY, String.class);
-        final String serviceKey = claims.get().get(SERVICE_KEY, String.class);
-
-        final Collection<SimpleGrantedAuthority> authorities =
-                Arrays.stream(claims.get().get(AUTHORITIES_KEY).toString().split(","))
-                        .map(s -> "ROLE_" + s)
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        List<ServiceRole> roles = serviceRoleDao.findAllByUserAndService(user.get(), service.get());
+        Collection<SimpleGrantedAuthority> authorities = RoleUtil.getAuthoritiesFromServiceRoles(roles);
 
         final UserAuthenticationDto details = new UserAuthenticationDto()
                 .hardwareId(remoteAddress)
