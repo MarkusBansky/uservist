@@ -5,6 +5,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -92,6 +93,22 @@ public class Service {
         this.serviceRoles = serviceRoles;
     }
 
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
+    private List<UserServiceConnection> serviceConnections;
+
+    public List<UserServiceConnection> getServiceConnections() {
+        return serviceConnections;
+    }
+
+    public void setServiceConnections(List<UserServiceConnection> serviceConnections) {
+        this.serviceConnections = serviceConnections;
+    }
+
+    public Service withServiceConnections(List<UserServiceConnection> serviceConnections) {
+        this.serviceConnections = serviceConnections;
+        return this;
+    }
+
     @Column
     @CreationTimestamp
     private OffsetDateTime createdAt;
@@ -130,12 +147,13 @@ public class Service {
                 getKey().equals(service.getKey()) &&
                 Objects.equals(getCreatedAt(), service.getCreatedAt()) &&
                 Objects.equals(getServiceRoles(), service.getServiceRoles()) &&
+                Objects.equals(getServiceConnections(), service.getServiceConnections()) &&
                 Objects.equals(getUpdatedAt(), service.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getServiceId(), getServiceRoles(), getName(), getDescription(), getKey(), getCreatedAt(), getUpdatedAt());
+        return Objects.hash(getServiceId(), getServiceConnections(), getServiceRoles(), getName(), getDescription(), getKey(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override

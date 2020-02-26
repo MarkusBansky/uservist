@@ -38,7 +38,6 @@ components:
 
 
   schemas:
-
     UserAuthenticationDto:
       description: Body authentication request used to call the authenticate endpoint to log in user and create session.
       type: object
@@ -227,16 +226,8 @@ paths:
                   $ref: '#/components/schemas/ServiceDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
     post:
       summary: Create new service.
@@ -260,16 +251,8 @@ paths:
                 $ref: '#/components/schemas/ServiceDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
   /services/{id}:
     parameters:
@@ -297,22 +280,10 @@ paths:
                 $ref: '#/components/schemas/ServiceDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         404:
           description: Such service does not exist.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
     put:
       summary: Update service information.
@@ -336,22 +307,10 @@ paths:
                 $ref: '#/components/schemas/ServiceDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         404:
           description: Such service does not exist. Could not update an unexisting service.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
     delete:
       summary: Delete service by ID.
@@ -364,26 +323,14 @@ paths:
           description: Service deleted successfully.
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         404:
           description: Such service does not exist. Could not delete an unexisting service.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
   /users:
     get:
-      summary: Gett all users in the system.
+      summary: Gett all users in the system for admins only. If you are a super adming then you can get all users for current service.
       operationId: usersGetAll
       tags:
         - Users
@@ -391,6 +338,12 @@ paths:
         Returns a full list of users available in the system.
         If user that makes request has enough permissions.
       parameters:
+        - in: query
+          name: service
+          description: The key of the service
+          required: true
+          schema:
+            type: string
         - in: query
           name: page
           description: Page of users, 10 users per page.
@@ -408,16 +361,8 @@ paths:
                   $ref: '#/components/schemas/UserDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
     post:
       summary: Create new user.
@@ -425,6 +370,13 @@ paths:
       tags:
         - Users
       description: Creates a new user if can and if the creator token has a valid admin role on the service.
+      parameters:
+        - in: query
+          name: service
+          description: The key of the service
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -439,16 +391,8 @@ paths:
                 $ref: '#/components/schemas/UserDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
   /users/{id}:
     parameters:
@@ -475,22 +419,10 @@ paths:
                 $ref: '#/components/schemas/UserDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         404:
           description: Such service does not exist. Could not get an unexisting user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
     put:
       summary: Update user information by user ID.
@@ -512,22 +444,10 @@ paths:
                 $ref: '#/components/schemas/UserDto'
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         404:
           description: Such service does not exist. Could not update an unexisting user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
     delete:
       summary: Delete user record by user ID.
@@ -540,22 +460,10 @@ paths:
           description: User record has been deleted successfully.
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         404:
           description: Such service does not exist. Could not delete an unexisting user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
   /users/{userId}/permission/{serviceId}:
     parameters:
@@ -607,16 +515,8 @@ paths:
                 $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         404:
           description: User or Service are not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
   /auth/current:
     get:
@@ -656,10 +556,6 @@ paths:
                 $ref: '#/components/schemas/UserSessionTokenDto'
         401:
           description: Unauthorized. User credentials are incorrect.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
 
   /auth/validate:
     post:
@@ -678,7 +574,3 @@ paths:
           description: User identified successfully.
         401:
           description: Unauthorized. User session is incorrect.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'

@@ -34,7 +34,7 @@ public class ServicesController implements ServicesApi {
 
     @Override
     public ResponseEntity servicesDeleteById(Long id) {
-        return null;
+        return ResponseUtil.buildErrorResponse(HttpStatus.NOT_IMPLEMENTED, "NOT IMPLEMENTED");
     }
 
     @Override

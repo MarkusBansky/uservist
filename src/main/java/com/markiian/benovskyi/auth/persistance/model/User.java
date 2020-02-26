@@ -120,6 +120,22 @@ public class User {
         this.sessions = sessions;
     }
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserServiceConnection> serviceConnections;
+
+    public List<UserServiceConnection> getServiceConnections() {
+        return serviceConnections;
+    }
+
+    public void setServiceConnections(List<UserServiceConnection> serviceConnections) {
+        this.serviceConnections = serviceConnections;
+    }
+
+    public User withServiceConnections(List<UserServiceConnection> serviceConnections) {
+        this.serviceConnections = serviceConnections;
+        return this;
+    }
+
     @Column
     @CreationTimestamp
     private OffsetDateTime createdAt;
@@ -159,12 +175,13 @@ public class User {
                 Objects.equals(getCreatedAt(), user.getCreatedAt()) &&
                 Objects.equals(getSessions(), user.getSessions()) &&
                 Objects.equals(getServiceRoles(), user.getServiceRoles()) &&
+                Objects.equals(getServiceConnections(), user.getServiceConnections()) &&
                 Objects.equals(getUpdatedAt(), user.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getSessions(), getServiceRoles(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
+        return Objects.hash(getUserId(), getSessions(), getServiceConnections(), getServiceRoles(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override

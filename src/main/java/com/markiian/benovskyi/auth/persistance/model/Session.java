@@ -33,7 +33,6 @@ public class Session {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 
     public User getUser() {
@@ -50,7 +49,6 @@ public class Session {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
     private Service service;
 
     public Service getService() {

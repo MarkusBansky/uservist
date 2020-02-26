@@ -1,6 +1,5 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
-import com.markiian.benovskyi.model.UserRoleDto;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,26 +8,23 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "service_roles", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "service_id"})
-})
-public class ServiceRole {
+@Table(name = "user_service_connections")
+public class UserServiceConnection {
 
     @Id
-    @Column(name = "service_role_id", insertable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long serviceRoleId;
+    private Long id;
 
-    public Long getServiceRoleId() {
-        return serviceRoleId;
+    public Long getId() {
+        return id;
     }
 
-    public void setServiceRoleId(Long serviceRoleId) {
-        this.serviceRoleId = serviceRoleId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public ServiceRole withId(Long id) {
-        this.serviceRoleId = id;
+    public UserServiceConnection withId(Long id) {
+        this.id = id;
         return this;
     }
 
@@ -43,7 +39,7 @@ public class ServiceRole {
         this.user = user;
     }
 
-    public ServiceRole withUser(User user) {
+    public UserServiceConnection withUser(User user) {
         this.user = user;
         return this;
     }
@@ -59,29 +55,11 @@ public class ServiceRole {
         this.service = service;
     }
 
-    public ServiceRole withService(Service service) {
+    public UserServiceConnection withService(Service service) {
         this.service = service;
         return this;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public ServiceRole withRole(Role role) {
-        this.role = role;
-        return this;
-    }
-
-    @Column
     @UpdateTimestamp
     private OffsetDateTime updatedAt;
 
@@ -93,7 +71,6 @@ public class ServiceRole {
         this.updatedAt = updatedAt;
     }
 
-    @Column
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -105,34 +82,32 @@ public class ServiceRole {
         this.createdAt = createdAt;
     }
 
-    public ServiceRole() {
+    public UserServiceConnection() {
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ServiceRole that = (ServiceRole) o;
-        return Objects.equals(getServiceRoleId(), that.getServiceRoleId()) &&
+        UserServiceConnection that = (UserServiceConnection) o;
+        return Objects.equals(getId(), that.getId()) &&
                 getUser().equals(that.getUser()) &&
                 getService().equals(that.getService()) &&
-                getRole() == that.getRole() &&
                 Objects.equals(getUpdatedAt(), that.getUpdatedAt()) &&
                 Objects.equals(getCreatedAt(), that.getCreatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getServiceRoleId(), getUser(), getService(), getRole(), getUpdatedAt(), getCreatedAt());
+        return Objects.hash(getId(), getUser(), getService(), getUpdatedAt(), getCreatedAt());
     }
 
     @Override
     public String toString() {
-        return "ServiceRole{" +
-                "id=" + serviceRoleId +
+        return "UserServiceConnection{" +
+                "id=" + id +
                 ", user=" + user +
                 ", service=" + service +
-                ", role=" + role +
                 ", updatedAt=" + updatedAt +
                 ", createdAt=" + createdAt +
                 '}';
