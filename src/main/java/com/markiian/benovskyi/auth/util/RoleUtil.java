@@ -26,7 +26,7 @@ public final class RoleUtil {
 
         return roles
                 .stream()
-                .map(r -> new SimpleGrantedAuthority(r.getRole().getValue()))
+                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRole().getValue()))
                 .collect(Collectors.toList());
     }
 

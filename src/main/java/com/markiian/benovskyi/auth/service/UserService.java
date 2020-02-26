@@ -21,13 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-
-    private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-
-    private final int PAGE_SIZE = 10;
-
     private final UserDao userDao;
     private final UserMapper userMapper;
+
+    private final int PAGE_SIZE = 10;
+    private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(UserDao userDao, UserMapper userMapper) {
@@ -38,6 +36,8 @@ public class UserService {
     public List<UserDto> getAllUsers(Integer page) {
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
         Page<User> users = userDao.findAll(pageRequest);
+
+        LOGGER.debug("Received all users page {}: {}", page, users);
         return users.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
@@ -54,9 +54,7 @@ public class UserService {
             return Optional.empty();
         }
 
-        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        LOGGER.info("User delete request private details: {}", details);
-
+        LOGGER.debug("Received info about user with id {}: {}", id, user.get());
         return Optional.of(userMapper.toDto(user.get()));
     }
 
@@ -70,8 +68,9 @@ public class UserService {
         }
 
         user = userMapper.toBase(user, userDto);
-        userDao.save(user);
+        user = userDao.save(user);
 
+        LOGGER.debug("Registered new user: {}", user);
         return userMapper.toDto(userDto, user);
     }
 }

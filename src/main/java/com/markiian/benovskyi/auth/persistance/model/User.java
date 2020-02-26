@@ -1,11 +1,14 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -95,6 +98,28 @@ public class User {
         return this;
     }
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ServiceRole> serviceRoles;
+
+    public List<ServiceRole> getServiceRoles() {
+        return serviceRoles;
+    }
+
+    public void setServiceRoles(List<ServiceRole> serviceRoles) {
+        this.serviceRoles = serviceRoles;
+    }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Session> sessions;
+
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
+    }
+
     @Column
     @CreationTimestamp
     private OffsetDateTime createdAt;
@@ -132,12 +157,14 @@ public class User {
                 getUsername().equals(user.getUsername()) &&
                 getPasswordHash().equals(user.getPasswordHash()) &&
                 Objects.equals(getCreatedAt(), user.getCreatedAt()) &&
+                Objects.equals(getSessions(), user.getSessions()) &&
+                Objects.equals(getServiceRoles(), user.getServiceRoles()) &&
                 Objects.equals(getUpdatedAt(), user.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
+        return Objects.hash(getUserId(), getSessions(), getServiceRoles(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override

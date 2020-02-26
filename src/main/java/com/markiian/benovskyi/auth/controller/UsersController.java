@@ -1,13 +1,15 @@
 package com.markiian.benovskyi.auth.controller;
 
 import com.markiian.benovskyi.api.UsersApi;
-import com.markiian.benovskyi.auth.persistance.model.User;
+import com.markiian.benovskyi.auth.persistance.model.Role;
+import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.service.UserService;
 import com.markiian.benovskyi.auth.util.ResponseUtil;
 import com.markiian.benovskyi.model.InlineObject;
 import com.markiian.benovskyi.model.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +31,7 @@ public class UsersController implements UsersApi {
 
     private final Logger LOGGER = LoggerFactory.getLogger(UsersController.class);
 
+    @Autowired
     public UsersController(UserService userService) {
         this.userService = userService;
     }
@@ -52,9 +55,6 @@ public class UsersController implements UsersApi {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> usersDeleteById(Long id) {
-        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        LOGGER.info("User delete request private details: {}", details);
-
 //        userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
@@ -68,7 +68,13 @@ public class UsersController implements UsersApi {
     @Override
     @PreAuthorize("hasRole('MODER')")
     public ResponseEntity<UserDto> usersGetById(Long id) {
-        return ResponseEntity.of(userService.getUserById(id));
+        Optional<UserDto> userDto = userService.getUserById(id);
+
+        if (userDto.isEmpty() || (!CurrentUser.hasRole(Role.ADMIN) && !userDto.get().getUsername().equals(CurrentUser.getUsername()))) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.of(userDto);
     }
 
     @Override

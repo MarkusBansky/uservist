@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "services", uniqueConstraints = {
@@ -80,6 +81,17 @@ public class Service {
         return this;
     }
 
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
+    private Set<ServiceRole> serviceRoles;
+
+    public Set<ServiceRole> getServiceRoles() {
+        return serviceRoles;
+    }
+
+    public void setServiceRoles(Set<ServiceRole> serviceRoles) {
+        this.serviceRoles = serviceRoles;
+    }
+
     @Column
     @CreationTimestamp
     private OffsetDateTime createdAt;
@@ -117,12 +129,13 @@ public class Service {
                 getDescription().equals(service.getDescription()) &&
                 getKey().equals(service.getKey()) &&
                 Objects.equals(getCreatedAt(), service.getCreatedAt()) &&
+                Objects.equals(getServiceRoles(), service.getServiceRoles()) &&
                 Objects.equals(getUpdatedAt(), service.getUpdatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getServiceId(), getName(), getDescription(), getKey(), getCreatedAt(), getUpdatedAt());
+        return Objects.hash(getServiceId(), getServiceRoles(), getName(), getDescription(), getKey(), getCreatedAt(), getUpdatedAt());
     }
 
     @Override

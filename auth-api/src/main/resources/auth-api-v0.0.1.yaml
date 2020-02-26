@@ -120,7 +120,7 @@ components:
           description: User roles for services.
           type: array
           items:
-            $ref: '#/components/schemas/UserServiceRoleDto'
+            $ref: '#/components/schemas/ServiceRoleDto'
         createdAt:
           description: The date and time this user was created at.
           type: string
@@ -162,7 +162,7 @@ components:
           type: string
           format: date-time
 
-    UserServiceRoleDto:
+    ServiceRoleDto:
       description:
         Describes an object with service key and a list of roles for this service for a specific user.
       type: object
@@ -171,16 +171,10 @@ components:
         - serviceKey
         - roles
       properties:
-        userId:
-          type: integer
-          format: int64
         serviceKey:
-          type: integer
-          format: int64
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserRoleDto'
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRoleDto'
 
     SessionDto:
       description:
@@ -624,7 +618,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralErrorDto'
 
-  /current:
+  /auth/current:
     get:
       summary: Get authenticated user info.
       operationId: getCurrentUser
@@ -640,7 +634,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDto'
 
-  /login:
+  /auth/login:
     post:
       summary: Authenticate user.
       operationId: authenticate
@@ -667,7 +661,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralErrorDto'
 
-  /validate:
+  /auth/validate:
     post:
       summary: Validate user authentication.
       operationId: validate

@@ -13,6 +13,6 @@ public class ControllerExceptionHandler {
         // log exception
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(String.format("{\"code\":%s,\"message\":\"%s\"}", HttpStatus.BAD_REQUEST, e.getMessage()));
+                .body(String.format("{\"code\":%s,\"message\":\"%s\"}", HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 }
