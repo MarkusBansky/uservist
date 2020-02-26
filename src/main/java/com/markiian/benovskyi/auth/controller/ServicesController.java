@@ -38,13 +38,13 @@ public class ServicesController implements ServicesApi {
     }
 
     @Override
-    @PreAuthorize("hasRole('MODER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity servicesGetAll() {
         return ResponseUtil.buildResponse(() -> servicesService.getAllServicesForUser(CurrentUser.getUsername()));
     }
 
     @Override
-    @PreAuthorize("hasRole('MODER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity servicesGetById(Long id) {
         return ResponseUtil.buildResponse(() -> servicesService.getServiceForUserById(CurrentUser.getUsername(), id));
     }

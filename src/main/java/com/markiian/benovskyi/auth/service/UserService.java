@@ -41,11 +41,13 @@ public class UserService {
         return users.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
-    public void deleteUser(Long id) throws NotFoundException {
+    public Boolean deleteUser(Long id) throws NotFoundException {
         Optional<User> user = userDao.findByUserId(id);
         if (user.isEmpty() || user.get().getUsername().equals("uservist")) {
             throw new NotFoundException("User not found");
         }
+
+        return true;
     }
 
     public Optional<UserDto> getUserById(Long id) {
@@ -58,7 +60,7 @@ public class UserService {
         return Optional.of(userMapper.toDto(user.get()));
     }
 
-    public UserDto createNewUser(UserDto userDto) throws InstanceAlreadyExistsException {
+    public UserDto createNewUserForService(UserDto userDto, String serviceKey) throws InstanceAlreadyExistsException {
         User user = userDao
                 .findByUsername(userDto.getUsername())
                 .orElseGet(User::new);
@@ -71,6 +73,9 @@ public class UserService {
         user = userDao.save(user);
 
         LOGGER.debug("Registered new user: {}", user);
+
+        // TODO: Create user basic permissions for this service
+
         return userMapper.toDto(userDto, user);
     }
 }
