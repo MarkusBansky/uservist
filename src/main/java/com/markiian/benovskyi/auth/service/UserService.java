@@ -3,8 +3,13 @@ package com.markiian.benovskyi.auth.service;
 import com.markiian.benovskyi.auth.mapper.ServiceRoleMapper;
 import com.markiian.benovskyi.auth.mapper.UserMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
+import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
+import com.markiian.benovskyi.auth.persistance.dao.UserServiceConnectionDao;
+import com.markiian.benovskyi.auth.persistance.model.Role;
+import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.User;
+import com.markiian.benovskyi.auth.persistance.model.UserServiceConnection;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.model.UserDto;
 import javassist.NotFoundException;
@@ -25,6 +30,8 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserDao userDao;
     private final ServiceDao serviceDao;
+    private final ServiceRoleDao serviceRoleDao;
+    private final UserServiceConnectionDao connectionDao;
 
     private final UserMapper userMapper;
     private final ServiceRoleMapper serviceRoleMapper;
@@ -34,11 +41,13 @@ public class UserService {
     private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserDao userDao, UserMapper userMapper, ServiceDao serviceDao, ServiceRoleMapper serviceRoleMapper) {
+    public UserService(UserDao userDao, UserMapper userMapper, ServiceDao serviceDao, ServiceRoleMapper serviceRoleMapper, UserServiceConnectionDao connectionDao, ServiceRoleDao serviceRoleDao) {
         this.userDao = userDao;
         this.userMapper = userMapper;
         this.serviceDao = serviceDao;
         this.serviceRoleMapper = serviceRoleMapper;
+        this.connectionDao = connectionDao;
+        this.serviceRoleDao = serviceRoleDao;
     }
 
     /**
@@ -146,23 +155,35 @@ public class UserService {
         return resultPage;
     }
 
-    public UserDto createNewUserForService(UserDto userDto, String serviceKey) throws InstanceAlreadyExistsException {
-        User user = userDao
-                .findByUsername(userDto.getUsername())
-                .orElseGet(User::new);
+    public UserDto createNewUserForService(UserDto userDto, String serviceKey) throws InstanceAlreadyExistsException, NotFoundException {
+        Optional<User> user = userDao.findByUsername(userDto.getUsername());
+        Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
-        if (user.getUserId() != null) {
+        if (service.isEmpty()) {
+            throw new NotFoundException("Service cannot be found");
+        }
+
+        if (user.isPresent()) {
             throw new InstanceAlreadyExistsException("User with this username already exists");
         }
 
-        user = userMapper.toBase(user, userDto);
-        user = userDao.save(user);
-
+        User createdUser = userDao.save(userMapper.toBase(userDto));
         LOGGER.debug("Registered new user: {}", user);
 
-        // TODO: Create user basic permissions for this service
+        // create permission for current service
+        UserServiceConnection connection = new UserServiceConnection()
+                .withUser(createdUser)
+                .withService(service.get());
+        connectionDao.save(connection);
 
-        return userMapper.toDto(userDto, user);
+        // create basic role
+        ServiceRole role = new ServiceRole()
+                .withUser(createdUser)
+                .withService(service.get())
+                .withRole(Role.USER);
+        serviceRoleDao.save(role);
+
+        return userMapper.toDto(userDto, createdUser);
     }
 
 }

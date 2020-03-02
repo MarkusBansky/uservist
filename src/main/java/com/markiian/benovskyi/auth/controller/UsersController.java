@@ -55,13 +55,23 @@ public class UsersController implements UsersApi {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity usersDeleteById(Long id) {
-        return ResponseUtil.buildResponse(() -> userService.deleteUser(id, CurrentUser.getServiceKey()));
+    public ResponseEntity usersCreate(@NotNull @Valid String service, @Valid UserDto userDto) {
+        if (CurrentUser.isSuper() || service.equals(CurrentUser.getServiceKey())) {
+            return ResponseUtil.buildResponse(() -> userService.createNewUserForService(userDto, service));
+        } else {
+            return ResponseUtil.buildErrorResponse(HttpStatus.UNAUTHORIZED, ApplicationConstants.UNAUTHORIZED_EXCEPTION_MESSAGE);
+        }
     }
 
     @Override
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity usersUpdateById(Long id, @Valid UserDto userDto) {
         return ResponseUtil.buildErrorResponse(HttpStatus.NOT_IMPLEMENTED, "NOT IMPLEMENTED");
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity usersDeleteById(Long id) {
+        return ResponseUtil.buildResponse(() -> userService.deleteUser(id, CurrentUser.getServiceKey()));
     }
 }
