@@ -68,6 +68,7 @@ public class UserService {
 
     /**
      * Method used by any admin to get user for their service.
+     * User returns only those service roles that they have for the selected serviceKey.
      * @param userId User ID to search for.
      * @param serviceKey User's serviceKey.
      * @return UserDto if found.
@@ -83,6 +84,11 @@ public class UserService {
         if (user.get().getServiceConnections().stream().noneMatch(a -> a.getService().getKey().equals(serviceKey))) {
             throw new InternalError(ApplicationConstants.UNAUTHORIZED_EXCEPTION_MESSAGE);
         }
+
+        user.get().setServiceRoles(user.get()
+                .getServiceRoles().parallelStream()
+                .filter(r -> r.getService().getKey().equals(serviceKey))
+                .collect(Collectors.toList()));
 
         LOGGER.debug("Received info about user with id {}: {}", userId, user.get());
         return userMapper.toDto(user.get());
