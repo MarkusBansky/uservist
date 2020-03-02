@@ -1,11 +1,11 @@
 package com.markiian.benovskyi.auth.service;
 
+import com.markiian.benovskyi.auth.mapper.ServiceRoleMapper;
 import com.markiian.benovskyi.auth.mapper.UserMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserServiceConnectionDao;
 import com.markiian.benovskyi.auth.persistance.model.User;
-import com.markiian.benovskyi.auth.persistance.model.UserServiceConnection;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.model.UserDto;
 import javassist.NotFoundException;
@@ -19,26 +19,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceAlreadyExistsException;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final UserDao userDao;
-    private final UserMapper userMapper;
     private final ServiceDao serviceDao;
     private final UserServiceConnectionDao userServiceConnectionDao;
+
+    private final UserMapper userMapper;
+    private final ServiceRoleMapper serviceRoleMapper;
 
     private final int PAGE_SIZE = 10;
     private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserDao userDao, UserMapper userMapper, UserServiceConnectionDao userServiceConnectionDao, ServiceDao serviceDao) {
+    public UserService(UserDao userDao, UserMapper userMapper, UserServiceConnectionDao userServiceConnectionDao, ServiceDao serviceDao, ServiceRoleMapper serviceRoleMapper) {
         this.userDao = userDao;
         this.userMapper = userMapper;
         this.userServiceConnectionDao = userServiceConnectionDao;
         this.serviceDao = serviceDao;
+        this.serviceRoleMapper = serviceRoleMapper;
     }
 
     public Boolean deleteUser(Long id) throws NotFoundException {
@@ -85,13 +87,15 @@ public class UserService {
             throw new InternalError(ApplicationConstants.UNAUTHORIZED_EXCEPTION_MESSAGE);
         }
 
-        user.get().setServiceRoles(user.get()
+        UserDto userDto = userMapper.toDto(user.get());
+        userDto.setServiceRoles(user.get()
                 .getServiceRoles().parallelStream()
                 .filter(r -> r.getService().getKey().equals(serviceKey))
+                .map(serviceRoleMapper::toDto)
                 .collect(Collectors.toList()));
 
         LOGGER.debug("Received info about user with id {}: {}", userId, user.get());
-        return userMapper.toDto(user.get());
+        return userDto;
     }
 
     /**
@@ -112,7 +116,15 @@ public class UserService {
         Page<User> users = userDao.findAllUsersByServiceId(service.get().getServiceId(), pageRequest);
 
         Page<UserDto> resultPage = new PageImpl(
-                users.stream().map(userMapper::toDto).collect(Collectors.toList()),
+                users.stream().map(user -> {
+                    UserDto userDto = userMapper.toDto(user);
+                    userDto.setServiceRoles(user
+                            .getServiceRoles().parallelStream()
+                            .filter(r -> r.getService().getKey().equals(serviceKey))
+                            .map(serviceRoleMapper::toDto)
+                            .collect(Collectors.toList()));
+                    return userDto;
+                }).collect(Collectors.toList()),
                 pageRequest,
                 users.getTotalElements());
 
