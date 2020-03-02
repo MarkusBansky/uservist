@@ -97,7 +97,6 @@ components:
         - firstName
         - lastName
         - username
-        - passwordHash
       properties:
         id:
           description: User's unique identifier.
@@ -112,7 +111,7 @@ components:
         username:
           description: The internal shorted nickname of the user.
           type: string
-        passwordHash:
+        password:
           description: Encrypted users pasword hash.
           type: string
         serviceRoles:

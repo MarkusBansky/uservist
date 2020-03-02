@@ -30,7 +30,7 @@ public class UserMapper implements Mapper<User, UserDto> {
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setUsername(user.getUsername());
-//        userDto.setPasswordHash(user.getPasswordHash());
+//        userDto.setPassword(user.getPasswordHash());
         userDto.setUpdatedAt(user.getUpdatedAt());
         userDto.setCreatedAt(user.getCreatedAt());
 
@@ -50,7 +50,7 @@ public class UserMapper implements Mapper<User, UserDto> {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setUsername(userDto.getUsername());
-        user.setPasswordHash(userDto.getPasswordHash());
+        user.setPasswordHash(userDto.getPassword());
         user.setUpdatedAt(userDto.getUpdatedAt());
         user.setCreatedAt(userDto.getCreatedAt());
 
