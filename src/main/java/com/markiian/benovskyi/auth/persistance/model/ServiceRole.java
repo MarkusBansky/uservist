@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "service_roles", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "service_id"})
+        @UniqueConstraint(columnNames = {"user_id", "service_id", "role"})
 })
 public class ServiceRole {
 
@@ -33,6 +33,7 @@ public class ServiceRole {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public User getUser() {
@@ -49,6 +50,7 @@ public class ServiceRole {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id")
     private Service service;
 
     public Service getService() {

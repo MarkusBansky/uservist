@@ -1,6 +1,5 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -8,7 +7,6 @@ import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -98,7 +96,7 @@ public class User {
         return this;
     }
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<ServiceRole> serviceRoles;
 
     public List<ServiceRole> getServiceRoles() {
@@ -109,7 +107,7 @@ public class User {
         this.serviceRoles = serviceRoles;
     }
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<Session> sessions;
 
     public List<Session> getSessions() {
@@ -120,7 +118,7 @@ public class User {
         this.sessions = sessions;
     }
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<UserServiceConnection> serviceConnections;
 
     public List<UserServiceConnection> getServiceConnections() {

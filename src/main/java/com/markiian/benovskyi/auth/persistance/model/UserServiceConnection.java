@@ -8,7 +8,9 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user_service_connections")
+@Table(name = "user_service_connections", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "service_id"})
+})
 public class UserServiceConnection {
 
     @Id
@@ -29,6 +31,7 @@ public class UserServiceConnection {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public User getUser() {
@@ -45,6 +48,7 @@ public class UserServiceConnection {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id")
     private Service service;
 
     public Service getService() {

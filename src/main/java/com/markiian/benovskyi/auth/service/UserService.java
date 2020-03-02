@@ -16,13 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.management.InstanceAlreadyExistsException;
-import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -101,28 +97,21 @@ public class UserService {
      */
     public Page<UserDto> getAllUsers(Integer page, String serviceKey) throws NotFoundException {
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
-
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
         if (service.isEmpty()) {
             throw new NotFoundException("Service could not be found");
         }
 
-        Page<UserServiceConnection> userServiceConnectionPage = userServiceConnectionDao
-                .findAllByService(service.get(), pageRequest);
+        Page<User> users = userDao.findAllUsersByServiceId(service.get().getServiceId(), pageRequest);
 
-        if (userServiceConnectionPage.isEmpty()) {
-            throw new NotFoundException("No users found");
-        }
-
-        List<User> users = userDao.findAllByServiceConnections(userServiceConnectionPage.toList());
-        Page<UserDto> userPage = new PageImpl(
+        Page<UserDto> resultPage = new PageImpl(
                 users.stream().map(userMapper::toDto).collect(Collectors.toList()),
                 pageRequest,
-                userServiceConnectionPage.getTotalElements());
+                users.getTotalElements());
 
-        LOGGER.debug("Received all users service: {}; page: {}; users: {}", serviceKey, page, userPage);
-        return userPage;
+        LOGGER.debug("Received all users service: {}; page: {}; users: {}", serviceKey, page, resultPage);
+        return resultPage;
     }
 
     public UserDto createNewUserForService(UserDto userDto, String serviceKey) throws InstanceAlreadyExistsException {
