@@ -4,7 +4,6 @@ import com.markiian.benovskyi.auth.mapper.ServiceRoleMapper;
 import com.markiian.benovskyi.auth.mapper.UserMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
-import com.markiian.benovskyi.auth.persistance.dao.UserServiceConnectionDao;
 import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.model.UserDto;
@@ -26,28 +25,43 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserDao userDao;
     private final ServiceDao serviceDao;
-    private final UserServiceConnectionDao userServiceConnectionDao;
 
     private final UserMapper userMapper;
     private final ServiceRoleMapper serviceRoleMapper;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final int PAGE_SIZE = 10;
     private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserDao userDao, UserMapper userMapper, UserServiceConnectionDao userServiceConnectionDao, ServiceDao serviceDao, ServiceRoleMapper serviceRoleMapper) {
+    public UserService(UserDao userDao, UserMapper userMapper, ServiceDao serviceDao, ServiceRoleMapper serviceRoleMapper) {
         this.userDao = userDao;
         this.userMapper = userMapper;
-        this.userServiceConnectionDao = userServiceConnectionDao;
         this.serviceDao = serviceDao;
         this.serviceRoleMapper = serviceRoleMapper;
     }
 
-    public Boolean deleteUser(Long id) throws NotFoundException {
+    /**
+     * Remove user if user can be found, and if user is not uservist.
+     * If user has no connection to the serviceKey provided then throw error.
+     * @param id Users ID.
+     * @param serviceKey Unique
+     * @return True if user deleted successfully.
+     * @throws NotFoundException If user cannot be found or removed.
+     */
+    public Boolean deleteUser(Long id,  String serviceKey) throws NotFoundException {
         Optional<User> user = userDao.findByUserId(id);
         if (user.isEmpty() || user.get().getUsername().equals("uservist")) {
             throw new NotFoundException("User not found");
         }
+
+        if (user.get()
+                .getServiceConnections().parallelStream()
+                .noneMatch(con -> con.getService().getKey().equals(serviceKey))) {
+            throw new NotFoundException("User cannot be found on this service");
+        }
+
+        userDao.delete(user.get());
 
         return true;
     }

@@ -56,7 +56,7 @@ public class UsersController implements UsersApi {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity usersDeleteById(Long id) {
-        return ResponseUtil.buildResponse(() -> userService.deleteUser(id));
+        return ResponseUtil.buildResponse(() -> userService.deleteUser(id, CurrentUser.getServiceKey()));
     }
 
     @Override
