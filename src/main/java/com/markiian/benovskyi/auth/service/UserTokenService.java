@@ -17,6 +17,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -40,6 +42,8 @@ public class UserTokenService extends AbstractTokenService {
     private final String USERNAME_KEY = "username";
     private final String SERVICE_KEY = "service";
 
+    private final Logger LOGGER = LoggerFactory.getLogger(UserTokenService.class);
+
     public UserTokenService(SessionDao sessionDao, UserDao userDao, ServiceDao serviceDao, ServiceRoleDao serviceRoleDao) {
         this.sessionDao = sessionDao;
         this.userDao = userDao;
@@ -48,12 +52,15 @@ public class UserTokenService extends AbstractTokenService {
     }
 
     public void saveUserSession(Authentication authentication, String token) throws Exception {
+        LOGGER.debug("Saving user session with token {}", token);
         UserAuthenticationDto authDto = (UserAuthenticationDto) authentication.getDetails();
 
         Optional<User> user = userDao.findByUsername(authDto.getUsername());
         Optional<Service> service = serviceDao.findByKey(authDto.getKey());
 
         if (user.isEmpty() || service.isEmpty()) {
+            LOGGER.warn("User with Username {} or service with Key {} cannot be found",
+                    authDto.getUsername(), authDto.getKey());
             throw new Exception("User or Service does not exist");
         }
 
@@ -68,7 +75,8 @@ public class UserTokenService extends AbstractTokenService {
                 .withToken(token)
                 .withExpiresAt(getExpiresAtFromToken(token).toInstant().atOffset(ZoneOffset.UTC));
 
-        sessionDao.save(session);
+        session = sessionDao.save(session);
+        LOGGER.debug("Created new login session: {}", session);
     }
 
     /**
@@ -78,18 +86,22 @@ public class UserTokenService extends AbstractTokenService {
      * @return HS256 Token string.
      */
     public String generateToken(Authentication authentication) {
+        LOGGER.debug("Generating token for: {}", authentication.getName());
         UserAuthenticationDto authDto = (UserAuthenticationDto) authentication.getDetails();
 
         byte[] keyBytes = Decoders.BASE64.decode(SIGNING_KEY);
         Key key = Keys.hmacShaKeyFor(keyBytes);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .claim(USERNAME_KEY, authentication.getName())
                 .claim(SERVICE_KEY, authDto.getKey())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
                 .compact();
+
+        LOGGER.debug("Generated new token for: {}, token: {}", authentication.getName(), token);
+        return token;
     }
 
     /**
@@ -103,7 +115,9 @@ public class UserTokenService extends AbstractTokenService {
             return null;
         }
 
-        return claims.get().get(USERNAME_KEY).toString();
+        String username = claims.get().get(USERNAME_KEY).toString();
+        LOGGER.debug("Retrieved username {} from token {}", username, token);
+        return username;
     }
 
     public Date getExpiresAtFromToken(String token) {
@@ -112,7 +126,9 @@ public class UserTokenService extends AbstractTokenService {
             return null;
         }
 
-        return claims.get().getExpiration();
+        Date date = claims.get().getExpiration();
+        LOGGER.debug("Retrieved expiration date {} from token {}", date, token);
+        return date;
     }
 
     public String getServiceKeyFromToken(String token) {
@@ -121,17 +137,24 @@ public class UserTokenService extends AbstractTokenService {
             return null;
         }
 
-        return claims.get().get(SERVICE_KEY).toString();
+        String serviceKey = claims.get().get(SERVICE_KEY).toString();
+        LOGGER.debug("Retrieved service key {} from token {}", serviceKey, token);
+        return serviceKey;
     }
 
     public UservistAuthenticationToken getAuthenticationFromToken(final String token, String remoteAddress) {
+        LOGGER.debug("Compositing user Authentication object from token {}", token);
+
         String username = getUsernameFromToken(token);
         String serviceKey = getServiceKeyFromToken(token);
+
+        LOGGER.debug("Extracted username {} and serviceKey {} from token {}", username, serviceKey, token);
 
         Optional<User> user = userDao.findByUsername(username);
         Optional<Service> service = serviceDao.findByKey(serviceKey);
 
         if (user.isEmpty() || service.isEmpty()) {
+            LOGGER.debug("Username of service are empty");
             return null;
         }
 
@@ -143,15 +166,23 @@ public class UserTokenService extends AbstractTokenService {
                 .key(serviceKey)
                 .username(username);
 
-        return new UservistAuthenticationToken(username, "", details, authorities);
+        LOGGER.debug("Constructed new details object {}", details);
+
+        UservistAuthenticationToken auth = new UservistAuthenticationToken(username, "", details, authorities);
+        LOGGER.debug("Result for user authentication: {}", auth);
+        return auth;
     }
 
     public boolean validateToken(String token) {
+        LOGGER.debug("validating token: {}", token);
         Optional<Session> session = sessionDao.findByToken(token);
         Optional<Claims> claims = getClaims(token);
 
-        return claims.isPresent() && session.isPresent()
+        boolean valid = claims.isPresent() && session.isPresent()
                 && session.get().getExpiresAt().isAfter(OffsetDateTime.now())
                 && claims.get().getExpiration().after(new Date());
+
+        LOGGER.debug("Token {} is valid: [{}]", token, valid);
+        return valid;
     }
 }
