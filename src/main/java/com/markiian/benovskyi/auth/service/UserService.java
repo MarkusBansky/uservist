@@ -62,7 +62,7 @@ public class UserService {
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
         if (service.isEmpty()) {
-            LOGGER.debug("Service for users request cannot be found, service key: {}", serviceKey);
+            LOGGER.warn("Service for users request cannot be found, service key: {}", serviceKey);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
@@ -96,7 +96,7 @@ public class UserService {
         Optional<User> user = userDao.findByUserId(userId);
 
         if (user.isEmpty()) {
-            LOGGER.debug("User with ID {} cannot be found", userId);
+            LOGGER.warn("User with ID {} cannot be found", userId);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 
@@ -115,7 +115,7 @@ public class UserService {
         LOGGER.debug("Performing task to get user by ID");
         Optional<User> user = userDao.findByUserId(userId);
         if (user.isEmpty()) {
-            LOGGER.debug("User cannot be found with user ID {}", userId);
+            LOGGER.warn("User cannot be found with user ID {}", userId);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 
@@ -143,12 +143,12 @@ public class UserService {
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
         if (service.isEmpty()) {
-            LOGGER.debug("Service cannot be found with service key {}", serviceKey);
+            LOGGER.warn("Service cannot be found with service key {}", serviceKey);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
         if (user.isPresent()) {
-            LOGGER.debug("User with ID {} cannot be found", userDto.getId());
+            LOGGER.warn("User with ID {} cannot be found", userDto.getId());
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_ALREADY_EXISTS);
         }
 
@@ -180,7 +180,7 @@ public class UserService {
         Optional<User> user = userDao.findByUserId(userDto.getId());
 
         if (user.isEmpty()) {
-            LOGGER.debug("User with id {} from dto has not been found", userDto.getId());
+            LOGGER.warn("User with id {} from dto has not been found", userDto.getId());
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 

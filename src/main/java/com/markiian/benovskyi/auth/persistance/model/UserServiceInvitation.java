@@ -79,6 +79,22 @@ public class UserServiceInvitation {
     }
 
     @Column(nullable = false)
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public UserServiceInvitation withToken(String token) {
+        this.token = token;
+        return this;
+    }
+
+    @Column(nullable = false)
     private OffsetDateTime expiresAt;
 
     public OffsetDateTime getExpiresAt() {
@@ -118,12 +134,13 @@ public class UserServiceInvitation {
                 getService().equals(that.getService()) &&
                 getRole() == that.getRole() &&
                 getExpiresAt().equals(that.getExpiresAt()) &&
+                Objects.equals(getToken(), that.getToken()) &&
                 Objects.equals(getCreatedAt(), that.getCreatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUser(), getService(), getRole(), getExpiresAt(), getCreatedAt());
+        return Objects.hash(getId(), getUser(), getService(), getRole(), getToken(), getExpiresAt(), getCreatedAt());
     }
 
     @Override
@@ -133,6 +150,7 @@ public class UserServiceInvitation {
                 ", user=" + user +
                 ", service=" + service +
                 ", role=" + role +
+                ", token=" + token +
                 ", expiresAt=" + expiresAt +
                 ", createdAt=" + createdAt +
                 '}';

@@ -221,7 +221,17 @@ components:
           description: Key identifier of the service.
           type: string
         desiredRole:
-          description: Role for user to get after invitation.
+          $ref: '#/components/schemas/UserRoleDto'
+
+    UserServiceInvitationLinkDto:
+      description:
+        Object containing generated link.
+      type: object
+      required:
+        - link
+      properties:
+        link:
+          description: Link to url.
           type: string
 
 paths:
@@ -234,6 +244,13 @@ paths:
         - Invitations
       description:
         User accepts the invitation and acquires role and connection for the specific service.
+      parameters:
+        - in: query
+          name: token
+          description: Invitation token.
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: Successfully aquired service role.
@@ -250,13 +267,6 @@ paths:
       description:
         Create an invitation for some user to be added to the service, user would receive a specific role when they
         approve the invitation. Invitation is sent by email.
-      parameters:
-        - in: query
-          name: token
-          description: Invitation token.
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -265,6 +275,10 @@ paths:
       responses:
         200:
           description: Successfull invitation sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserServiceInvitationLinkDto'
         401:
           description: Missing or expired session.
         403:

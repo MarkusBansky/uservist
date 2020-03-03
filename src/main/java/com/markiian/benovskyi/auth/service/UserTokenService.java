@@ -154,7 +154,7 @@ public class UserTokenService extends AbstractTokenService {
         Optional<Service> service = serviceDao.findByKey(serviceKey);
 
         if (user.isEmpty() || service.isEmpty()) {
-            LOGGER.debug("Username of service are empty");
+            LOGGER.warn("Username of service are empty");
             return null;
         }
 

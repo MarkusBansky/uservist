@@ -53,7 +53,7 @@ public class ServicesService {
         Optional<Service> service = serviceDao.findByServiceId(id);
 
         if (service.isEmpty()) {
-            LOGGER.debug("Service for id {} is empty and does not exist", id);
+            LOGGER.warn("Service for id {} is empty and does not exist", id);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
@@ -85,7 +85,7 @@ public class ServicesService {
         Optional<Service> service = serviceDao.findByServiceId(serviceDto.getId());
 
         if (service.isEmpty()) {
-            LOGGER.debug("Service for update has not been found");
+            LOGGER.warn("Service for update has not been found");
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
