@@ -393,6 +393,31 @@ paths:
         403:
           description: Missing required privileges.
 
+    put:
+      summary: Update user information by user ID.
+      operationId: usersUpdate
+      tags:
+        - Users
+      description: Update user by user ID. If user has enough permissions then user is updated successfully.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        200:
+          description: Returns updated user information object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        401:
+          description: Missing or expired session.
+        403:
+          description: Missing required privileges.
+        404:
+          description: Such service does not exist. Could not update an unexisting user.
+
   /users/{id}:
     parameters:
       - name: id
@@ -423,34 +448,9 @@ paths:
         404:
           description: Such service does not exist. Could not get an unexisting user.
 
-    put:
-      summary: Update user information by user ID.
-      operationId: usersUpdateById
-      tags:
-        - Users
-      description: Update user by user ID. If user has enough permissions then user is updated successfully.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDto'
-      responses:
-        200:
-          description: Returns updated user information object.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserDto'
-        401:
-          description: Missing or expired session.
-        403:
-          description: Missing required privileges.
-        404:
-          description: Such service does not exist. Could not update an unexisting user.
-
     delete:
       summary: Delete user record by user ID.
-      operationId: usersDeleteById
+      operationId: usersDelete
       tags:
         - Users
       description: Delete user by user ID. Throws error message if user does not have enough permissions.
