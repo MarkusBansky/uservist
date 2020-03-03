@@ -28,6 +28,8 @@ tags:
     description:
       Authenticate user with username and password, and the unique identifier of the system.
       Or validate user token and return user information for that specific service.
+  - name: Invotations
+    description: Invitation controller to handle joiining service invitations.
 
 components:
   securitySchemes:
