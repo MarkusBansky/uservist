@@ -28,7 +28,7 @@ tags:
     description:
       Authenticate user with username and password, and the unique identifier of the system.
       Or validate user token and return user information for that specific service.
-  - name: Invotations
+  - name: Invitations
     description: Invitation controller to handle joiining service invitations.
 
 components:
@@ -206,7 +206,71 @@ components:
           type: string
           format: date-time
 
+    UserServiceInvitationDto:
+      description:
+        Object being sent to API endpoint to send an email with an invitation link to invite a specific user.
+      type: object
+      required:
+        - username
+        - serviceKey
+      properties:
+        username:
+          description: Name of the user.
+          type: string
+        serviceKey:
+          description: Key identifier of the service.
+          type: string
+        desiredRole:
+          description: Role for user to get after invitation.
+          type: string
+
 paths:
+
+  /invitations:
+    get:
+      summary: Accept invitation.
+      operationId: acceptInvitation
+      tags:
+        - Invitations
+      description:
+        User accepts the invitation and acquires role and connection for the specific service.
+      responses:
+        200:
+          description: Successfully aquired service role.
+        401:
+          description: Missing or expired session.
+        403:
+          description: Missing required privileges.
+
+    post:
+      summary: Create invitation.
+      operationId: createInvitation
+      tags:
+        - Invitations
+      description:
+        Create an invitation for some user to be added to the service, user would receive a specific role when they
+        approve the invitation. Invitation is sent by email.
+      parameters:
+        - in: query
+          name: token
+          description: Invitation token.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserServiceInvitationDto'
+      responses:
+        200:
+          description: Successfull invitation sent.
+        401:
+          description: Missing or expired session.
+        403:
+          description: Missing required privileges.
+
+
   /services:
     get:
       summary: Get all services.
