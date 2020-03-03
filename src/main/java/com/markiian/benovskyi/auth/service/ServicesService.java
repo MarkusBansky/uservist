@@ -34,25 +34,30 @@ public class ServicesService {
     }
 
     public Page<ServiceDto> getAllServices(Integer page) {
+        LOGGER.debug("Performing task to get all available services");
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
         Page<Service> services = serviceDao.findAll(pageRequest);
 
+        LOGGER.debug("Received {} services from the database", services.getTotalElements());
         Page<ServiceDto> resultPage = new PageImpl(
                 services.stream().map(serviceMapper::toDto).collect(Collectors.toList()),
                 pageRequest,
                 services.getTotalElements());
 
-        LOGGER.debug("Received all services for page: {}; services: {}", page, resultPage);
+        LOGGER.debug("Constructed service dto response page for: {}; services: {}", page, resultPage);
         return resultPage;
     }
 
     public ServiceDto getServiceById(Long id) {
+        LOGGER.debug("Performing task to get service by it's unique ID {}", id);
         Optional<Service> service = serviceDao.findByServiceId(id);
 
         if (service.isEmpty()) {
+            LOGGER.debug("Service for id {} is empty and does not exist", id);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
+        LOGGER.debug("Found service {} returning result dto", service.get());
         return serviceMapper.toDto(service.get());
     }
 
@@ -62,8 +67,11 @@ public class ServicesService {
      * @return New created dto.
      */
     public ServiceDto createNewService(ServiceDto serviceDto) {
+        LOGGER.debug("Performing task to get create new service with dto: {}", serviceDto);
         Service newService = serviceMapper.toBase(serviceDto);
         newService = serviceDao.save(newService);
+
+        LOGGER.debug("New service has been created: {}", newService);
         return serviceMapper.toDto(newService);
     }
 
@@ -73,15 +81,18 @@ public class ServicesService {
      * @return New updated dto.
      */
     public ServiceDto updateExistingService(ServiceDto serviceDto) {
+        LOGGER.debug("Performing task to update service with dto {}", serviceDto);
         Optional<Service> service = serviceDao.findByServiceId(serviceDto.getId());
 
         if (service.isEmpty()) {
+            LOGGER.debug("Service for update has not been found");
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
         Service updatedService = serviceMapper.toBase(service.get(), serviceDto);
         updatedService = serviceDao.save(updatedService);
 
+        LOGGER.debug("Service has been updated successfully: {}", updatedService);
         return serviceMapper.toDto(updatedService);
     }
 
@@ -91,7 +102,10 @@ public class ServicesService {
      * @return True if deleted without exceptions.
      */
     public Boolean deleteService(Long serviceId) {
+        LOGGER.debug("Performing task to delete service by id {}", serviceId);
         serviceDao.deleteById(serviceId);
+
+        LOGGER.debug("Service with id {} successfully deleted", serviceId);
         return true;
     }
 }
