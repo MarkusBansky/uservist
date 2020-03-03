@@ -1,53 +1,53 @@
 package com.markiian.benovskyi.auth.service;
 
-import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
-import com.markiian.benovskyi.auth.persistance.dao.UserServiceConnectionDao;
 import com.markiian.benovskyi.auth.persistance.model.Role;
-import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.security.CurrentUser;
+import com.markiian.benovskyi.auth.service.misc.IPermissionService;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
 @Service
-public class UserPermissionService {
+public class UserPermissionService implements IPermissionService<UserDto> {
     private final UserDao userDao;
-    private final ServiceDao serviceDao;
     private final ServiceRoleDao serviceRoleDao;
-    private final UserServiceConnectionDao connectionDao;
 
     @Autowired
-    public UserPermissionService(UserDao userDao, ServiceDao serviceDao, ServiceRoleDao serviceRoleDao, UserServiceConnectionDao connectionDao) {
+    public UserPermissionService(UserDao userDao, ServiceRoleDao serviceRoleDao) {
         this.userDao = userDao;
-        this.serviceDao = serviceDao;
         this.serviceRoleDao = serviceRoleDao;
-        this.connectionDao = connectionDao;
     }
 
-    public boolean canGetAllUsers(String service, Authentication auth) {
-        if (CurrentUser.isSuper() || service.equals(CurrentUser.getServiceKey())) {
+    public boolean canGetAll(String service, Authentication auth) {
+        return CurrentUser.isSuper() || service.equals(CurrentUser.getServiceKey());
+    }
+
+    @Override
+    public boolean canGetById(Long id, Authentication auth) {
+        if (CurrentUser.isSuper()) {
             return true;
         }
-        return false;
+
+        Optional<User> user = userDao.findByUserId(id);
+
+        return user.isPresent() && user.get()
+                .getServiceConnections().parallelStream()
+                .anyMatch(con -> con.getService().getKey().equals(CurrentUser.getServiceKey(auth)));
     }
 
-    public boolean canCreateUser(String service, Authentication auth) {
-        if (CurrentUser.isSuper(auth) || service.equals(CurrentUser.getServiceKey(auth))) {
-            return true;
-        }
-        return false;
+    public boolean canCreate(String service, Authentication auth) {
+        return CurrentUser.isSuper(auth) || service.equals(CurrentUser.getServiceKey(auth));
     }
 
-    public boolean canUpdateUser(UserDto dto, Authentication auth) {
+    @Override
+    public boolean canUpdate(UserDto dto, Authentication auth) {
         Optional<User> currentUser = userDao.findByUsername(auth.getName());
 
         if (currentUser.isEmpty()) {
@@ -73,12 +73,12 @@ public class UserPermissionService {
                         && r.getRole().getValue().equals(Role.ADMIN.getValue()));
     }
 
-    public boolean canDeleteUser(Long id, Authentication auth) {
+    @Override
+    public boolean canDelete(Long id, Authentication auth) {
         Optional<User> user = userDao.findByUserId(id);
         if (user.isEmpty() || user.get().getUsername().equals(ApplicationConstants.SUPER_ADMIN_USERNAME)) {
             return false;
         }
-
 
         return user.get()
                 .getServiceConnections().parallelStream()

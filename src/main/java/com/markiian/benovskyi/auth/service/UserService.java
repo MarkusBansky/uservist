@@ -51,14 +51,36 @@ public class UserService {
     }
 
     /**
-     * Remove user if user can be found, and if user is not uservist.
-     * If user has no connection to the serviceKey provided then throw error.
-     * @param id Users ID.
-     * @return True if user deleted successfully.
+     * Get all users for specific service.
+     * @param page The page of users to receive.
+     * @param serviceKey The key for the service.
+     * @return A page with users.
      */
-    public Boolean deleteUser(Long id) {
-        userDao.deleteById(id);
-        return true;
+    public Page<UserDto> getAllUsers(Integer page, String serviceKey) {
+        Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
+        Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
+
+        if (service.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
+        }
+
+        Page<User> users = userDao.findAllUsersByServiceId(service.get().getServiceId(), pageRequest);
+
+        Page<UserDto> resultPage = new PageImpl(
+                users.stream().map(user -> {
+                    UserDto userDto = userMapper.toDto(user);
+                    userDto.setServiceRoles(user
+                            .getServiceRoles().parallelStream()
+                            .filter(r -> r.getService().getKey().equals(serviceKey))
+                            .map(serviceRoleMapper::toDto)
+                            .collect(Collectors.toList()));
+                    return userDto;
+                }).collect(Collectors.toList()),
+                pageRequest,
+                users.getTotalElements());
+
+        LOGGER.debug("Received all users service: {}; page: {}; users: {}", serviceKey, page, resultPage);
+        return resultPage;
     }
 
     /**
@@ -103,39 +125,6 @@ public class UserService {
 
         LOGGER.debug("Received info about user with id {}: {}", userId, user.get());
         return userDto;
-    }
-
-    /**
-     * Get all users for specific service.
-     * @param page The page of users to receive.
-     * @param serviceKey The key for the service.
-     * @return A page with users.
-     */
-    public Page<UserDto> getAllUsers(Integer page, String serviceKey) {
-        Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
-        Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
-
-        if (service.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
-        }
-
-        Page<User> users = userDao.findAllUsersByServiceId(service.get().getServiceId(), pageRequest);
-
-        Page<UserDto> resultPage = new PageImpl(
-                users.stream().map(user -> {
-                    UserDto userDto = userMapper.toDto(user);
-                    userDto.setServiceRoles(user
-                            .getServiceRoles().parallelStream()
-                            .filter(r -> r.getService().getKey().equals(serviceKey))
-                            .map(serviceRoleMapper::toDto)
-                            .collect(Collectors.toList()));
-                    return userDto;
-                }).collect(Collectors.toList()),
-                pageRequest,
-                users.getTotalElements());
-
-        LOGGER.debug("Received all users service: {}; page: {}; users: {}", serviceKey, page, resultPage);
-        return resultPage;
     }
 
     /**
@@ -186,5 +175,16 @@ public class UserService {
 
         User updatedUser = userDao.save(userMapper.toBase(user.get(), userDto));
         return userMapper.toDto(updatedUser);
+    }
+
+    /**
+     * Remove user if user can be found, and if user is not uservist.
+     * If user has no connection to the serviceKey provided then throw error.
+     * @param id Users ID.
+     * @return True if user deleted successfully.
+     */
+    public Boolean deleteUser(Long id) {
+        userDao.deleteById(id);
+        return true;
     }
 }

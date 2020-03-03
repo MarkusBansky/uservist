@@ -214,6 +214,13 @@ paths:
       description:
         Returns all available services in the system.
         Only returns the keys fields if user is authenticated via token.
+      parameters:
+        - in: query
+          name: page
+          description: Page of users, 10 users per page.
+          required: true
+          schema:
+            type: integer
       responses:
         200:
           description: Successfull request, returning all available services in the system.
@@ -253,6 +260,33 @@ paths:
         403:
           description: Missing required privileges.
 
+    put:
+      summary: Update service information.
+      operationId: servicesUpdateById
+      tags:
+        - Services
+      description:
+        Updates service record in the database with new information, if such record exists already, if not then error,
+        returns with a key property if user is admin.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceDto'
+      responses:
+        200:
+          description: Service updated successfully, return the updated service object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceDto'
+        401:
+          description: Missing or expired session.
+        403:
+          description: Missing required privileges.
+        404:
+          description: Such service does not exist. Could not update an unexisting service.
+
   /services/{id}:
     parameters:
       - name: id
@@ -283,33 +317,6 @@ paths:
           description: Missing required privileges.
         404:
           description: Such service does not exist.
-
-    put:
-      summary: Update service information.
-      operationId: servicesUpdateById
-      tags:
-        - Services
-      description:
-        Updates service record in the database with new information, if such record exists already, if not then error,
-        returns with a key property if user is admin.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ServiceDto'
-      responses:
-        200:
-          description: Service updated successfully, return the updated service object.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServiceDto'
-        401:
-          description: Missing or expired session.
-        403:
-          description: Missing required privileges.
-        404:
-          description: Such service does not exist. Could not update an unexisting service.
 
     delete:
       summary: Delete service by ID.
