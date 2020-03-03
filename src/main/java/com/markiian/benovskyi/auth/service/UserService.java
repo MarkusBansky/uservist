@@ -57,14 +57,17 @@ public class UserService {
      * @return A page with users.
      */
     public Page<UserDto> getAllUsers(Integer page, String serviceKey) {
+        LOGGER.debug("Performing task to get all available users");
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
         if (service.isEmpty()) {
+            LOGGER.debug("Service for users request cannot be found, service key: {}", serviceKey);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
         Page<User> users = userDao.findAllUsersByServiceId(service.get().getServiceId(), pageRequest);
+        LOGGER.debug("Found {} users", users.getTotalElements());
 
         Page<UserDto> resultPage = new PageImpl(
                 users.stream().map(user -> {
@@ -89,8 +92,11 @@ public class UserService {
      * @return userDto if user was found.
      */
     public UserDto getUserById(Long userId) {
+        LOGGER.debug("Performing task to get all user by user ID {}", userId);
         Optional<User> user = userDao.findByUserId(userId);
+
         if (user.isEmpty()) {
+            LOGGER.debug("User with ID {} cannot be found", userId);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 
@@ -106,14 +112,11 @@ public class UserService {
      * @return UserDto if found.
      */
     public UserDto getUserById(Long userId, String serviceKey) {
+        LOGGER.debug("Performing task to get user by ID");
         Optional<User> user = userDao.findByUserId(userId);
         if (user.isEmpty()) {
+            LOGGER.debug("User cannot be found with user ID {}", userId);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
-        }
-
-        // check if found user has access to this service
-        if (user.get().getServiceConnections().stream().noneMatch(a -> a.getService().getKey().equals(serviceKey))) {
-            throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, ApplicationConstants.UNAUTHORIZED_EXCEPTION_MESSAGE);
         }
 
         UserDto userDto = userMapper.toDto(user.get());
@@ -135,14 +138,17 @@ public class UserService {
      * @return Created user object.
      */
     public UserDto createUserForService(UserDto userDto, String serviceKey) {
+        LOGGER.debug("Performing task to create new user for service: {} with dto: {}", serviceKey, userDto);
         Optional<User> user = userDao.findByUsername(userDto.getUsername());
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
         if (service.isEmpty()) {
+            LOGGER.debug("Service cannot be found with service key {}", serviceKey);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
         if (user.isPresent()) {
+            LOGGER.debug("User with ID {} cannot be found", userDto.getId());
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_ALREADY_EXISTS);
         }
 
@@ -153,27 +159,34 @@ public class UserService {
         UserServiceConnection connection = new UserServiceConnection()
                 .withUser(createdUser)
                 .withService(service.get());
-        connectionDao.save(connection);
+        connection = connectionDao.save(connection);
+        LOGGER.debug("Created user connection {}", connection);
 
         // create basic role
         ServiceRole role = new ServiceRole()
                 .withUser(createdUser)
                 .withService(service.get())
                 .withRole(Role.USER);
-        serviceRoleDao.save(role);
+        role = serviceRoleDao.save(role);
+        LOGGER.debug("Created user role {}", role);
 
+        LOGGER.debug("User created successfully, new user: {}", createdUser);
         return userMapper.toDto(userDto, createdUser);
     }
 
 
     public UserDto updateUser(UserDto userDto) {
+        LOGGER.debug("Performing task to update user with dto: {}", userDto);
         Optional<User> user = userDao.findByUserId(userDto.getId());
 
         if (user.isEmpty()) {
+            LOGGER.debug("User with id {} from dto has not been found", userDto.getId());
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 
         User updatedUser = userDao.save(userMapper.toBase(user.get(), userDto));
+
+        LOGGER.debug("Updated user, new user info: {}", updatedUser);
         return userMapper.toDto(updatedUser);
     }
 
@@ -184,7 +197,10 @@ public class UserService {
      * @return True if user deleted successfully.
      */
     public Boolean deleteUser(Long id) {
+        LOGGER.debug("Performing task to delete user with ID {}", id);
         userDao.deleteById(id);
+
+        LOGGER.debug("User deleted successfully");
         return true;
     }
 }
