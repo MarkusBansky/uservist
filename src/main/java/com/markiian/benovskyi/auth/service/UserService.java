@@ -54,23 +54,10 @@ public class UserService {
      * Remove user if user can be found, and if user is not uservist.
      * If user has no connection to the serviceKey provided then throw error.
      * @param id Users ID.
-     * @param serviceKey Unique
      * @return True if user deleted successfully.
      */
-    public Boolean deleteUser(Long id,  String serviceKey) {
-        Optional<User> user = userDao.findByUserId(id);
-        if (user.isEmpty() || user.get().getUsername().equals(ApplicationConstants.SUPER_ADMIN_USERNAME)) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
-        }
-
-        if (user.get()
-                .getServiceConnections().parallelStream()
-                .noneMatch(con -> con.getService().getKey().equals(serviceKey))) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
-        }
-
-        userDao.delete(user.get());
-
+    public Boolean deleteUser(Long id) {
+        userDao.deleteById(id);
         return true;
     }
 
@@ -190,11 +177,11 @@ public class UserService {
     }
 
 
-    public UserDto updateUser(UserDto userDto, String username) {
-        Optional<User> user = userDao.findByUsername(username);
+    public UserDto updateUser(UserDto userDto) {
+        Optional<User> user = userDao.findByUserId(userDto.getId());
 
-        if (user.isEmpty() || !user.get().getUserId().equals(userDto.getId())) {
-            throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, ApplicationConstants.UNAUTHORIZED_EXCEPTION_MESSAGE);
+        if (user.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 
         User updatedUser = userDao.save(userMapper.toBase(user.get(), userDto));

@@ -3,6 +3,7 @@ package com.markiian.benovskyi.auth.security;
 import com.markiian.benovskyi.auth.persistance.model.Role;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.model.UserAuthenticationDto;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,10 @@ public final class CurrentUser {
         return SecurityContextHolder.getContext().getAuthentication().getName().equals(ApplicationConstants.SUPER_ADMIN_USERNAME);
     }
 
+    public static boolean isSuper(Authentication auth) {
+        return auth.getName().equals(ApplicationConstants.SUPER_ADMIN_USERNAME);
+    }
+
     /**
      * Extracts a username from the authentication.
      * @return A string representing authenticated user's username.
@@ -37,6 +42,11 @@ public final class CurrentUser {
      */
     public static String getServiceKey() {
         UserAuthenticationDto details = (UserAuthenticationDto) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        return details.getKey();
+    }
+
+    public static String getServiceKey(Authentication auth) {
+        UserAuthenticationDto details = (UserAuthenticationDto) auth.getDetails();
         return details.getKey();
     }
 
@@ -58,5 +68,13 @@ public final class CurrentUser {
         return SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())
                 .contains(prefixed);
+    }
+
+    /**
+     * Get logged in requested user authentication context.
+     * @return User Authentication object.
+     */
+    public static Authentication getAuth() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 }
