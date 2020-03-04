@@ -153,7 +153,7 @@ public class UserService {
         }
 
         User createdUser = userDao.save(userMapper.toBase(userDto));
-        LOGGER.debug("Registered new user: {}", user);
+        LOGGER.debug("Registered new user: {}", userDto);
 
         // create permission for current service
         UserServiceConnection connection = new UserServiceConnection()

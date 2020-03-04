@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper implements Mapper<User, UserDto> {
+    @Override
+    public User toBase(UserDto userDto) {
+        return toBase(new User(), userDto);
+    }
 
     @Override
     public UserDto toDto(User user) {
