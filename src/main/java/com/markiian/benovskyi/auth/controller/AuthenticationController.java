@@ -1,6 +1,7 @@
 package com.markiian.benovskyi.auth.controller;
 
 import com.markiian.benovskyi.api.AuthApi;
+import com.markiian.benovskyi.auth.mapper.UserAuthenticationMapper;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationManager;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.service.UserTokenService;
@@ -20,12 +21,14 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthenticationController implements AuthApi {
 
+    private final UserAuthenticationMapper userAuthenticationMapper;
     private final UservistAuthenticationManager authenticationManager;
     private final UserTokenService userTokenService;
 
-    public AuthenticationController(UservistAuthenticationManager authenticationManager, UserTokenService userTokenService) {
+    public AuthenticationController(UservistAuthenticationManager authenticationManager, UserTokenService userTokenService, UserAuthenticationMapper userAuthenticationMapper) {
         this.authenticationManager = authenticationManager;
         this.userTokenService = userTokenService;
+        this.userAuthenticationMapper = userAuthenticationMapper;
     }
 
     @Override
@@ -36,7 +39,7 @@ public class AuthenticationController implements AuthApi {
         Authentication auth = new UservistAuthenticationToken(
                 userAuthenticationDto.getUsername(),
                 userAuthenticationDto.getPassword(),
-                userAuthenticationDto);
+                userAuthenticationMapper.toBase(userAuthenticationDto));
 
         // Try to authenticate user
         Authentication authentication = authenticationManager.authenticate(auth);

@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
+import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -184,14 +185,17 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("userId", userId)
+                .add("firstName", firstName)
+                .add("lastName", lastName)
+                .add("username", username)
+                .add("passwordHash", passwordHash)
+                .add("serviceRoles", serviceRoles)
+                .add("sessions", sessions)
+                .add("serviceConnections", serviceConnections)
+                .add("createdAt", createdAt)
+                .add("updatedAt", updatedAt)
+                .toString();
     }
 }

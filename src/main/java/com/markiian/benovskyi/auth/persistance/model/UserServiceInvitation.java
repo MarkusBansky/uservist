@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
+import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -145,14 +146,14 @@ public class UserServiceInvitation {
 
     @Override
     public String toString() {
-        return "UserServiceInvitation{" +
-                "id=" + id +
-                ", user=" + user +
-                ", service=" + service +
-                ", role=" + role +
-                ", token=" + token +
-                ", expiresAt=" + expiresAt +
-                ", createdAt=" + createdAt +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("user", user)
+                .add("service", service)
+                .add("role", role)
+                .add("token", token)
+                .add("expiresAt", expiresAt)
+                .add("createdAt", createdAt)
+                .toString();
     }
 }

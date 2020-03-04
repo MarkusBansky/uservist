@@ -1,8 +1,8 @@
 package com.markiian.benovskyi.auth.security;
 
+import com.markiian.benovskyi.auth.model.UserAuthentication;
 import com.markiian.benovskyi.auth.persistance.model.Role;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
-import com.markiian.benovskyi.model.UserAuthenticationDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,13 +41,13 @@ public final class CurrentUser {
      * @return A string representing service jey hash.
      */
     public static String getServiceKey() {
-        UserAuthenticationDto details = (UserAuthenticationDto) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        return details.getKey();
+        UserAuthentication details = (UserAuthentication) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        return details.getServiceKey();
     }
 
     public static String getServiceKey(Authentication auth) {
-        UserAuthenticationDto details = (UserAuthenticationDto) auth.getDetails();
-        return details.getKey();
+        UserAuthentication details = (UserAuthentication) auth.getDetails();
+        return details.getServiceKey();
     }
 
     /**

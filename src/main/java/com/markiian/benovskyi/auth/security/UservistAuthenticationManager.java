@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.security;
 
+import com.markiian.benovskyi.auth.model.UserAuthentication;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
@@ -41,9 +42,9 @@ public class UservistAuthenticationManager implements AuthenticationManager {
         String username = auth.getName();
         String password = auth.getCredentials().toString();
 
-        UserAuthenticationDto authDto = (UserAuthenticationDto) auth.getDetails();
+        UserAuthentication authDto = (UserAuthentication) auth.getDetails();
 
-        if (username.equals("") || password.equals("") || authDto.getKey().equals("")) {
+        if (username.equals("") || password.equals("") || authDto.getServiceKey().equals("")) {
             throw new AuthenticationCredentialsNotFoundException("Invalid login credentials");
         }
 
@@ -53,7 +54,7 @@ public class UservistAuthenticationManager implements AuthenticationManager {
             throw new AuthenticationCredentialsNotFoundException("Invalid user password");
         }
 
-        Optional<Service> service = serviceDao.findByKey(authDto.getKey());
+        Optional<Service> service = serviceDao.findByKey(authDto.getServiceKey());
 
         if (service.isEmpty()) {
             throw new AuthenticationServiceException("Invalid service key");
@@ -68,7 +69,7 @@ public class UservistAuthenticationManager implements AuthenticationManager {
         //noinspection UnnecessaryLocalVariable
         UservistAuthenticationToken newAuthentication = new UservistAuthenticationToken(
                 auth.getPrincipal(), "",
-                ((UserAuthenticationDto) auth.getDetails()).password(""),
+                authDto,
                 RoleUtil.getAuthoritiesFromServiceRoles(roles));
 
         return newAuthentication;

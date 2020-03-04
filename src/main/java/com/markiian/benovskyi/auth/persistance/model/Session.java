@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
+import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -163,15 +164,15 @@ public class Session {
 
     @Override
     public String toString() {
-        return "Session{" +
-                "id=" + sessionId +
-                ", user=" + user +
-                ", service=" + service +
-                ", hardwareId='" + hardwareId + '\'' +
-                ", token='" + token + '\'' +
-                ", expiresAt=" + expiresAt +
-                ", updatedAt=" + updatedAt +
-                ", createdAt=" + createdAt +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("sessionId", sessionId)
+                .add("user", user)
+                .add("service", service)
+                .add("hardwareId", hardwareId)
+                .add("token", token)
+                .add("expiresAt", expiresAt)
+                .add("updatedAt", updatedAt)
+                .add("createdAt", createdAt)
+                .toString();
     }
 }

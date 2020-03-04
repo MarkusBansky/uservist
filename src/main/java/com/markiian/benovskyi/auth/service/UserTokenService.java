@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.service;
 
+import com.markiian.benovskyi.auth.model.UserAuthentication;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;
 import com.markiian.benovskyi.auth.persistance.dao.SessionDao;
@@ -11,7 +12,6 @@ import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.service.misc.AbstractTokenService;
 import com.markiian.benovskyi.auth.util.RoleUtil;
-import com.markiian.benovskyi.model.UserAuthenticationDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -53,21 +53,21 @@ public class UserTokenService extends AbstractTokenService {
 
     public void saveUserSession(Authentication authentication, String token) throws Exception {
         LOGGER.debug("Saving user session with token {}", token);
-        UserAuthenticationDto authDto = (UserAuthenticationDto) authentication.getDetails();
+        UserAuthentication authDto = (UserAuthentication) authentication.getDetails();
 
         Optional<User> user = userDao.findByUsername(authDto.getUsername());
-        Optional<Service> service = serviceDao.findByKey(authDto.getKey());
+        Optional<Service> service = serviceDao.findByKey(authDto.getServiceKey());
 
         if (user.isEmpty() || service.isEmpty()) {
             LOGGER.warn("User with Username {} or service with Key {} cannot be found",
-                    authDto.getUsername(), authDto.getKey());
+                    authDto.getUsername(), authDto.getServiceKey());
             throw new Exception("User or Service does not exist");
         }
 
         // Try to find existing session, or create new object if it does not exist
         Session session = sessionDao
                 .findByUser_UsernameAndService_KeyAndHardwareId(
-                        authDto.getUsername(), authDto.getKey(), authDto.getHardwareId())
+                        authDto.getUsername(), authDto.getServiceKey(), authDto.getHardwareId())
                 .orElseGet(Session::new)
                 .withUser(user.get())
                 .withService(service.get())
@@ -87,14 +87,14 @@ public class UserTokenService extends AbstractTokenService {
      */
     public String generateToken(Authentication authentication) {
         LOGGER.debug("Generating token for: {}", authentication.getName());
-        UserAuthenticationDto authDto = (UserAuthenticationDto) authentication.getDetails();
+        UserAuthentication authDto = (UserAuthentication) authentication.getDetails();
 
         byte[] keyBytes = Decoders.BASE64.decode(SIGNING_KEY);
         Key key = Keys.hmacShaKeyFor(keyBytes);
 
         String token = Jwts.builder()
                 .claim(USERNAME_KEY, authentication.getName())
-                .claim(SERVICE_KEY, authDto.getKey())
+                .claim(SERVICE_KEY, authDto.getServiceKey())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
@@ -154,19 +154,15 @@ public class UserTokenService extends AbstractTokenService {
         Optional<Service> service = serviceDao.findByKey(serviceKey);
 
         if (user.isEmpty() || service.isEmpty()) {
-            LOGGER.warn("Username of service are empty");
+            LOGGER.warn("Username or service are empty");
             return null;
         }
 
         List<ServiceRole> roles = serviceRoleDao.findAllByUserAndService(user.get(), service.get());
         Collection<SimpleGrantedAuthority> authorities = RoleUtil.getAuthoritiesFromServiceRoles(roles);
 
-        final UserAuthenticationDto details = new UserAuthenticationDto()
-                .hardwareId(remoteAddress)
-                .key(serviceKey)
-                .username(username);
-
-        LOGGER.debug("Constructed new details object {}", details);
+        final UserAuthentication details = new UserAuthentication(username, remoteAddress, serviceKey);
+        LOGGER.debug("Constructed new details object: {}", details);
 
         UservistAuthenticationToken auth = new UservistAuthenticationToken(username, "", details, authorities);
         LOGGER.debug("Result for user authentication: {}", auth);
