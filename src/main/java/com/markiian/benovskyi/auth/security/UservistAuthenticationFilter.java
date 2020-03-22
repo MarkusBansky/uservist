@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,8 +19,11 @@ import java.io.IOException;
 
 public class UservistAuthenticationFilter extends OncePerRequestFilter {
 
-    private final String AUTHENTICATION_HEADER = "Authentication";
-    private final String TOKEN_PREFIX = "Bearer ";
+    @Value("${uservist.service.tokenName}")
+    private String authenticationHeaderName;
+
+    @Value("${uservist.service.tokenPrefix}")
+    private String authenticationHeaderPrefix;
 
     @Autowired
     private UserTokenService userTokenService;
@@ -30,13 +34,13 @@ public class UservistAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException, RuntimeException {
 
-        String header = req.getHeader(AUTHENTICATION_HEADER);
+        String header = req.getHeader(authenticationHeaderName);
 
         String username = null;
         String authToken = null;
 
-        if (header != null && header.startsWith(TOKEN_PREFIX)) {
-            authToken = header.replace(TOKEN_PREFIX,"");
+        if (header != null && header.startsWith(authenticationHeaderPrefix)) {
+            authToken = header.replace(authenticationHeaderPrefix, "");
             try {
                 username = userTokenService.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
