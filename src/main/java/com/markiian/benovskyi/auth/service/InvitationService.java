@@ -73,8 +73,17 @@ public class InvitationService {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
+        Optional<UserServiceInvitation> existingInvitation = invitationDao.findByUserAndService(user.get(), service.get());
+
+        if (existingInvitation.isPresent() && existingInvitation.get().getExpiresAt().isAfter(OffsetDateTime.now())) {
+            LOGGER.warn("Invitation for user already exists");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Invitation already exists");
+        }
+
+        UserServiceInvitation invitation = existingInvitation.orElseGet(UserServiceInvitation::new);
+
         String token = Hashing.sha512().hashString(UUID.randomUUID().toString(), Charset.defaultCharset()).toString();
-        UserServiceInvitation invitation = new UserServiceInvitation()
+        invitation
                 .withUser(user.get())
                 .withService(service.get())
                 .withToken(token)
