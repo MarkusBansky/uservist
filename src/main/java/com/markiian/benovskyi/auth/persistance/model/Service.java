@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -83,6 +84,7 @@ public class Service {
         return this;
     }
 
+    @JsonBackReference
     @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     private Set<ServiceRole> serviceRoles;
 
@@ -94,6 +96,7 @@ public class Service {
         this.serviceRoles = serviceRoles;
     }
 
+    @JsonBackReference
     @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     private List<UserServiceConnection> serviceConnections;
 

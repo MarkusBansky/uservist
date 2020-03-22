@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.base.MoreObjects;
 import com.markiian.benovskyi.model.UserRoleDto;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,7 @@ public class ServiceRole {
         return this;
     }
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -50,6 +52,7 @@ public class ServiceRole {
         return this;
     }
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id")
     private Service service;
