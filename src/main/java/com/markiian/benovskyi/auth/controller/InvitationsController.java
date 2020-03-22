@@ -4,7 +4,6 @@ import com.markiian.benovskyi.api.InvitationsApi;
 import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.service.InvitationService;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
-import com.markiian.benovskyi.auth.util.ResponseUtil;
 import com.markiian.benovskyi.model.UserServiceInvitationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,15 +28,15 @@ public class InvitationsController implements InvitationsApi {
 
     @Override
     public ResponseEntity acceptInvitation(@NotNull @Valid String token) {
-        return ResponseUtil.buildResponse(() -> invitationService.acceptInvitation(token));
+        return ResponseEntity.ok(invitationService.acceptInvitation(token));
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createInvitation(@Valid UserServiceInvitationDto userServiceInvitationDto) {
         if (CurrentUser.isSuper() || CurrentUser.getServiceKey().equals(userServiceInvitationDto.getServiceKey())) {
-            return ResponseUtil.buildResponse(() -> invitationService.createInvitation(userServiceInvitationDto));
+            return ResponseEntity.ok(invitationService.createInvitation(userServiceInvitationDto));
         }
-        return ResponseUtil.buildErrorResponse(HttpStatus.FORBIDDEN, ApplicationConstants.FORBIDDEN_EXCEPTION_MESSAGE);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApplicationConstants.FORBIDDEN_EXCEPTION_MESSAGE);
     }
 }

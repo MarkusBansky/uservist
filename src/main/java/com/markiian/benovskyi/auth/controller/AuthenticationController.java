@@ -5,7 +5,6 @@ import com.markiian.benovskyi.auth.mapper.UserAuthenticationMapper;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationManager;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.service.UserTokenService;
-import com.markiian.benovskyi.auth.util.ResponseUtil;
 import com.markiian.benovskyi.model.UserAuthenticationDto;
 import com.markiian.benovskyi.model.UserSessionTokenDto;
 import org.springframework.http.HttpStatus;
@@ -52,7 +51,7 @@ public class AuthenticationController implements AuthApi {
         try {
             userTokenService.saveUserSession(authentication, token);
         } catch (Exception e) {
-            return ResponseUtil.buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
 
         // Create and return dto
@@ -71,6 +70,6 @@ public class AuthenticationController implements AuthApi {
             return ResponseEntity.ok().build();
         }
 
-        return ResponseUtil.buildErrorResponse(HttpStatus.NOT_ACCEPTABLE, "Token is no longer valid.");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Token is no longer valid.");
     }
 }

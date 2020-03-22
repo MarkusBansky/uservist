@@ -40,7 +40,7 @@ public class UservistAuthenticationFilter extends OncePerRequestFilter {
         String authToken = null;
 
         if (header != null && header.startsWith(authenticationHeaderPrefix)) {
-            authToken = header.replace(authenticationHeaderPrefix, "");
+            authToken = header.replace(authenticationHeaderPrefix, "").trim();
             try {
                 username = userTokenService.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
