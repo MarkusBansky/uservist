@@ -106,15 +106,4 @@ public class UserServiceConnection {
     public int hashCode() {
         return Objects.hash(getId(), getUser(), getService(), getUpdatedAt(), getCreatedAt());
     }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("user", user)
-                .add("service", service)
-                .add("updatedAt", updatedAt)
-                .add("createdAt", createdAt)
-                .toString();
-    }
 }

@@ -128,16 +128,4 @@ public class ServiceRole {
     public int hashCode() {
         return Objects.hash(getServiceRoleId(), getUser(), getService(), getRole(), getUpdatedAt(), getCreatedAt());
     }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("serviceRoleId", serviceRoleId)
-                .add("user", user)
-                .add("service", service)
-                .add("role", role)
-                .add("updatedAt", updatedAt)
-                .add("createdAt", createdAt)
-                .toString();
-    }
 }

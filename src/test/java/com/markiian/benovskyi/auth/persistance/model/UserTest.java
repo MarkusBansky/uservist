@@ -1,9 +1,8 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserTest {
 
@@ -11,7 +10,7 @@ class UserTest {
     void withUserId() {
         User user = new User()
                 .withUserId(1L);
-        assertEquals(1L, user.getUserId());
+        assertEquals((Long) 1L, user.getUserId());
     }
 
     @Test
@@ -47,12 +46,21 @@ class UserTest {
     }
 
     @Test
+    void withEmail() {
+        final String EMAIL = "email";
+        User user = new User()
+                .withEmail(EMAIL);
+        assertEquals(EMAIL, user.getEmail());
+    }
+
+    @Test
     void testEquals() {
         User user1 = new User()
                 .withUserId(1L)
                 .withFirstName("first")
                 .withLastName("last")
                 .withPasswordHash("pass")
+                .withEmail("email")
                 .withUsername("username");
 
         User user2 = new User()
@@ -60,6 +68,7 @@ class UserTest {
                 .withFirstName("first")
                 .withLastName("last")
                 .withPasswordHash("pass")
+                .withEmail("email")
                 .withUsername("username");
 
         assertEquals(user1, user2);

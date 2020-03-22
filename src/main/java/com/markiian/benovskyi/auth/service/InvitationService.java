@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.service;
 
+import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.markiian.benovskyi.auth.mapper.UserRoleMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
@@ -11,13 +12,20 @@ import com.markiian.benovskyi.auth.persistance.model.UserServiceInvitation;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.model.UserServiceInvitationDto;
 import com.markiian.benovskyi.model.UserServiceInvitationLinkDto;
+import it.ozimov.springboot.mail.model.Email;
+import it.ozimov.springboot.mail.model.defaultimpl.DefaultEmail;
+import it.ozimov.springboot.mail.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.mail.internet.InternetAddress;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,14 +36,23 @@ public class InvitationService {
     private final UserDao userDao;
     private final ServiceDao serviceDao;
 
+    public final EmailService emailService;
+
     private final Logger LOGGER = LoggerFactory.getLogger(InvitationService.class);
 
+    @Value("${uservist.service.host}")
+    private String host;
+
+    @Value("${server.port}")
+    private String port;
+
     @Autowired
-    public InvitationService(UserServiceInvitationDao invitationDao, UserDao userDao, ServiceDao serviceDao, UserRoleMapper userRoleMapper) {
+    public InvitationService(UserServiceInvitationDao invitationDao, UserDao userDao, ServiceDao serviceDao, UserRoleMapper userRoleMapper, EmailService emailService) {
         this.invitationDao = invitationDao;
         this.userDao = userDao;
         this.serviceDao = serviceDao;
         this.userRoleMapper = userRoleMapper;
+        this.emailService = emailService;
     }
 
     public UserServiceInvitationLinkDto createInvitation(UserServiceInvitationDto invitationDto) {
@@ -61,10 +78,47 @@ public class InvitationService {
                 .withUser(user.get())
                 .withService(service.get())
                 .withToken(token)
+                .withAccepted(false)
+                .withExpiresAt(OffsetDateTime.now().plusDays(1))
                 .withRole(userRoleMapper.toBase(invitationDto.getDesiredRole()));
         invitation = invitationDao.save(invitation);
 
+        // Send invitation via mail server
+        try {
+            sendInvitationEmail(invitation);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         LOGGER.warn("Generated new invitation: {}", invitation);
-        return new UserServiceInvitationLinkDto().link("http://127.0.0.1:9090/api/v1/invitations?token=" + token);
+        return new UserServiceInvitationLinkDto().link(host + ":" + port + "/api/v1/invitations?token=" + token);
+    }
+
+    public boolean acceptInvitation(String token) {
+        LOGGER.debug("Trying to accept invitation with token {}", token);
+
+        Optional<UserServiceInvitation> invitation = invitationDao.findByToken(token);
+
+        if (invitation.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.FORBIDDEN_EXCEPTION_MESSAGE);
+        }
+
+        return true;
+    }
+
+    public void sendInvitationEmail(UserServiceInvitation invitation) throws UnsupportedEncodingException {
+        final Email email = DefaultEmail.builder()
+                .from(new InternetAddress("no-reply@uservist.com", "Uservist No-Reply "))
+                .to(Lists.newArrayList(new InternetAddress(invitation.getUser().getEmail(),
+                        invitation.getUser().getFirstName() + " " + invitation.getUser().getLastName())))
+                .subject("You are invited to service " + invitation.getService().getName())
+                .body(String.format("YOu have been invited to service {} with user role {}.\n" +
+                        "Please follow the link below: \n" +
+                        host + ":" + port + "/api/v1/invitations?token=" + invitation.getToken(),
+                        invitation.getService().getName(),
+                        invitation.getRole().getValue()))
+                .encoding("UTF-8").build();
+
+        emailService.send(email);
     }
 }

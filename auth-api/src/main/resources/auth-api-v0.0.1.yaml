@@ -116,6 +116,9 @@ components:
         password:
           description: Encrypted users pasword hash.
           type: string
+        email:
+          description: Email.
+          type: string
         serviceRoles:
           description: User roles for services.
           type: array

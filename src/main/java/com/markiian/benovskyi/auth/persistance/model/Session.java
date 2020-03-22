@@ -161,18 +161,4 @@ public class Session {
     public int hashCode() {
         return Objects.hash(getSessionId(), getUser(), getService(), getHardwareId(), getToken(), getExpiresAt(), getUpdatedAt(), getCreatedAt());
     }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("sessionId", sessionId)
-                .add("user", user)
-                .add("service", service)
-                .add("hardwareId", hardwareId)
-                .add("token", token)
-                .add("expiresAt", expiresAt)
-                .add("updatedAt", updatedAt)
-                .add("createdAt", createdAt)
-                .toString();
-    }
 }

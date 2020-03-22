@@ -41,7 +41,13 @@ public class UserService {
     private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserDao userDao, UserMapper userMapper, ServiceDao serviceDao, ServiceRoleMapper serviceRoleMapper, UserServiceConnectionDao connectionDao, ServiceRoleDao serviceRoleDao) {
+    public UserService(UserDao userDao,
+                       UserMapper userMapper,
+                       ServiceDao serviceDao,
+                       ServiceRoleMapper serviceRoleMapper,
+                       UserServiceConnectionDao connectionDao,
+                       ServiceRoleDao serviceRoleDao
+    ) {
         this.userDao = userDao;
         this.userMapper = userMapper;
         this.serviceDao = serviceDao;

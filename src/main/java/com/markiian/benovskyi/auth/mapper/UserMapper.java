@@ -23,6 +23,7 @@ public class UserMapper implements Mapper<User, UserDto> {
         userDto.setLastName(user.getLastName());
         userDto.setUsername(user.getUsername());
 //        userDto.setPassword(user.getPasswordHash());
+        userDto.setEmail(user.getEmail());
         userDto.setUpdatedAt(user.getUpdatedAt());
         userDto.setCreatedAt(user.getCreatedAt());
 
@@ -36,6 +37,7 @@ public class UserMapper implements Mapper<User, UserDto> {
         user.setLastName(userDto.getLastName());
         user.setUsername(userDto.getUsername());
         user.setPasswordHash(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
         user.setUpdatedAt(userDto.getUpdatedAt());
         user.setCreatedAt(userDto.getCreatedAt());
 

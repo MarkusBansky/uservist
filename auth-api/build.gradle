@@ -13,11 +13,11 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web:2.2.4.RELEASE")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa:2.2.4.RELEASE")
-    compile("io.swagger:swagger-core:1.6.0")
-    compile("org.openapitools:jackson-databind-nullable:0.1.0")
-    compile("com.fasterxml.jackson.core:jackson-annotations:2.10.2")
+    implementation "org.springframework.boot:spring-boot-starter-web:2.2.4.RELEASE"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:2.2.4.RELEASE"
+    implementation "io.swagger:swagger-core:1.6.0"
+    implementation "org.openapitools:jackson-databind-nullable:0.1.0"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.10.2"
 }
 
 openApiGenerate {

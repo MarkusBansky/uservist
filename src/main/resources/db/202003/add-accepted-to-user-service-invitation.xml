@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Markiian">
+        <comment>Add accepted to user_service_invitations table</comment>
+        <addColumn tableName="user_service_invitations">
+            <column name="accepted" type="boolean" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_invitations" columnName="accepted" />
+    </changeSet>
+
+</databaseChangeLog>

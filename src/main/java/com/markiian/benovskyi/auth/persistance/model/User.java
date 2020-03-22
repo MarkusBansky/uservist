@@ -97,6 +97,22 @@ public class User {
         return this;
     }
 
+    @Column(nullable=false)
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public User withEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
     @OneToMany(mappedBy = "user")
     private List<ServiceRole> serviceRoles;
 
@@ -171,6 +187,7 @@ public class User {
                 getLastName().equals(user.getLastName()) &&
                 getUsername().equals(user.getUsername()) &&
                 getPasswordHash().equals(user.getPasswordHash()) &&
+                getEmail().equals(user.getEmail()) &&
                 Objects.equals(getCreatedAt(), user.getCreatedAt()) &&
                 Objects.equals(getSessions(), user.getSessions()) &&
                 Objects.equals(getServiceRoles(), user.getServiceRoles()) &&
@@ -180,22 +197,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getSessions(), getServiceConnections(), getServiceRoles(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("userId", userId)
-                .add("firstName", firstName)
-                .add("lastName", lastName)
-                .add("username", username)
-                .add("passwordHash", passwordHash)
-                .add("serviceRoles", serviceRoles)
-                .add("sessions", sessions)
-                .add("serviceConnections", serviceConnections)
-                .add("createdAt", createdAt)
-                .add("updatedAt", updatedAt)
-                .toString();
+        return Objects.hash(getUserId(), getSessions(), getServiceConnections(), getEmail(), getServiceRoles(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
     }
 }

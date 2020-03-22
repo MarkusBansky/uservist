@@ -156,18 +156,4 @@ public class Service {
     public int hashCode() {
         return Objects.hash(getServiceId(), getServiceConnections(), getServiceRoles(), getName(), getDescription(), getKey(), getCreatedAt(), getUpdatedAt());
     }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("serviceId", serviceId)
-                .add("name", name)
-                .add("description", description)
-                .add("key", key)
-                .add("serviceRoles", serviceRoles)
-                .add("serviceConnections", serviceConnections)
-                .add("createdAt", createdAt)
-                .add("updatedAt", updatedAt)
-                .toString();
-    }
 }

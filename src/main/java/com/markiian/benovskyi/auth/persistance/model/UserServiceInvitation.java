@@ -96,6 +96,22 @@ public class UserServiceInvitation {
     }
 
     @Column(nullable = false)
+    private Boolean accepted;
+
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    public UserServiceInvitation withAccepted(Boolean accepted) {
+        this.accepted = accepted;
+        return this;
+    }
+
+    @Column(nullable = false)
     private OffsetDateTime expiresAt;
 
     public OffsetDateTime getExpiresAt() {
@@ -135,25 +151,13 @@ public class UserServiceInvitation {
                 getService().equals(that.getService()) &&
                 getRole() == that.getRole() &&
                 getExpiresAt().equals(that.getExpiresAt()) &&
+                getAccepted() == that.getAccepted() &&
                 Objects.equals(getToken(), that.getToken()) &&
                 Objects.equals(getCreatedAt(), that.getCreatedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUser(), getService(), getRole(), getToken(), getExpiresAt(), getCreatedAt());
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("user", user)
-                .add("service", service)
-                .add("role", role)
-                .add("token", token)
-                .add("expiresAt", expiresAt)
-                .add("createdAt", createdAt)
-                .toString();
+        return Objects.hash(getId(), getUser(), getService(), getRole(), getToken(), getAccepted(), getExpiresAt(), getCreatedAt());
     }
 }
