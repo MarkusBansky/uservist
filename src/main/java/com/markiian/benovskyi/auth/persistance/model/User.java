@@ -1,7 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -202,5 +201,19 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(getUserId(), getSessions(), getServiceConnections(), getEmail(), getServiceRoles(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
+                ", passwordHash='" + (passwordHash != null) + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

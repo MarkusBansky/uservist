@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.service;
 
+import com.markiian.benovskyi.auth.mapper.UserMapper;
 import com.markiian.benovskyi.auth.model.UserAuthentication;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;
@@ -12,6 +13,7 @@ import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.service.misc.AbstractTokenService;
 import com.markiian.benovskyi.auth.util.RoleUtil;
+import com.markiian.benovskyi.model.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,9 +21,12 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Key;
 import java.time.OffsetDateTime;
@@ -34,6 +39,7 @@ import java.util.Optional;
 @Component
 public class UserTokenService extends AbstractTokenService {
 
+    private final UserMapper userMapper;
     private final UserDao userDao;
     private final ServiceDao serviceDao;
     private final SessionDao sessionDao;
@@ -44,11 +50,23 @@ public class UserTokenService extends AbstractTokenService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(UserTokenService.class);
 
-    public UserTokenService(SessionDao sessionDao, UserDao userDao, ServiceDao serviceDao, ServiceRoleDao serviceRoleDao) {
+    @Autowired
+    public UserTokenService(SessionDao sessionDao, UserDao userDao, ServiceDao serviceDao, ServiceRoleDao serviceRoleDao, UserMapper userMapper) {
         this.sessionDao = sessionDao;
         this.userDao = userDao;
         this.serviceDao = serviceDao;
         this.serviceRoleDao = serviceRoleDao;
+        this.userMapper = userMapper;
+    }
+
+    public UserDto getUserFromUsername(String username) {
+        Optional<User> user = userDao.findByUsername(username);
+        if (user.isEmpty()) {
+            LOGGER.warn("User with username {} cannot be found", username);
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User or Service does not exist");
+        }
+
+        return userMapper.toDto(user.get());
     }
 
     public void saveUserSession(Authentication authentication, String token) throws Exception {

@@ -2,10 +2,12 @@ package com.markiian.benovskyi.auth.controller;
 
 import com.markiian.benovskyi.api.AuthApi;
 import com.markiian.benovskyi.auth.mapper.UserAuthenticationMapper;
+import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationManager;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.service.UserTokenService;
 import com.markiian.benovskyi.model.UserAuthenticationDto;
+import com.markiian.benovskyi.model.UserDto;
 import com.markiian.benovskyi.model.UserSessionTokenDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,5 +73,17 @@ public class AuthenticationController implements AuthApi {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Token is no longer valid.");
+    }
+
+    /**
+     * GET /auth/current : Get authenticated user info.
+     * Get current authenticated user information. Returns user information with user roles for this service.
+     *
+     * @return User found and available (status code 200)
+     */
+    @Override
+    public ResponseEntity<UserDto> getCurrentUser() {
+        String username = CurrentUser.getUsername();
+        return ResponseEntity.ok(userTokenService.getUserFromUsername(username));
     }
 }
