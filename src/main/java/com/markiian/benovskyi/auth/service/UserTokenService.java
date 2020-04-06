@@ -70,7 +70,6 @@ public class UserTokenService extends AbstractTokenService {
     }
 
     public void saveUserSession(Authentication authentication, String token) throws Exception {
-        LOGGER.debug("Saving user session with token {}", token);
         UserAuthentication authDto = (UserAuthentication) authentication.getDetails();
 
         Optional<User> user = userDao.findByUsername(authDto.getUsername());
@@ -104,7 +103,6 @@ public class UserTokenService extends AbstractTokenService {
      * @return HS256 Token string.
      */
     public String generateToken(Authentication authentication) {
-        LOGGER.debug("Generating token for: {}", authentication.getName());
         UserAuthentication authDto = (UserAuthentication) authentication.getDetails();
 
         byte[] keyBytes = Decoders.BASE64.decode(SIGNING_KEY);
@@ -133,9 +131,7 @@ public class UserTokenService extends AbstractTokenService {
             return null;
         }
 
-        String username = claims.get().get(USERNAME_KEY).toString();
-        LOGGER.debug("Retrieved username {} from token {}", username, token);
-        return username;
+        return claims.get().get(USERNAME_KEY).toString();
     }
 
     public Date getExpiresAtFromToken(String token) {
@@ -144,9 +140,7 @@ public class UserTokenService extends AbstractTokenService {
             return null;
         }
 
-        Date date = claims.get().getExpiration();
-        LOGGER.debug("Retrieved expiration date {} from token {}", date, token);
-        return date;
+        return claims.get().getExpiration();
     }
 
     public String getServiceKeyFromToken(String token) {
@@ -155,18 +149,12 @@ public class UserTokenService extends AbstractTokenService {
             return null;
         }
 
-        String serviceKey = claims.get().get(SERVICE_KEY).toString();
-        LOGGER.debug("Retrieved service key {} from token {}", serviceKey, token);
-        return serviceKey;
+        return claims.get().get(SERVICE_KEY).toString();
     }
 
     public UservistAuthenticationToken getAuthenticationFromToken(final String token, String remoteAddress) {
-        LOGGER.debug("Compositing user Authentication object from token {}", token);
-
         String username = getUsernameFromToken(token);
         String serviceKey = getServiceKeyFromToken(token);
-
-        LOGGER.debug("Extracted username {} and serviceKey {} from token {}", username, serviceKey, token);
 
         Optional<User> user = userDao.findByUsername(username);
         Optional<Service> service = serviceDao.findByKey(serviceKey);
@@ -180,15 +168,13 @@ public class UserTokenService extends AbstractTokenService {
         Collection<SimpleGrantedAuthority> authorities = RoleUtil.getAuthoritiesFromServiceRoles(roles);
 
         final UserAuthentication details = new UserAuthentication(username, remoteAddress, serviceKey);
-        LOGGER.debug("Constructed new details object: {}", details);
-
         UservistAuthenticationToken auth = new UservistAuthenticationToken(username, "", details, authorities);
+
         LOGGER.debug("Result for user authentication: {}", auth);
         return auth;
     }
 
     public boolean validateToken(String token) {
-        LOGGER.debug("validating token: {}", token);
         Optional<Session> session = sessionDao.findByToken(token);
         Optional<Claims> claims = getClaims(token);
 
