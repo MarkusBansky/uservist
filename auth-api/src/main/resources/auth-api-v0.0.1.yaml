@@ -174,8 +174,8 @@ components:
         - serviceKey
         - roles
       properties:
-        serviceKey:
-          type: string
+        service:
+          $ref: '#/components/schemas/ServiceDto'
         role:
           $ref: '#/components/schemas/UserRoleDto'
 

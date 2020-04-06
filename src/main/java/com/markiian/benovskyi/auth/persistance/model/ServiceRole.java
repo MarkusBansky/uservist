@@ -17,7 +17,7 @@ import java.util.Objects;
 public class ServiceRole {
 
     @Id
-    @Column(name = "service_role_id", insertable = false)
+    @Column(name = "service_role_id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serviceRoleId;
 
@@ -87,7 +87,7 @@ public class ServiceRole {
         return this;
     }
 
-    @Column
+    @Column(updatable = false)
     @UpdateTimestamp
     private OffsetDateTime updatedAt;
 
@@ -99,7 +99,7 @@ public class ServiceRole {
         this.updatedAt = updatedAt;
     }
 
-    @Column
+    @Column(updatable = false)
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -112,23 +112,5 @@ public class ServiceRole {
     }
 
     public ServiceRole() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ServiceRole that = (ServiceRole) o;
-        return Objects.equals(getServiceRoleId(), that.getServiceRoleId()) &&
-                getUser().equals(that.getUser()) &&
-                getService().equals(that.getService()) &&
-                getRole() == that.getRole() &&
-                Objects.equals(getUpdatedAt(), that.getUpdatedAt()) &&
-                Objects.equals(getCreatedAt(), that.getCreatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getServiceRoleId(), getUser(), getService(), getRole(), getUpdatedAt(), getCreatedAt());
     }
 }

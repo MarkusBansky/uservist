@@ -19,7 +19,7 @@ import java.util.Set;
 public class Service {
 
     @Id
-    @Column(name = "service_id", insertable = false)
+    @Column(name = "service_id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serviceId;
 
@@ -113,7 +113,7 @@ public class Service {
         return this;
     }
 
-    @Column
+    @Column(updatable = false)
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -125,7 +125,7 @@ public class Service {
         this.createdAt = createdAt;
     }
 
-    @Column
+    @Column(updatable = false)
     @UpdateTimestamp
     private OffsetDateTime updatedAt;
 
@@ -138,25 +138,5 @@ public class Service {
     }
 
     public Service() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Service service = (Service) o;
-        return Objects.equals(getServiceId(), service.getServiceId()) &&
-                getName().equals(service.getName()) &&
-                getDescription().equals(service.getDescription()) &&
-                getKey().equals(service.getKey()) &&
-                Objects.equals(getCreatedAt(), service.getCreatedAt()) &&
-                Objects.equals(getServiceRoles(), service.getServiceRoles()) &&
-                Objects.equals(getServiceConnections(), service.getServiceConnections()) &&
-                Objects.equals(getUpdatedAt(), service.getUpdatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getServiceId(), getServiceConnections(), getServiceRoles(), getName(), getDescription(), getKey(), getCreatedAt(), getUpdatedAt());
     }
 }

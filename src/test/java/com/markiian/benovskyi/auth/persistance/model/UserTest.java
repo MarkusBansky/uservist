@@ -52,25 +52,4 @@ class UserTest {
                 .withEmail(EMAIL);
         assertEquals(EMAIL, user.getEmail());
     }
-
-    @Test
-    void testEquals() {
-        User user1 = new User()
-                .withUserId(1L)
-                .withFirstName("first")
-                .withLastName("last")
-                .withPasswordHash("pass")
-                .withEmail("email")
-                .withUsername("username");
-
-        User user2 = new User()
-                .withUserId(1L)
-                .withFirstName("first")
-                .withLastName("last")
-                .withPasswordHash("pass")
-                .withEmail("email")
-                .withUsername("username");
-
-        assertEquals(user1, user2);
-    }
 }

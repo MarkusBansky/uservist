@@ -8,10 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ServiceRoleMapper implements Mapper<ServiceRole, ServiceRoleDto> {
     private final UserRoleMapper userRoleMapper;
+    private final ServiceMapper serviceMapper;
 
     @Autowired
-    public ServiceRoleMapper(UserRoleMapper userRoleMapper) {
+    public ServiceRoleMapper(UserRoleMapper userRoleMapper, ServiceMapper serviceMapper) {
         this.userRoleMapper = userRoleMapper;
+        this.serviceMapper = serviceMapper;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class ServiceRoleMapper implements Mapper<ServiceRole, ServiceRoleDto> {
 
     @Override
     public ServiceRoleDto toDto(ServiceRoleDto userServiceRoleDto, ServiceRole serviceRole) {
-        userServiceRoleDto.setServiceKey(serviceRole.getService().getKey());
+        userServiceRoleDto.setService(serviceMapper.toDto(serviceRole.getService()));
         userServiceRoleDto.setRole(userRoleMapper.toDto(serviceRole.getRole()));
         return userServiceRoleDto;
     }

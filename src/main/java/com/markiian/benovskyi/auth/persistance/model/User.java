@@ -16,7 +16,7 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @Column(name = "user_id", insertable = false)
+    @Column(name = "user_id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
@@ -154,7 +154,7 @@ public class User {
         return this;
     }
 
-    @Column
+    @Column(updatable = false)
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -166,7 +166,7 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    @Column
+    @Column(updatable = false)
     @UpdateTimestamp
     private OffsetDateTime updatedAt;
 
@@ -179,41 +179,4 @@ public class User {
     }
 
     public User() {}
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(getUserId(), user.getUserId()) &&
-                getFirstName().equals(user.getFirstName()) &&
-                getLastName().equals(user.getLastName()) &&
-                getUsername().equals(user.getUsername()) &&
-                getPasswordHash().equals(user.getPasswordHash()) &&
-                getEmail().equals(user.getEmail()) &&
-                Objects.equals(getCreatedAt(), user.getCreatedAt()) &&
-                Objects.equals(getSessions(), user.getSessions()) &&
-                Objects.equals(getServiceRoles(), user.getServiceRoles()) &&
-                Objects.equals(getServiceConnections(), user.getServiceConnections()) &&
-                Objects.equals(getUpdatedAt(), user.getUpdatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUserId(), getSessions(), getServiceConnections(), getEmail(), getServiceRoles(), getFirstName(), getLastName(), getUsername(), getPasswordHash(), getCreatedAt(), getUpdatedAt());
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", passwordHash='" + (passwordHash != null) + '\'' +
-                ", email='" + email + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
 }

@@ -16,6 +16,7 @@ import java.util.Objects;
 public class UserServiceConnection {
 
     @Id
+    @Column(insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -68,6 +69,7 @@ public class UserServiceConnection {
         return this;
     }
 
+    @Column(updatable = false)
     @UpdateTimestamp
     private OffsetDateTime updatedAt;
 
@@ -79,6 +81,7 @@ public class UserServiceConnection {
         this.updatedAt = updatedAt;
     }
 
+    @Column(updatable = false)
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -91,22 +94,5 @@ public class UserServiceConnection {
     }
 
     public UserServiceConnection() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserServiceConnection that = (UserServiceConnection) o;
-        return Objects.equals(getId(), that.getId()) &&
-                getUser().equals(that.getUser()) &&
-                getService().equals(that.getService()) &&
-                Objects.equals(getUpdatedAt(), that.getUpdatedAt()) &&
-                Objects.equals(getCreatedAt(), that.getCreatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getUser(), getService(), getUpdatedAt(), getCreatedAt());
     }
 }

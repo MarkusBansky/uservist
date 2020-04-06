@@ -1,7 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,7 +16,7 @@ import java.util.Objects;
 public class Session {
 
     @Id
-    @Column(name = "session_id", insertable = false)
+    @Column(name = "session_id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sessionId;
 
@@ -118,7 +117,7 @@ public class Session {
         return this;
     }
 
-    @Column
+    @Column(updatable = false)
     @UpdateTimestamp
     private OffsetDateTime updatedAt;
 
@@ -130,7 +129,7 @@ public class Session {
         this.updatedAt = updatedAt;
     }
 
-    @Column
+    @Column(updatable = false)
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -143,25 +142,5 @@ public class Session {
     }
 
     public Session() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Session that = (Session) o;
-        return Objects.equals(getSessionId(), that.getSessionId()) &&
-                getUser().equals(that.getUser()) &&
-                getService().equals(that.getService()) &&
-                getHardwareId().equals(that.getHardwareId()) &&
-                getExpiresAt().equals(that.getExpiresAt()) &&
-                getToken().equals(that.getToken()) &&
-                Objects.equals(getUpdatedAt(), that.getUpdatedAt()) &&
-                Objects.equals(getCreatedAt(), that.getCreatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getSessionId(), getUser(), getService(), getHardwareId(), getToken(), getExpiresAt(), getUpdatedAt(), getCreatedAt());
     }
 }

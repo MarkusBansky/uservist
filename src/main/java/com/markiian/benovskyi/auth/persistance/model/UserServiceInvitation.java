@@ -1,7 +1,6 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,6 +12,7 @@ import java.util.Objects;
 public class UserServiceInvitation {
 
     @Id
+    @Column(insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -130,6 +130,7 @@ public class UserServiceInvitation {
         return this;
     }
 
+    @Column(updatable = false)
     @CreationTimestamp
     private OffsetDateTime createdAt;
 
@@ -142,25 +143,5 @@ public class UserServiceInvitation {
     }
 
     public UserServiceInvitation() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserServiceInvitation that = (UserServiceInvitation) o;
-        return Objects.equals(getId(), that.getId()) &&
-                getUser().equals(that.getUser()) &&
-                getService().equals(that.getService()) &&
-                getRole() == that.getRole() &&
-                getExpiresAt().equals(that.getExpiresAt()) &&
-                getAccepted() == that.getAccepted() &&
-                Objects.equals(getToken(), that.getToken()) &&
-                Objects.equals(getCreatedAt(), that.getCreatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getUser(), getService(), getRole(), getToken(), getAccepted(), getExpiresAt(), getCreatedAt());
     }
 }
