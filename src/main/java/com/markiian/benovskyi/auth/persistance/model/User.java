@@ -6,8 +6,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -114,42 +116,42 @@ public class User {
     }
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user")
-    private List<ServiceRole> serviceRoles;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<ServiceRole> serviceRoles = new HashSet<>();
 
-    public List<ServiceRole> getServiceRoles() {
+    public Set<ServiceRole> getServiceRoles() {
         return serviceRoles;
     }
 
-    public void setServiceRoles(List<ServiceRole> serviceRoles) {
+    public void setServiceRoles(Set<ServiceRole> serviceRoles) {
         this.serviceRoles = serviceRoles;
     }
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user")
-    private List<Session> sessions;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Session> sessions = new HashSet<>();
 
-    public List<Session> getSessions() {
+    public Set<Session> getSessions() {
         return sessions;
     }
 
-    public void setSessions(List<Session> sessions) {
+    public void setSessions(Set<Session> sessions) {
         this.sessions = sessions;
     }
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user")
-    private List<UserServiceConnection> serviceConnections;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserServiceConnection> serviceConnections = new HashSet<>();
 
-    public List<UserServiceConnection> getServiceConnections() {
+    public Set<UserServiceConnection> getServiceConnections() {
         return serviceConnections;
     }
 
-    public void setServiceConnections(List<UserServiceConnection> serviceConnections) {
+    public void setServiceConnections(Set<UserServiceConnection> serviceConnections) {
         this.serviceConnections = serviceConnections;
     }
 
-    public User withServiceConnections(List<UserServiceConnection> serviceConnections) {
+    public User withServiceConnections(Set<UserServiceConnection> serviceConnections) {
         this.serviceConnections = serviceConnections;
         return this;
     }

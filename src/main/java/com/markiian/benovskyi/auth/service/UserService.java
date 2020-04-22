@@ -1,5 +1,6 @@
 package com.markiian.benovskyi.auth.service;
 
+import com.google.common.hash.Hashing;
 import com.markiian.benovskyi.auth.mapper.ServiceRoleMapper;
 import com.markiian.benovskyi.auth.mapper.UserMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
@@ -11,7 +12,9 @@ import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.persistance.model.UserServiceConnection;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
+import com.markiian.benovskyi.auth.util.PasswordUtil;
 import com.markiian.benovskyi.model.UserDto;
+import it.ozimov.springboot.mail.service.exception.CannotSendEmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +41,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final ServiceRoleMapper serviceRoleMapper;
 
+    private final MailingService mailingService;
+
     @SuppressWarnings("FieldCanBeLocal")
     private final int PAGE_SIZE = 10;
     private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
@@ -46,14 +53,15 @@ public class UserService {
                        ServiceDao serviceDao,
                        ServiceRoleMapper serviceRoleMapper,
                        UserServiceConnectionDao connectionDao,
-                       ServiceRoleDao serviceRoleDao
-    ) {
+                       ServiceRoleDao serviceRoleDao,
+                       MailingService mailingService) {
         this.userDao = userDao;
         this.userMapper = userMapper;
         this.serviceDao = serviceDao;
         this.serviceRoleMapper = serviceRoleMapper;
         this.connectionDao = connectionDao;
         this.serviceRoleDao = serviceRoleDao;
+        this.mailingService = mailingService;
     }
 
     /**
@@ -63,7 +71,7 @@ public class UserService {
      * @return A page with users.
      */
     public Page<UserDto> getAllUsers(Integer page, String serviceKey) {
-        LOGGER.debug("Performing task to get all available users");
+        LOGGER.info("Performing task to get all available users");
         Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
@@ -73,7 +81,7 @@ public class UserService {
         }
 
         Page<User> users = userDao.findAllUsersByServiceId(service.get().getServiceId(), pageRequest);
-        LOGGER.debug("Found {} users", users.getTotalElements());
+        LOGGER.info("Found {} users", users.getTotalElements());
 
         Page<UserDto> resultPage = new PageImpl(
                 users.stream().map(user -> {
@@ -88,7 +96,7 @@ public class UserService {
                 pageRequest,
                 users.getTotalElements());
 
-        LOGGER.debug("Received all users service: {}; page: {}; users: {}", serviceKey, page, resultPage);
+        LOGGER.info("Received all users service: {}; page: {}; users: {}", serviceKey, page, resultPage);
         return resultPage;
     }
 
@@ -98,7 +106,7 @@ public class UserService {
      * @return userDto if user was found.
      */
     public UserDto getUserById(Long userId) {
-        LOGGER.debug("Performing task to get all user by user ID {}", userId);
+        LOGGER.info("Performing task to get all user by user ID {}", userId);
         Optional<User> user = userDao.findByUserId(userId);
 
         if (user.isEmpty()) {
@@ -106,7 +114,7 @@ public class UserService {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 
-        LOGGER.debug("Received info about user with id {}: {}", userId, user.get());
+        LOGGER.info("Received info about user with id {}: {}", userId, user.get());
         return userMapper.toDto(user.get());
     }
 
@@ -118,7 +126,7 @@ public class UserService {
      * @return UserDto if found.
      */
     public UserDto getUserById(Long userId, String serviceKey) {
-        LOGGER.debug("Performing task to get user by ID");
+        LOGGER.info("Performing task to get user by ID");
         Optional<User> user = userDao.findByUserId(userId);
         if (user.isEmpty()) {
             LOGGER.warn("User cannot be found with user ID {}", userId);
@@ -132,7 +140,7 @@ public class UserService {
                 .map(serviceRoleMapper::toDto)
                 .collect(Collectors.toList()));
 
-        LOGGER.debug("Received info about user with id {}: {}", userId, user.get());
+        LOGGER.info("Received info about user with id {}: {}", userId, user.get());
         return userDto;
     }
 
@@ -142,7 +150,7 @@ public class UserService {
      * @param userDto User to create.
      * @return Created user object.
      */
-    public UserDto createUserForService(UserDto userDto) {
+    public UserDto createUserForService(UserDto userDto) throws UnsupportedEncodingException, CannotSendEmailException {
         if (userDto.getServiceRoles().size() > 1) {
             throw new HttpClientErrorException(HttpStatus.METHOD_NOT_ALLOWED,
                     ApplicationConstants.CREATE_USER_FOR_MULTIPLE_SERVICES);
@@ -152,8 +160,8 @@ public class UserService {
 
         String serviceKey = userDto.getServiceRoles().iterator().next().getService().getKey();
 
-        LOGGER.debug("Performing task to create new user for service: {} with dto: {}", serviceKey, userDto);
-        Optional<User> user = userDao.findByUsername(userDto.getUsername());
+        LOGGER.info("Performing task to create new user for service: {} with dto: {}", serviceKey, userDto);
+        Optional<User> optionalUser = userDao.findByUsername(userDto.getUsername());
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);
 
         if (service.isEmpty()) {
@@ -161,36 +169,43 @@ public class UserService {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
-        if (user.isPresent()) {
+        if (optionalUser.isPresent()) {
             LOGGER.warn("User with ID {} cannot be found", userDto.getId());
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_ALREADY_EXISTS);
         }
 
-        User createdUser = userDao.save(userMapper.toBase(userDto));
-        LOGGER.debug("Registered new user: {}", userDto);
+        User user = userMapper.toBase(userDto);
+        String password = PasswordUtil.randomPassword();
+        user.setPasswordHash(Hashing.sha256()
+                .hashString(password, StandardCharsets.UTF_8)
+                .toString());
 
         // create permission for current service
         UserServiceConnection connection = new UserServiceConnection()
-                .withUser(createdUser)
+                .withUser(user)
                 .withService(service.get());
-        connection = connectionDao.save(connection);
-        LOGGER.debug("Created user connection {}", connection);
+        user.getServiceConnections().add(connection);
 
         // create basic role
         ServiceRole role = new ServiceRole()
-                .withUser(createdUser)
+                .withUser(user)
                 .withService(service.get())
                 .withRole(Role.USER);
-        role = serviceRoleDao.save(role);
-        LOGGER.debug("Created user role {}", role);
+        user.getServiceRoles().add(role);
 
-        LOGGER.debug("User created successfully, new user: {}", createdUser);
+
+        // Send email
+        LOGGER.info("Sending registration email to {}", user.getEmail());
+        mailingService.sendRegistrationEmail(user, password);
+
+        User createdUser = userDao.save(user);
+        LOGGER.info("User created successfully, new user: {}", createdUser);
         return userMapper.toDto(userDto, createdUser);
     }
 
 
     public UserDto updateUser(UserDto userDto) {
-        LOGGER.debug("Performing task to update user with dto: {}", userDto);
+        LOGGER.info("Performing task to update user with dto: {}", userDto);
         Optional<User> user = userDao.findByUserId(userDto.getId());
 
         if (user.isEmpty()) {
@@ -200,7 +215,7 @@ public class UserService {
 
         User updatedUser = userDao.save(userMapper.toBase(user.get(), userDto));
 
-        LOGGER.debug("Updated user, new user info: {}", updatedUser);
+        LOGGER.info("Updated user, new user info: {}", updatedUser);
         return userMapper.toDto(updatedUser);
     }
 
@@ -211,10 +226,10 @@ public class UserService {
      * @return True if user deleted successfully.
      */
     public Boolean deleteUser(Long id) {
-        LOGGER.debug("Performing task to delete user with ID {}", id);
+        LOGGER.info("Performing task to delete user with ID {}", id);
         userDao.deleteById(id);
 
-        LOGGER.debug("User deleted successfully");
+        LOGGER.info("User deleted successfully");
         return true;
     }
 }

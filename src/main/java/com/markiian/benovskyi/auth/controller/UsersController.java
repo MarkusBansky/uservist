@@ -7,6 +7,7 @@ import com.markiian.benovskyi.auth.service.UserService;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.model.InlineObject;
 import com.markiian.benovskyi.model.UserDto;
+import it.ozimov.springboot.mail.service.exception.CannotSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -58,7 +60,12 @@ public class UsersController implements UsersApi {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity usersCreate(@Valid UserDto userDto) {
         if (userPermissionService.canCreate(userDto.getServiceRoles(), CurrentUser.getAuth())) {
-            return ResponseEntity.ok(userService.createUserForService(userDto));
+            try {
+                return ResponseEntity.ok(userService.createUserForService(userDto));
+            } catch (UnsupportedEncodingException | CannotSendEmailException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApplicationConstants.UNAUTHORIZED_EXCEPTION_MESSAGE);
     }
