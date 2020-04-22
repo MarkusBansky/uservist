@@ -97,13 +97,31 @@ task migrations {
     }
 }
 
+task migrationsProd {
+    doLast {
+        println "Applying postgresql production migrations"
+        liquibase {
+            activities {
+                main {
+                    changeLogFile "src/main/resources/db/master-migrations.xml"
+                    url "jdbc:postgresql://192.168.0.28:5532/uservist"
+                    username "uservist"
+                    password "35YNvk7aczwJxE4xQXxSztH4zN8ZmN52"
+                    defaultSchemaName "users"
+                    liquibaseSchemaName "users_lb"
+                }
+            }
+        }
+    }
+}
+
 application {
     // Define the main class for the application
-    mainClassName = 'com.markiian.benovskyi.auth.Application'
+    mainClassName = 'com.markiian.benovskyi.auth.UvApplication'
 }
 
 bootJar {
-    mainClassName = 'com.markiian.benovskyi.auth.Application'
+    mainClassName = 'com.markiian.benovskyi.auth.UvApplication'
 }
 
 // Make this project to depend on auth api publication and swagger UI

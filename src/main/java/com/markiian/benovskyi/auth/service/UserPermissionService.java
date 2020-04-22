@@ -7,11 +7,13 @@ import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.service.misc.IPermissionService;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
+import com.markiian.benovskyi.model.ServiceRoleDto;
 import com.markiian.benovskyi.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,8 +44,10 @@ public class UserPermissionService implements IPermissionService<UserDto> {
                 .anyMatch(con -> con.getService().getKey().equals(CurrentUser.getServiceKey(auth)));
     }
 
-    public boolean canCreate(String service, Authentication auth) {
-        return CurrentUser.isSuper(auth) || service.equals(CurrentUser.getServiceKey(auth));
+    public boolean canCreate(List<ServiceRoleDto> serviceRoles, Authentication auth) {
+        return CurrentUser.isSuper(auth)
+                || (serviceRoles.size() == 1 && serviceRoles.iterator().next()
+                .getService().getKey().equals(CurrentUser.getServiceKey(auth)));
     }
 
     @Override

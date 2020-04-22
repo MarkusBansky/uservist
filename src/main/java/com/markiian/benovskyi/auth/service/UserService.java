@@ -140,10 +140,18 @@ public class UserService {
      * Create a new user for the service, if such service exists, create a connection between user and the service
      * and create a default USER role on that service.
      * @param userDto User to create.
-     * @param serviceKey ServiceKey to create user for.
      * @return Created user object.
      */
-    public UserDto createUserForService(UserDto userDto, String serviceKey) {
+    public UserDto createUserForService(UserDto userDto) {
+        if (userDto.getServiceRoles().size() > 1) {
+            throw new HttpClientErrorException(HttpStatus.METHOD_NOT_ALLOWED,
+                    ApplicationConstants.CREATE_USER_FOR_MULTIPLE_SERVICES);
+        } else if (userDto.getServiceRoles().isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        }
+
+        String serviceKey = userDto.getServiceRoles().iterator().next().getService().getKey();
+
         LOGGER.debug("Performing task to create new user for service: {} with dto: {}", serviceKey, userDto);
         Optional<User> user = userDao.findByUsername(userDto.getUsername());
         Optional<com.markiian.benovskyi.auth.persistance.model.Service> service = serviceDao.findByKey(serviceKey);

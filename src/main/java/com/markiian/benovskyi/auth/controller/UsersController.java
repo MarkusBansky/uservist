@@ -56,9 +56,9 @@ public class UsersController implements UsersApi {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity usersCreate(@NotNull @Valid String service, @Valid UserDto userDto) {
-        if (userPermissionService.canCreate(service, CurrentUser.getAuth())) {
-            return ResponseEntity.ok(userService.createUserForService(userDto, service));
+    public ResponseEntity usersCreate(@Valid UserDto userDto) {
+        if (userPermissionService.canCreate(userDto.getServiceRoles(), CurrentUser.getAuth())) {
+            return ResponseEntity.ok(userService.createUserForService(userDto));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApplicationConstants.UNAUTHORIZED_EXCEPTION_MESSAGE);
     }
