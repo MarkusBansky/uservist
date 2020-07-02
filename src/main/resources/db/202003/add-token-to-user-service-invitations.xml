@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Markiian">
+        <comment>Add token to user_service_invitations table</comment>
+        <addColumn tableName="user_service_invitations">
+            <column name="token" type="text" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_invitations" columnName="token" />
+    </changeSet>
+
+    <changeSet id="3" author="Markiian">
+        <comment>Add unique index for token in user_service_invitations</comment>
+        <createIndex tableName="user_service_invitations" indexName="user_service_invitations_token_uindex" unique="true">
+            <column name="token" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

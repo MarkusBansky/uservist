@@ -1,38 +1,23 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        maven { url "https://repo1.maven.org/maven2" }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        maven {
-            url "https://oss.sonatype.org/content/repositories/releases/"
-        }
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-    }
-    dependencies {
-        classpath "org.openapitools:openapi-generator-gradle-plugin:4.3.0-SNAPSHOT"
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
-        classpath "net.researchgate:gradle-release:2.6.0"
-    }
+plugins {
+    id "java"
+    id "maven-publish"
+    id "org.openapi.generator" version "4.2.3"
 }
 
-apply plugin: 'java'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'net.researchgate.release'
 apply plugin: 'org.openapi.generator'
+
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    implementation("io.swagger.core.v3:swagger-core:${swaggerVersion}")
-    implementation("io.swagger.core.v3:swagger-annotations:${swaggerVersion}")
-    implementation("org.openapitools:jackson-databind-nullable:0.1.0")
+    implementation "org.springframework.boot:spring-boot-starter-web:2.2.4.RELEASE"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:2.2.4.RELEASE"
+    implementation "io.swagger:swagger-core:1.6.0"
+    implementation "org.openapitools:jackson-databind-nullable:0.1.0"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.10.2"
 }
 
 openApiGenerate {
@@ -40,12 +25,14 @@ openApiGenerate {
     inputSpec = "$projectDir/src/main/resources/auth-api-v0.0.1.yaml".toString()
     outputDir = "$buildDir/generated".toString()
 
-    apiPackage = "${groupName}.api"
-    modelPackage = "${groupName}.model"
+    apiPackage = "com.markiian.benovskyi.api"
+    modelPackage = "com.markiian.benovskyi.model"
 
+    enablePostProcessFile = true
     configOptions = [
             dateLibrary: "java8",
-            interfaceOnly: "true"
+            interfaceOnly: "true",
+            useSpringJpa: "true"
     ]
 }
 
@@ -61,19 +48,20 @@ task sourceJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allJava
 }
 
-apply plugin: "maven-publish"
-
+//apply plugin: "maven-publish"
+//
 publishing {
     publications {
         maven(MavenPublication) {
             artifact(sourceJar) { // calls the task above
-                artifactId "api"
-                groupId maven_group
-                extension "jar"
-                classifier "sources"
+                artifactId = "auth-api"
+                groupId = "com.markiian.benovskyi.auth"
+                extension = "jar"
+                classifier = "sources"
             }
-            artifactId "api"
-            groupId maven_group
+            artifactId = "auth-api"
+            groupId = "com.markiian.benovskyi.auth"
+            version = "0.0.1"
             from components.java
         }
     }

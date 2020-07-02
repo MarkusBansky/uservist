@@ -1,34 +1,131 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.liquibase.gradle' version '2.0.1'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
 }
 
+sourceCompatibility = 11
 group 'com.markiian.benovskyi'
 version '0.0.1'
 
-sourceCompatibility = 11
-
 repositories {
     mavenCentral()
+    mavenLocal()
+    jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
+    // Logs
+    implementation 'org.slf4j:slf4j-log4j12:2.0.0-alpha1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 
-allprojects {
-    ext {
-        springBootVersion = "2.2.4.RELEASE"
-        springFoxVersion = "2.9.2"
-        swaggerVersion = "2.1.1"
+    // Postgres Database
+    runtimeOnly 'org.postgresql:postgresql'
+    liquibaseRuntime 'org.liquibase:liquibase-core:3.5.5'
+    liquibaseRuntime 'org.postgresql:postgresql'
 
-        groupName = "com.markiian.benovskyi"
-        maven_group = "com.markiian.benovskyi.auth-api"
+    // Spring Boot Starter
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.1.7.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // RSS and WEBPage reader
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'javax.activation:activation:1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
+    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'com.github.chimbori:crux:2.2.0'
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 
-    repositories {
-        mavenLocal()
+    // The auth api
+    implementation 'com.markiian.benovskyi.auth:auth-api:0.0.1'
+
+    // Security / JWT
+    implementation 'com.google.guava:guava:28.2-jre'
+    implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.10.7'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.10.7'
+    implementation 'org.passay:passay:1.6.0'
+
+    // Email
+    implementation 'it.ozimov:spring-boot-email-core:0.6.3'
+}
+//
+//
+//apply plugin: 'org.liquibase.gradle
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+liquibase {
+    activities {
+        main {}
     }
 }
 
+task migrations {
+    doLast {
+        println "Applying postgresql migrations"
+        liquibase {
+            activities {
+                main {
+                    changeLogFile "src/main/resources/db/master-migrations.xml"
+                    url "jdbc:postgresql://localhost:5555/universal_user_db"
+                    username "dev_docker_user"
+                    password "dev_docker_password"
+                    defaultSchemaName "users"
+                    liquibaseSchemaName "users_lb"
+                }
+            }
+        }
+    }
+}
+
+task migrationsProd {
+    doLast {
+        println "Applying postgresql production migrations"
+        liquibase {
+            activities {
+                main {
+                    changeLogFile "src/main/resources/db/master-migrations.xml"
+                    url "jdbc:postgresql://192.168.0.28:5532/uservist"
+                    username "uservist"
+                    password "35YNvk7aczwJxE4xQXxSztH4zN8ZmN52"
+                    defaultSchemaName "users"
+                    liquibaseSchemaName "users_lb"
+                }
+            }
+        }
+    }
+}
+
+application {
+    // Define the main class for the application
+    mainClassName = 'com.markiian.benovskyi.auth.UvApplication'
+}
+
+bootJar {
+    mainClassName = 'com.markiian.benovskyi.auth.UvApplication'
+}
+
+// Make this project to depend on auth api publication and swagger UI
+//compileJava.dependsOn(':auth-api:openApiGenerate')
 compileJava.dependsOn(':auth-api:publishToMavenLocal')
 compileJava.dependsOn(':auth-api-ui:generateSwaggerUI')
