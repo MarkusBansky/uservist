@@ -1,6 +1,4 @@
-# uservist
-
-![](https://markiian-benovskyi.com/wp-content/uploads/2020/02/uservist-logo@2x.png)
+![](https://markiian-benovskyi.com/wp-content/uploads/2020/06/Artboard-1@2x.png)
 
 ## What is this ?
 
@@ -9,3 +7,7 @@ User authentication service. This service provides unified self-hosted custom us
 ### What is the current status ?
 
  > In development !
+
+## Architecture
+
+<img src="https://markiian-benovskyi.com/wp-content/uploads/2020/02/Uservist.png" alt="drawing" height="350"/>
