@@ -1,0 +1,77 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Markiian">
+        <comment>Create UserServiceConnections table</comment>
+        <createTable tableName="user_service_connections">
+            <column name="id" type="bigserial" />
+            <column name="user_id" type="bigint" />
+            <column name="service_id" type="bigint" />
+            <column name="updated_at" type="timestamptz" />
+            <column name="created_at" type="timestamptz" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Markiian">
+        <comment>Add Primary Key to ServiceRoles table</comment>
+        <addPrimaryKey tableName="user_service_connections" columnNames="id" constraintName="user_service_connections_pk" />
+    </changeSet>
+
+    <changeSet id="3.1" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_connections" columnName="user_id" />
+    </changeSet>
+
+    <changeSet id="3.2" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_connections" columnName="service_id" />
+    </changeSet>
+
+    <changeSet id="3.3" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_connections" columnName="created_at" />
+    </changeSet>
+
+    <changeSet id="3.4" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_connections" columnName="updated_at" />
+    </changeSet>
+
+    <changeSet id="4.1" author="Markiian">
+        <comment>Add foreign key</comment>
+        <addForeignKeyConstraint
+                baseColumnNames="user_id" baseTableName="user_service_connections"
+                referencedColumnNames="user_id" referencedTableName="users"
+                constraintName="user_service_connections_user_id_fk"/>
+    </changeSet>
+
+    <changeSet id="4.2" author="Markiian">
+        <comment>Add foreign key</comment>
+        <addForeignKeyConstraint
+                baseColumnNames="service_id" baseTableName="user_service_connections"
+                referencedColumnNames="service_id" referencedTableName="services"
+                constraintName="user_service_connections_service_id_fk"/>
+    </changeSet>
+
+    <changeSet id="5.1" author="Markiian">
+        <comment>Add unique index for user_id and service_id</comment>
+        <createIndex tableName="user_service_connections" indexName="user_service_connections_user_service_uindex" unique="true">
+            <column name="user_id" />
+            <column name="service_id" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="6" author="Markiian">
+        <comment>Insert basic user connections</comment>
+        <insert tableName="user_service_connections">
+            <column name="user_id" valueComputed="(SELECT user_id FROM users.users WHERE username='uservist')" />
+            <column name="service_id" valueComputed="(SELECT service_id FROM users.services WHERE name='uservist')" />
+            <column name="updated_at" valueComputed="now()" />
+            <column name="created_at" valueComputed="now()" />
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
