@@ -1,7 +1,7 @@
 package com.markiian.benovskyi.auth.mapper;
 
 import com.markiian.benovskyi.auth.persistance.model.Service;
-import com.markiian.benovskyi.model.ServiceDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceDto;
 import org.springframework.stereotype.Component;
 
 @Component

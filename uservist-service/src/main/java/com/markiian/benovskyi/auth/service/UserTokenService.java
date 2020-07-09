@@ -13,7 +13,7 @@ import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.service.misc.AbstractTokenService;
 import com.markiian.benovskyi.auth.util.RoleUtil;
-import com.markiian.benovskyi.model.UserDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

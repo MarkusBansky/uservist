@@ -17,6 +17,12 @@ openApiGenerate {
 compileJava.dependsOn tasks.openApiGenerate
 sourceSets.main.java.srcDir file("$buildDir/generated-resources/src/main/java")
 
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.openapitools:jackson-databind-nullable:0.1.0"
+    implementation "io.swagger:swagger-core:${swaggerVersion}"
+}
+
 // Publish to maven local 
 task sourceJar(type: Jar, dependsOn: classes) {
     // Generates the sources jar to be imported by eclipse

@@ -1,12 +1,12 @@
 package com.markiian.benovskyi.auth.controller;
 
-import com.markiian.benovskyi.api.UsersApi;
 import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.service.UserPermissionService;
 import com.markiian.benovskyi.auth.service.UserService;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
-import com.markiian.benovskyi.model.InlineObject;
-import com.markiian.benovskyi.model.UserDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.api.UsersApi;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.InlineObject;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserDto;
 import it.ozimov.springboot.mail.service.exception.CannotSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

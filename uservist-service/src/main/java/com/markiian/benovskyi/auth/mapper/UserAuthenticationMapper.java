@@ -1,7 +1,7 @@
 package com.markiian.benovskyi.auth.mapper;
 
 import com.markiian.benovskyi.auth.model.UserAuthentication;
-import com.markiian.benovskyi.model.UserAuthenticationDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserAuthenticationDto;
 import org.springframework.stereotype.Component;
 
 @Component

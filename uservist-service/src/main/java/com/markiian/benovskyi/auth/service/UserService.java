@@ -4,16 +4,14 @@ import com.google.common.hash.Hashing;
 import com.markiian.benovskyi.auth.mapper.ServiceRoleMapper;
 import com.markiian.benovskyi.auth.mapper.UserMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
-import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
-import com.markiian.benovskyi.auth.persistance.dao.UserServiceConnectionDao;
 import com.markiian.benovskyi.auth.persistance.model.Role;
 import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.persistance.model.UserServiceConnection;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.auth.util.PasswordUtil;
-import com.markiian.benovskyi.model.UserDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserDto;
 import it.ozimov.springboot.mail.service.exception.CannotSendEmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +33,6 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserDao userDao;
     private final ServiceDao serviceDao;
-    private final ServiceRoleDao serviceRoleDao;
-    private final UserServiceConnectionDao connectionDao;
 
     private final UserMapper userMapper;
     private final ServiceRoleMapper serviceRoleMapper;
@@ -52,15 +48,11 @@ public class UserService {
                        UserMapper userMapper,
                        ServiceDao serviceDao,
                        ServiceRoleMapper serviceRoleMapper,
-                       UserServiceConnectionDao connectionDao,
-                       ServiceRoleDao serviceRoleDao,
                        MailingService mailingService) {
         this.userDao = userDao;
         this.userMapper = userMapper;
         this.serviceDao = serviceDao;
         this.serviceRoleMapper = serviceRoleMapper;
-        this.connectionDao = connectionDao;
-        this.serviceRoleDao = serviceRoleDao;
         this.mailingService = mailingService;
     }
 

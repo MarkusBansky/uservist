@@ -1,7 +1,7 @@
 package com.markiian.benovskyi.auth.mapper;
 
 import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
-import com.markiian.benovskyi.model.ServiceRoleDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

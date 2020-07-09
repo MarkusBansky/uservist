@@ -4,7 +4,7 @@ import com.markiian.benovskyi.auth.mapper.ServiceMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.model.Service;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
-import com.markiian.benovskyi.model.ServiceDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

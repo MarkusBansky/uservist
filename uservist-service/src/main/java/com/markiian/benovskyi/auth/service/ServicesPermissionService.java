@@ -3,7 +3,7 @@ package com.markiian.benovskyi.auth.service;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.service.misc.IPermissionService;
-import com.markiian.benovskyi.model.ServiceDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

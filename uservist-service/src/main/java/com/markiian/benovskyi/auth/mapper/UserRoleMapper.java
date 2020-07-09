@@ -1,7 +1,7 @@
 package com.markiian.benovskyi.auth.mapper;
 
 import com.markiian.benovskyi.auth.persistance.model.Role;
-import com.markiian.benovskyi.model.UserRoleDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserRoleDto;
 import org.springframework.stereotype.Component;
 
 @Component

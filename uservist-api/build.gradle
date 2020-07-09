@@ -20,6 +20,11 @@ allprojects {
         springFoxVersion = "2.9.2"
         swaggerVersion = "1.5.13"
     }
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
 }
 
 jar.enabled = false

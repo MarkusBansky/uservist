@@ -1,0 +1,84 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.markiian.benovskyi.uservist",
+    "module": "uservist-sdk",
+    "version": "0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.1.1",
+      "buildId": "ufqtmzubqvdcratk2vmz4dgfv4"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "uservist-sdk-0.1.jar",
+          "url": "uservist-sdk-0.1.jar",
+          "size": 64951,
+          "sha512": "227246996db3427cb16690f332919b37df586c92e0f9423ad6f7386c0f579389d12f5d1f7ad51438da335a6018297f1b1aa97fbc21f23dc8b5f149d1647cb354",
+          "sha256": "bc388b405374215d101808eac9b03fe0a2491a854e3f79c395b925e24f851314",
+          "sha1": "21ea24671d365c21a614981b0cebb32a6c552973",
+          "md5": "74eaa69eefd4a0f6c67727bb7bab8b85"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-web",
+          "version": {
+            "requires": "2.3.0.RELEASE"
+          }
+        },
+        {
+          "group": "io.swagger",
+          "module": "swagger-annotations",
+          "version": {
+            "requires": "1.5.13"
+          }
+        },
+        {
+          "group": "com.google.guava",
+          "module": "guava",
+          "version": {
+            "requires": "29.0-jre"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "uservist-sdk-0.1.jar",
+          "url": "uservist-sdk-0.1.jar",
+          "size": 64951,
+          "sha512": "227246996db3427cb16690f332919b37df586c92e0f9423ad6f7386c0f579389d12f5d1f7ad51438da335a6018297f1b1aa97fbc21f23dc8b5f149d1647cb354",
+          "sha256": "bc388b405374215d101808eac9b03fe0a2491a854e3f79c395b925e24f851314",
+          "sha1": "21ea24671d365c21a614981b0cebb32a6c552973",
+          "md5": "74eaa69eefd4a0f6c67727bb7bab8b85"
+        }
+      ]
+    }
+  ]
+}

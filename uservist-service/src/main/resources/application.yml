@@ -14,10 +14,10 @@ uservist:
 ## Spring settings
 spring.datasource:
   # Database connection settings
-  url: jdbc:postgresql://localhost:5555/universal_user_db
-  username: dev_docker_user
-  password: dev_docker_password
-  jpa.properties.hibernate.default_schema: users
+  url: jdbc:postgresql://localhost:5555/uservist
+  username: postgres
+  password: aw3eds
+  jpa.properties.hibernate.default_schema: uservist
 
   # Mail sending settings
   mail:

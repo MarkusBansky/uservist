@@ -1,14 +1,11 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.google.common.base.MoreObjects;
-import com.markiian.benovskyi.model.UserRoleDto;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "service_roles", uniqueConstraints = {

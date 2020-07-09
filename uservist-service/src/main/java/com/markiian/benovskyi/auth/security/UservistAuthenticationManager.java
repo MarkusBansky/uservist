@@ -8,7 +8,6 @@ import com.markiian.benovskyi.auth.persistance.model.Service;
 import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.util.RoleUtil;
-import com.markiian.benovskyi.model.UserAuthenticationDto;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;

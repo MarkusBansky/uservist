@@ -47,7 +47,7 @@ dependencies {
     }
 
     // The auth api
-    implementation 'com.markiian.benovskyi.auth:auth-api:0.0.1'
+    implementation 'com.markiian.benovskyi.uservist:uservist-api:0.1'
 
     // Security / JWT
     implementation 'com.google.guava:guava:28.2-jre'
@@ -82,34 +82,16 @@ liquibase {
 
 task migrations {
     doLast {
-        println "Applying postgresql migrations"
+        println "Apply local postgres DB migrations"
         liquibase {
             activities {
                 main {
                     changeLogFile "src/main/resources/db/master-migrations.xml"
-                    url "jdbc:postgresql://localhost:5555/universal_user_db"
-                    username "dev_docker_user"
-                    password "dev_docker_password"
-                    defaultSchemaName "users"
-                    liquibaseSchemaName "users_lb"
-                }
-            }
-        }
-    }
-}
-
-task migrationsProd {
-    doLast {
-        println "Applying postgresql production migrations"
-        liquibase {
-            activities {
-                main {
-                    changeLogFile "src/main/resources/db/master-migrations.xml"
-                    url "jdbc:postgresql://192.168.0.28:5532/uservist"
-                    username "uservist"
-                    password "35YNvk7aczwJxE4xQXxSztH4zN8ZmN52"
-                    defaultSchemaName "users"
-                    liquibaseSchemaName "users_lb"
+                    url "jdbc:postgresql://localhost:5555/uservist"
+                    username "postgres"
+                    password "aw3eds"
+                    defaultSchemaName "uservist"
+                    liquibaseSchemaName "uservist_lb"
                 }
             }
         }
@@ -124,8 +106,3 @@ application {
 bootJar {
     mainClassName = 'com.markiian.benovskyi.auth.UvApplication'
 }
-
-// Make this project to depend on auth api publication and swagger UI
-//compileJava.dependsOn(':auth-api:openApiGenerate')
-compileJava.dependsOn(':auth-api:publishToMavenLocal')
-compileJava.dependsOn(':auth-api-ui:generateSwaggerUI')

@@ -1,10 +1,10 @@
 package com.markiian.benovskyi.auth.controller;
 
-import com.markiian.benovskyi.api.AuthApi;
 import com.markiian.benovskyi.auth.service.AuthenticationService;
-import com.markiian.benovskyi.model.UserAuthenticationDto;
-import com.markiian.benovskyi.model.UserDto;
-import com.markiian.benovskyi.model.UserSessionTokenDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.api.AuthApi;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserAuthenticationDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserSessionTokenDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;

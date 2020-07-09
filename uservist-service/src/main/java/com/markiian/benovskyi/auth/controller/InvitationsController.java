@@ -1,10 +1,10 @@
 package com.markiian.benovskyi.auth.controller;
 
-import com.markiian.benovskyi.api.InvitationsApi;
 import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.service.InvitationService;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
-import com.markiian.benovskyi.model.UserServiceInvitationDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.api.InvitationsApi;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserServiceInvitationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
