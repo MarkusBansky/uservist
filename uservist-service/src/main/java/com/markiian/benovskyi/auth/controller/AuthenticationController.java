@@ -1,18 +1,11 @@
 package com.markiian.benovskyi.auth.controller;
 
 import com.markiian.benovskyi.api.AuthApi;
-import com.markiian.benovskyi.auth.mapper.UserAuthenticationMapper;
-import com.markiian.benovskyi.auth.security.CurrentUser;
-import com.markiian.benovskyi.auth.security.UservistAuthenticationManager;
-import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
-import com.markiian.benovskyi.auth.service.UserTokenService;
+import com.markiian.benovskyi.auth.service.AuthenticationService;
 import com.markiian.benovskyi.model.UserAuthenticationDto;
 import com.markiian.benovskyi.model.UserDto;
 import com.markiian.benovskyi.model.UserSessionTokenDto;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,68 +15,25 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthenticationController implements AuthApi {
 
-    private final UserAuthenticationMapper userAuthenticationMapper;
-    private final UservistAuthenticationManager authenticationManager;
-    private final UserTokenService userTokenService;
+    private final AuthenticationService authenticationService;
 
-    public AuthenticationController(UservistAuthenticationManager authenticationManager, UserTokenService userTokenService, UserAuthenticationMapper userAuthenticationMapper) {
-        this.authenticationManager = authenticationManager;
-        this.userTokenService = userTokenService;
-        this.userAuthenticationMapper = userAuthenticationMapper;
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     @Override
-    public ResponseEntity authenticate(@Valid UserAuthenticationDto userAuthenticationDto) {
-        assert userAuthenticationDto != null;
-
-        // Build authentication object
-        Authentication auth = new UservistAuthenticationToken(
-                userAuthenticationDto.getUsername(),
-                userAuthenticationDto.getPassword(),
-                userAuthenticationMapper.toBase(userAuthenticationDto));
-
-        // Try to authenticate user
-        Authentication authentication = authenticationManager.authenticate(auth);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Create a token of successful authentication
-        final String token = userTokenService.generateToken(authentication);
-
-        // Save token into the session
-        try {
-            userTokenService.saveUserSession(authentication, token);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-
-        // Create and return dto
-        UserSessionTokenDto dto = new UserSessionTokenDto().token(token);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<UserSessionTokenDto> authenticate(@Valid UserAuthenticationDto userAuthenticationDto) {
+        return ResponseEntity.ok(authenticationService.authenticateUser(userAuthenticationDto));
     }
 
     @Override
-    public ResponseEntity validate(@Valid UserSessionTokenDto userSessionTokenDto) {
-        assert userSessionTokenDto != null;
-        assert userSessionTokenDto.getToken() != null;
-
-        boolean valid = userTokenService.validateToken(userSessionTokenDto.getToken());
-
-        if (valid) {
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Token is no longer valid.");
+    public ResponseEntity<Void> validate(@Valid UserSessionTokenDto userSessionTokenDto) {
+        authenticationService.validateUserToken(userSessionTokenDto);
+        return ResponseEntity.ok().build();
     }
 
-    /**
-     * GET /auth/current : Get authenticated user info.
-     * Get current authenticated user information. Returns user information with user roles for this service.
-     *
-     * @return User found and available (status code 200)
-     */
     @Override
     public ResponseEntity<UserDto> getCurrentUser() {
-        String username = CurrentUser.getUsername();
-        return ResponseEntity.ok(userTokenService.getUserFromUsername(username));
+        return ResponseEntity.ok(authenticationService.getCurrentUser());
     }
 }
