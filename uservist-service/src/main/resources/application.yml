@@ -1,0 +1,31 @@
+## Default spring settings
+server.port: 9090
+
+# Project specific properties
+uservist:
+  host: http://127.0.0.1
+  allowedOrigins:
+    - http://192.168.0.28:9080
+    - http://localhost:9080
+  serviceKey: a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997
+  tokenName: Authorization
+  tokenPrefix: Bearer
+
+## Spring settings
+spring.datasource:
+  # Database connection settings
+  url: jdbc:postgresql://localhost:5555/universal_user_db
+  username: dev_docker_user
+  password: dev_docker_password
+  jpa.properties.hibernate.default_schema: users
+
+  # Mail sending settings
+  mail:
+    host: localhost
+    port: 1025
+    properties.mail.smtp.auth: false
+    scheduler:
+      persistence:
+        enabled: false
+        redis.embedded: false
+        redis.enabled: false

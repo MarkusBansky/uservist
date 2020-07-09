@@ -2,6 +2,8 @@ package com.markiian.benovskyi.auth.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.markiian.benovskyi.auth.properties.UservistProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -17,8 +19,11 @@ import java.util.Optional;
 @EnableWebMvc
 public class UvWebConfig implements WebMvcConfigurer {
 
-    @Value("${uservist.cors.origins}")
-    private String allowedOrigins;
+    private final UservistProperties uservistProperties;
+
+    public UvWebConfig(UservistProperties uservistProperties) {
+        this.uservistProperties = uservistProperties;
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -26,7 +31,7 @@ public class UvWebConfig implements WebMvcConfigurer {
                 .addMapping("/auth/**");
         registry
                 .addMapping("/api/**")
-                .allowedOrigins(allowedOrigins.split(","))
+                .allowedOrigins(uservistProperties.getAllowedOrigins())
                 .allowedMethods("*")
                 .allowCredentials(true)
                 .allowedHeaders("*");

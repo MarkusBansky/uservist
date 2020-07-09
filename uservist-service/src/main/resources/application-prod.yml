@@ -1,0 +1,6 @@
+# Database settings for production
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5532/uservist
+    username: uservist
+    password: 35YNvk7aczwJxE4xQXxSztH4zN8ZmN52
