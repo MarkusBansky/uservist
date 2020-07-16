@@ -19,3 +19,6 @@ gradle-app.setting
 # ignore properties files for gradle
 development.properties
 production.properties
+
+**/build/
+
