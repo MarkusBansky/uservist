@@ -67,8 +67,8 @@
     <changeSet id="6" author="Markiian">
         <comment>Insert basic user connections</comment>
         <insert tableName="user_service_connections">
-            <column name="user_id" valueComputed="(SELECT user_id FROM users.users WHERE username='uservist')" />
-            <column name="service_id" valueComputed="(SELECT service_id FROM users.services WHERE name='uservist')" />
+            <column name="user_id" valueComputed="(SELECT user_id FROM uservist.users WHERE username='uservist')" />
+            <column name="service_id" valueComputed="(SELECT service_id FROM uservist.services WHERE name='uservist')" />
             <column name="updated_at" valueComputed="now()" />
             <column name="created_at" valueComputed="now()" />
         </insert>
