@@ -16,7 +16,7 @@ import javax.validation.constraints.*;
  * Describes a unique user logged session object. This is unique to user, service, hardwareId.
  */
 @ApiModel(description = "Describes a unique user logged session object. This is unique to user, service, hardwareId.")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-09T13:06:45.607674+01:00[Europe/London]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-16T13:34:50.527602+01:00[Europe/London]")
 
 public class SessionDto   {
   @JsonProperty("id")

@@ -17,7 +17,7 @@ import javax.validation.constraints.*;
  * Defines user object, user can have diffirent permissions for diffirent roles. If user does not have a role then they do not have access to that service.
  */
 @ApiModel(description = "Defines user object, user can have diffirent permissions for diffirent roles. If user does not have a role then they do not have access to that service.")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-09T13:06:45.607674+01:00[Europe/London]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-16T13:34:50.527602+01:00[Europe/London]")
 
 public class UserDto   {
   @JsonProperty("id")

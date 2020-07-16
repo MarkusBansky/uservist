@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
   UserSessionTokenDto.JSON_PROPERTY_TOKEN
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2020-07-09T13:06:45.626587+01:00[Europe/London]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2020-07-16T13:34:50.520141+01:00[Europe/London]")
 public class UserSessionTokenDto {
   public static final String JSON_PROPERTY_TOKEN = "token";
   private String token;

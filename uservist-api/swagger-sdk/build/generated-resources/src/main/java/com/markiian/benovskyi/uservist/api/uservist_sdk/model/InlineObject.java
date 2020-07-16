@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
   InlineObject.JSON_PROPERTY_SERVICE_ID,
   InlineObject.JSON_PROPERTY_ROLE
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2020-07-09T13:06:45.626587+01:00[Europe/London]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2020-07-16T13:34:50.520141+01:00[Europe/London]")
 public class InlineObject {
   public static final String JSON_PROPERTY_USER_ID = "userId";
   private Long userId;

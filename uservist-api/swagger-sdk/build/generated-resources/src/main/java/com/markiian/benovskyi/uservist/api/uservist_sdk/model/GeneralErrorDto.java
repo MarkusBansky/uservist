@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
   GeneralErrorDto.JSON_PROPERTY_CODE,
   GeneralErrorDto.JSON_PROPERTY_MESSAGE
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2020-07-09T13:06:45.626587+01:00[Europe/London]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2020-07-16T13:34:50.520141+01:00[Europe/London]")
 public class GeneralErrorDto {
   public static final String JSON_PROPERTY_CODE = "code";
   private Integer code;

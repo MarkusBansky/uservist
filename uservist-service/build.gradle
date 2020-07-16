@@ -7,6 +7,7 @@ plugins {
 }
 
 sourceCompatibility = 11
+
 group 'com.markiian.benovskyi'
 version '0.0.1'
 
@@ -75,23 +76,41 @@ test {
 }
 
 liquibase {
+    //noinspection GrUnresolvedAccess
     activities {
         main {}
     }
 }
 
-task migrations {
+task dev {
+    // This task loads the development properties file
+    def props = new Properties()
+    file("development.properties").withInputStream { props.load(it) }
+
     doLast {
-        println "Apply local postgres DB migrations"
+        println "Applying local postgres DB migrations setup"
+        print "Changelog File "
+        println props.getProperty("lb.changelogFile")
+        print "Database URL "
+        println props.getProperty("lb.dbUrl")
+        print "Username "
+        println props.getProperty("lb.username")
+        print "Scheme "
+        println props.getProperty("lb.scheme")
+        print "LB Scheme "
+        println props.getProperty("lb.lbScheme")
+
         liquibase {
+            //noinspection GrUnresolvedAccess
             activities {
+                //noinspection GroovyAssignabilityCheck
                 main {
-                    changeLogFile "src/main/resources/db/master-migrations.xml"
-                    url "jdbc:postgresql://localhost:5555/uservist"
-                    username "postgres"
-                    password "aw3eds"
-                    defaultSchemaName "uservist"
-                    liquibaseSchemaName "uservist_lb"
+                    changeLogFile props.getProperty("lb.changelogFile")
+                    url props.getProperty("lb.dbUrl")
+                    username props.getProperty("lb.username")
+                    password props.getProperty("lb.password")
+                    defaultSchemaName props.getProperty("lb.scheme")
+                    liquibaseSchemaName props.getProperty("lb.lbScheme")
                 }
             }
         }

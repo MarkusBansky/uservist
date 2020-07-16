@@ -13,7 +13,7 @@ import javax.validation.constraints.*;
  * Object that is returned in case of any error happening on the server side. The code is HTTP code.
  */
 @ApiModel(description = "Object that is returned in case of any error happening on the server side. The code is HTTP code.")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-09T13:06:45.607674+01:00[Europe/London]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-16T13:34:50.527602+01:00[Europe/London]")
 
 public class GeneralErrorDto   {
   @JsonProperty("code")

@@ -13,7 +13,7 @@ import javax.validation.constraints.*;
  * Represents a unique session token specific to this user, this service and a unique session uuid.
  */
 @ApiModel(description = "Represents a unique session token specific to this user, this service and a unique session uuid.")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-09T13:06:45.607674+01:00[Europe/London]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-07-16T13:34:50.527602+01:00[Europe/London]")
 
 public class UserSessionTokenDto   {
   @JsonProperty("token")

@@ -10,8 +10,8 @@
   },
   "createdBy": {
     "gradle": {
-      "version": "6.1.1",
-      "buildId": "ufqtmzubqvdcratk2vmz4dgfv4"
+      "version": "6.5.1",
+      "buildId": "odzebhijqrhhtpiquqi2hibyaq"
     }
   },
   "variants": [
@@ -29,10 +29,10 @@
           "name": "uservist-sdk-0.1.jar",
           "url": "uservist-sdk-0.1.jar",
           "size": 64951,
-          "sha512": "227246996db3427cb16690f332919b37df586c92e0f9423ad6f7386c0f579389d12f5d1f7ad51438da335a6018297f1b1aa97fbc21f23dc8b5f149d1647cb354",
-          "sha256": "bc388b405374215d101808eac9b03fe0a2491a854e3f79c395b925e24f851314",
-          "sha1": "21ea24671d365c21a614981b0cebb32a6c552973",
-          "md5": "74eaa69eefd4a0f6c67727bb7bab8b85"
+          "sha512": "1b9f9e9a45bac56c9b34e1d037cad84e97112d786d3051a4d5d9d9518e43ee49f0563c07bbf44b788365332445a4b2218bf8b2c528b08f903e7845e2a3f3b5c8",
+          "sha256": "83d9fa012042d66e24ec97db10fa90b60aaaafde3bb7c8d93b561924c54cafcc",
+          "sha1": "9aaad0c318703b5c242d60f2254a674bab5962fc",
+          "md5": "bc8ea86f6dca434e6d2f783529660b24"
         }
       ]
     },
@@ -73,10 +73,10 @@
           "name": "uservist-sdk-0.1.jar",
           "url": "uservist-sdk-0.1.jar",
           "size": 64951,
-          "sha512": "227246996db3427cb16690f332919b37df586c92e0f9423ad6f7386c0f579389d12f5d1f7ad51438da335a6018297f1b1aa97fbc21f23dc8b5f149d1647cb354",
-          "sha256": "bc388b405374215d101808eac9b03fe0a2491a854e3f79c395b925e24f851314",
-          "sha1": "21ea24671d365c21a614981b0cebb32a6c552973",
-          "md5": "74eaa69eefd4a0f6c67727bb7bab8b85"
+          "sha512": "1b9f9e9a45bac56c9b34e1d037cad84e97112d786d3051a4d5d9d9518e43ee49f0563c07bbf44b788365332445a4b2218bf8b2c528b08f903e7845e2a3f3b5c8",
+          "sha256": "83d9fa012042d66e24ec97db10fa90b60aaaafde3bb7c8d93b561924c54cafcc",
+          "sha1": "9aaad0c318703b5c242d60f2254a674bab5962fc",
+          "md5": "bc8ea86f6dca434e6d2f783529660b24"
         }
       ]
     }

@@ -10,8 +10,8 @@
   },
   "createdBy": {
     "gradle": {
-      "version": "6.1.1",
-      "buildId": "ufqtmzubqvdcratk2vmz4dgfv4"
+      "version": "6.5.1",
+      "buildId": "odzebhijqrhhtpiquqi2hibyaq"
     }
   },
   "variants": [
@@ -29,10 +29,10 @@
           "name": "uservist-ui-0.1.jar",
           "url": "uservist-ui-0.1.jar",
           "size": 261,
-          "sha512": "bf3abb681c08d6c2f1b98adae70eccca1481183c953e2eb4c64af78487173572293424aeee575f2f3a982d0b8cde1ff6058dabdac68e51dec8735aa179b85f9e",
-          "sha256": "5fb3cf2a08c02aa87a5aba6e0010045c3916265796826767a2ab0717cd8a566b",
-          "sha1": "07ed261f4f0c30825e81ff485bd9b6a1104c3875",
-          "md5": "b13fec9e91217f885f0d2b614b517756"
+          "sha512": "369a75b9eba97a9c6ab47af5a2d985d649dae2c277c1a20a566a7f58e23c00fb08b776cd2af813cdfab38e9587df82ba3de369d2e1931523988e750ee220c1a8",
+          "sha256": "f9521ed45e7ad3401fb5f554284d976ec71e38c4ce61a932f6ee09885d3bff7a",
+          "sha1": "e0715c0c95109d420b3c61ee3a0a5894421ea25d",
+          "md5": "8a812d3c89ad38ffd6b9d88714c3035a"
         }
       ]
     },
@@ -50,10 +50,10 @@
           "name": "uservist-ui-0.1.jar",
           "url": "uservist-ui-0.1.jar",
           "size": 261,
-          "sha512": "bf3abb681c08d6c2f1b98adae70eccca1481183c953e2eb4c64af78487173572293424aeee575f2f3a982d0b8cde1ff6058dabdac68e51dec8735aa179b85f9e",
-          "sha256": "5fb3cf2a08c02aa87a5aba6e0010045c3916265796826767a2ab0717cd8a566b",
-          "sha1": "07ed261f4f0c30825e81ff485bd9b6a1104c3875",
-          "md5": "b13fec9e91217f885f0d2b614b517756"
+          "sha512": "369a75b9eba97a9c6ab47af5a2d985d649dae2c277c1a20a566a7f58e23c00fb08b776cd2af813cdfab38e9587df82ba3de369d2e1931523988e750ee220c1a8",
+          "sha256": "f9521ed45e7ad3401fb5f554284d976ec71e38c4ce61a932f6ee09885d3bff7a",
+          "sha1": "e0715c0c95109d420b3c61ee3a0a5894421ea25d",
+          "md5": "8a812d3c89ad38ffd6b9d88714c3035a"
         }
       ]
     }
