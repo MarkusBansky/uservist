@@ -1,0 +1,23 @@
+openApiGenerate {
+    generatorName = "html2"
+    inputSpec = "$rootDir/src/main/resources/swagger.yaml"
+    outputDir = "$buildDir/generated-resources"
+}
+
+compileJava.dependsOn tasks.openApiGenerate
+sourceSets.main.java.srcDir file("$buildDir/generated-resources")
+
+//apply plugin: "maven-publish"
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = "uservist-ui"
+            groupId = project.group
+            from components.java
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}

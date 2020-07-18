@@ -1,0 +1,30 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id "net.researchgate.release" version "2.6.0"
+    id "nu.studer.credentials" version "1.0.1"
+    id "org.openapi.generator" version "4.3.1"
+}
+
+allprojects {
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "java"
+    apply plugin: "maven-publish"
+    apply plugin: "net.researchgate.release"
+    apply plugin: "org.openapi.generator"
+
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
+    ext {
+        springBootVersion = "2.3.0.RELEASE"
+        springFoxVersion = "2.9.2"
+        swaggerVersion = "1.5.13"
+    }
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+jar.enabled = false

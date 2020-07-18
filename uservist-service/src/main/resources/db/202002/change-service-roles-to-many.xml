@@ -1,0 +1,46 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Markiian">
+        <comment>Drop constraint on service_roles</comment>
+        <dropIndex
+                indexName="service_roles_user_service_uindex"
+                tableName="service_roles"/>
+    </changeSet>
+
+    <changeSet id="2" author="Markiian">
+        <comment>Add unique index for user_id and service_id, role</comment>
+        <createIndex tableName="service_roles"
+                     indexName="service_roles_user_service_role_uindex"
+                     unique="true">
+            <column name="user_id" />
+            <column name="service_id" />
+            <column name="role" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="3" author="Markiian">
+        <comment>Insert additional roles for users</comment>
+
+        <insert tableName="service_roles">
+            <column name="user_id" valueComputed="(SELECT user_id FROM uservist.users WHERE username='uservist')" />
+            <column name="service_id" valueComputed="(SELECT service_id FROM uservist.services WHERE name='uservist')" />
+            <column name="role" value="MODER" />
+            <column name="updated_at" valueComputed="now()" />
+            <column name="created_at" valueComputed="now()" />
+        </insert>
+
+        <insert tableName="service_roles">
+            <column name="user_id" valueComputed="(SELECT user_id FROM uservist.users WHERE username='uservist')" />
+            <column name="service_id" valueComputed="(SELECT service_id FROM uservist.services WHERE name='uservist')" />
+            <column name="role" value="USER" />
+            <column name="updated_at" valueComputed="now()" />
+            <column name="created_at" valueComputed="now()" />
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
