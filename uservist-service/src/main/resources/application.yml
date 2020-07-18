@@ -5,7 +5,6 @@ server.port: 9090
 uservist:
   host: http://127.0.0.1
   allowedOrigins:
-    - http://192.168.0.28:9080
     - http://localhost:9080
   serviceKey: a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997
   tokenName: Authorization
@@ -14,9 +13,9 @@ uservist:
 ## Spring settings
 spring.datasource:
   # Database connection settings
-  url: jdbc:postgresql://localhost:5555/uservist
+  url: jdbc:postgresql://localhost:5432/uservist
   username: postgres
-  password: aw3eds
+  password: postgres
   jpa.properties.hibernate.default_schema: uservist
 
   # Mail sending settings
