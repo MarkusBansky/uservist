@@ -1,4 +1,0 @@
-include 'swagger-api'
-include 'swagger-sdk'
-include 'swagger-ui'
-
