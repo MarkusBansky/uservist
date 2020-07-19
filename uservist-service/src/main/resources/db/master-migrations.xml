@@ -4,12 +4,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <property name="path" value="src/main/resources/db" />
+    <property name="dbPath" value="src/main/resources/db" />
 
-    <property name="create" value="${path}/create" />
-    <property name="init" value="${path}/init" />
-    <property name="202002" value="${path}/202002" />
-    <property name="202003" value="${path}/202003" />
+    <property name="create" value="${dbPath}/create" />
+    <property name="init" value="${dbPath}/init" />
+    <property name="202002" value="${dbPath}/202002" />
+    <property name="202003" value="${dbPath}/202003" />
 
 
 

@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.liquibase.gradle' version '2.0.1'
+    id 'org.liquibase.gradle' version '2.0.3'
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'org.springframework.boot' version '2.2.4.RELEASE'
 }
@@ -25,7 +25,11 @@ dependencies {
 
     // Postgres Database
     runtimeOnly 'org.postgresql:postgresql'
-    liquibaseRuntime 'org.liquibase:liquibase-core:3.5.5'
+    liquibaseRuntime 'org.liquibase:liquibase-core:3.8.1'
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
+    liquibaseRuntime 'javax.xml.bind:jaxb-api:2.3.1'
+    liquibaseRuntime 'ch.qos.logback:logback-core:1.2.3'
+    liquibaseRuntime 'ch.qos.logback:logback-classic:1.2.3'
     liquibaseRuntime 'org.postgresql:postgresql'
 
     // Spring Boot Starter
@@ -113,8 +117,8 @@ task dev {
     }
 }
 
+// Define the main class for the application
 application {
-    // Define the main class for the application
     mainClassName = 'com.markiian.benovskyi.auth.UvApplication'
 }
 
