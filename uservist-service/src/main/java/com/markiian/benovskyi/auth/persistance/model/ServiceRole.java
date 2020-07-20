@@ -1,6 +1,5 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,27 +13,32 @@ import java.time.OffsetDateTime;
 public class ServiceRole {
 
     @Id
-    @Column(name = "service_role_id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long serviceRoleId;
+    private Long id;
 
-    public Long getServiceRoleId() {
-        return serviceRoleId;
-    }
-
-    public void setServiceRoleId(Long serviceRoleId) {
-        this.serviceRoleId = serviceRoleId;
-    }
-
-    public ServiceRole withId(Long id) {
-        this.serviceRoleId = id;
-        return this;
-    }
-
-    @JsonManagedReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne
     private User user;
+
+    @ManyToOne
+    private Service service;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleType role;
+
+    @UpdateTimestamp
+    private OffsetDateTime updatedAt;
+
+    @CreationTimestamp
+    private OffsetDateTime createdAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public User getUser() {
         return user;
@@ -44,16 +48,6 @@ public class ServiceRole {
         this.user = user;
     }
 
-    public ServiceRole withUser(User user) {
-        this.user = user;
-        return this;
-    }
-
-    @JsonManagedReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
-    private Service service;
-
     public Service getService() {
         return service;
     }
@@ -62,31 +56,13 @@ public class ServiceRole {
         this.service = service;
     }
 
-    public ServiceRole withService(Service service) {
-        this.service = service;
-        return this;
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
-    public Role getRole() {
+    public RoleType getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleType role) {
         this.role = role;
     }
-
-    public ServiceRole withRole(Role role) {
-        this.role = role;
-        return this;
-    }
-
-    @Column(updatable = false)
-    @UpdateTimestamp
-    private OffsetDateTime updatedAt;
 
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
@@ -96,18 +72,11 @@ public class ServiceRole {
         this.updatedAt = updatedAt;
     }
 
-    @Column(updatable = false)
-    @CreationTimestamp
-    private OffsetDateTime createdAt;
-
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public ServiceRole() {
     }
 }

@@ -3,14 +3,15 @@ package com.markiian.benovskyi.auth.persistance.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Role {
+public enum RoleType {
+    REVOKED("REVOKED"),
     USER("USER"),
     MODER("MODER"),
     ADMIN("ADMIN");
 
     private final String value;
 
-    Role(String value) {
+    RoleType(String value) {
         this.value = value;
     }
 
@@ -24,9 +25,9 @@ public enum Role {
     }
 
     @JsonCreator
-    public static Role fromValue(String value) {
-        Role[] var1 = values();
-        for (Role b : var1) {
+    public static RoleType fromValue(String value) {
+        RoleType[] var1 = values();
+        for (RoleType b : var1) {
             if (b.value.equals(value)) {
                 return b;
             }

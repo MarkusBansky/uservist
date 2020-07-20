@@ -6,10 +6,8 @@ import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "user_service_session", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "service_id", "browser", "ip_address"})
-})
-public class Session {
+@Table(name = "user_service_invitations")
+public class Invitation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,14 +19,24 @@ public class Session {
     @ManyToOne
     private Service service;
 
-    @Column(nullable = false)
-    private String browser;
+    @ManyToOne
+    private User invitor;
 
     @Column(nullable = false)
-    private String ipAddress;
+    private String key;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleType role;
+
+    @Column(nullable = false)
+    private Boolean accepted;
 
     @Column(nullable = false)
     private OffsetDateTime expiresAt;
+
+    @Column(nullable = false)
+    private OffsetDateTime acceptedAt;
 
     @CreationTimestamp
     private OffsetDateTime createdAt;
@@ -57,20 +65,36 @@ public class Session {
         this.service = service;
     }
 
-    public String getBrowser() {
-        return browser;
+    public User getInvitor() {
+        return invitor;
     }
 
-    public void setBrowser(String browser) {
-        this.browser = browser;
+    public void setInvitor(User invitor) {
+        this.invitor = invitor;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getKey() {
+        return key;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public RoleType getRole() {
+        return role;
+    }
+
+    public void setRole(RoleType role) {
+        this.role = role;
+    }
+
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
     }
 
     public OffsetDateTime getExpiresAt() {
@@ -79,6 +103,14 @@ public class Session {
 
     public void setExpiresAt(OffsetDateTime expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    public OffsetDateTime getAcceptedAt() {
+        return acceptedAt;
+    }
+
+    public void setAcceptedAt(OffsetDateTime acceptedAt) {
+        this.acceptedAt = acceptedAt;
     }
 
     public OffsetDateTime getCreatedAt() {

@@ -8,7 +8,6 @@ import com.markiian.benovskyi.auth.persistance.dao.UserDao;
 import com.markiian.benovskyi.auth.persistance.model.Role;
 import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.User;
-import com.markiian.benovskyi.auth.persistance.model.UserServiceConnection;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.auth.util.PasswordUtil;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.UserDto;

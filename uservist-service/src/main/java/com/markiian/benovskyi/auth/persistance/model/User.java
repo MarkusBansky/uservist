@@ -1,58 +1,69 @@
 package com.markiian.benovskyi.auth.persistance.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"username"})
+        @UniqueConstraint(columnNames = {"username"}),
+        @UniqueConstraint(columnNames = {"email"})
 })
 public class User {
 
     @Id
-    @Column(name = "user_id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public User withUserId(Long userId) {
-        this.userId = userId;
-        return this;
-    }
+    private Long id;
 
     @Column(nullable = false)
     private String firstName;
 
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private String email;
+
+    @OneToMany
+    private Set<ServiceRole> serviceRoles = new HashSet<>();
+
+    @OneToMany
+    private Set<ServiceRole> invites = new HashSet<>();
+
+    @OneToMany
+    private Set<Session> sessions = new HashSet<>();
+
+    @UpdateTimestamp
+    private OffsetDateTime updatedAt;
+
+    @CreationTimestamp
+    private OffsetDateTime createdAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getFirstName() {
-        return this.firstName;
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
-    public User withFirstName(String firstName) {
-        this.firstName = firstName;
-        return this;
-    }
-
-    @Column(nullable = false)
-    private String lastName;
 
     public String getLastName() {
         return lastName;
@@ -62,14 +73,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    public User withLastName(String lastName) {
-        this.lastName = lastName;
-        return this;
-    }
-
-    @Column(nullable = false)
-    private String username;
-
     public String getUsername() {
         return username;
     }
@@ -78,29 +81,13 @@ public class User {
         this.username = username;
     }
 
-    public User withUsername(String username) {
-        this.username = username;
-        return this;
+    public String getPassword() {
+        return password;
     }
 
-    @Column(nullable = false)
-    private String passwordHash;
-
-    public String getPasswordHash() {
-        return passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public User withPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-        return this;
-    }
-
-    @Column(nullable=false)
-    private String email;
 
     public String getEmail() {
         return email;
@@ -110,15 +97,6 @@ public class User {
         this.email = email;
     }
 
-    public User withEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    @JsonBackReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<ServiceRole> serviceRoles = new HashSet<>();
-
     public Set<ServiceRole> getServiceRoles() {
         return serviceRoles;
     }
@@ -127,9 +105,13 @@ public class User {
         this.serviceRoles = serviceRoles;
     }
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Session> sessions = new HashSet<>();
+    public Set<ServiceRole> getInvites() {
+        return invites;
+    }
+
+    public void setInvites(Set<ServiceRole> invites) {
+        this.invites = invites;
+    }
 
     public Set<Session> getSessions() {
         return sessions;
@@ -139,39 +121,6 @@ public class User {
         this.sessions = sessions;
     }
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<UserServiceConnection> serviceConnections = new HashSet<>();
-
-    public Set<UserServiceConnection> getServiceConnections() {
-        return serviceConnections;
-    }
-
-    public void setServiceConnections(Set<UserServiceConnection> serviceConnections) {
-        this.serviceConnections = serviceConnections;
-    }
-
-    public User withServiceConnections(Set<UserServiceConnection> serviceConnections) {
-        this.serviceConnections = serviceConnections;
-        return this;
-    }
-
-    @Column(updatable = false)
-    @CreationTimestamp
-    private OffsetDateTime createdAt;
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Column(updatable = false)
-    @UpdateTimestamp
-    private OffsetDateTime updatedAt;
-
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -180,5 +129,11 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public User() {}
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

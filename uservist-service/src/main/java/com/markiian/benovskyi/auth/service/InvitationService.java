@@ -8,7 +8,7 @@ import com.markiian.benovskyi.auth.persistance.dao.UserDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserServiceInvitationDao;
 import com.markiian.benovskyi.auth.persistance.model.Service;
 import com.markiian.benovskyi.auth.persistance.model.User;
-import com.markiian.benovskyi.auth.persistance.model.UserServiceInvitation;
+import com.markiian.benovskyi.auth.persistance.model.Invitation;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.UserServiceInvitationDto;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.UserServiceInvitationLinkDto;
@@ -73,14 +73,14 @@ public class InvitationService {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.SERVICE_NOT_FOUND);
         }
 
-        Optional<UserServiceInvitation> existingInvitation = invitationDao.findByUserAndService(user.get(), service.get());
+        Optional<Invitation> existingInvitation = invitationDao.findByUserAndService(user.get(), service.get());
 
         if (existingInvitation.isPresent() && existingInvitation.get().getExpiresAt().isAfter(OffsetDateTime.now())) {
             LOGGER.warn("Invitation for user already exists");
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Invitation already exists");
         }
 
-        UserServiceInvitation invitation = existingInvitation.orElseGet(UserServiceInvitation::new);
+        Invitation invitation = existingInvitation.orElseGet(Invitation::new);
 
         String token = Hashing.sha512().hashString(UUID.randomUUID().toString(), Charset.defaultCharset()).toString();
         invitation
@@ -106,7 +106,7 @@ public class InvitationService {
     public boolean acceptInvitation(String token) {
         LOGGER.debug("Trying to accept invitation with token {}", token);
 
-        Optional<UserServiceInvitation> invitation = invitationDao.findByToken(token);
+        Optional<Invitation> invitation = invitationDao.findByToken(token);
 
         if (invitation.isEmpty()) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.FORBIDDEN_EXCEPTION_MESSAGE);
@@ -115,7 +115,7 @@ public class InvitationService {
         return true;
     }
 
-    public void sendInvitationEmail(UserServiceInvitation invitation) throws UnsupportedEncodingException {
+    public void sendInvitationEmail(Invitation invitation) throws UnsupportedEncodingException {
         final Email email = DefaultEmail.builder()
                 .from(new InternetAddress("no-reply@uservist.com", "Uservist No-Reply "))
                 .to(Lists.newArrayList(new InternetAddress(invitation.getUser().getEmail(),
