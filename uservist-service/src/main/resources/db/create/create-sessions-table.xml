@@ -7,19 +7,19 @@
     <changeSet id="1" author="Markiian">
         <comment>Create Sessions table</comment>
         <createTable tableName="user_service_session">
-            <column name="session_id" type="bigserial" />
+            <column name="id" type="bigserial" />
             <column name="user_id" type="bigint" />
             <column name="service_id" type="bigint" />
-            <column name="hardware_id" type="varchar(200)" />
+            <column name="browser" type="varchar(200)" />
+            <column name="ip_address" type="varchar(200)" />
             <column name="expired_at" type="timestamptz" />
             <column name="created_at" type="timestamptz" />
-            <column name="updated_at" type="timestamptz" />
         </createTable>
     </changeSet>
 
     <changeSet id="2" author="Markiian">
         <comment>Add Primary Key to Sessions table</comment>
-        <addPrimaryKey tableName="user_service_session" columnNames="session_id" constraintName="session_id_pk" />
+        <addPrimaryKey tableName="user_service_session" columnNames="id" constraintName="session_id_pk" />
     </changeSet>
 
     <changeSet id="3.1" author="Markiian">
@@ -34,29 +34,29 @@
 
     <changeSet id="3.3" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="user_service_session" columnName="hardware_id" />
+        <addNotNullConstraint tableName="user_service_session" columnName="browser" />
     </changeSet>
 
     <changeSet id="3.4" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="user_service_session" columnName="expired_at" />
+        <addNotNullConstraint tableName="user_service_session" columnName="ip_address" />
     </changeSet>
 
     <changeSet id="3.5" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="user_service_session" columnName="created_at" />
+        <addNotNullConstraint tableName="user_service_session" columnName="expired_at" />
     </changeSet>
 
     <changeSet id="3.6" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="user_service_session" columnName="updated_at" />
+        <addNotNullConstraint tableName="user_service_session" columnName="created_at" />
     </changeSet>
 
     <changeSet id="4.1" author="Markiian">
         <comment>Add foreign key</comment>
         <addForeignKeyConstraint
                 baseColumnNames="user_id" baseTableName="user_service_session"
-                referencedColumnNames="user_id" referencedTableName="users"
+                referencedColumnNames="id" referencedTableName="users"
                 constraintName="user_service_session_user_id_fk"/>
     </changeSet>
 
@@ -64,19 +64,24 @@
         <comment>Add foreign key</comment>
         <addForeignKeyConstraint
                 baseColumnNames="service_id" baseTableName="user_service_session"
-                referencedColumnNames="service_id" referencedTableName="services"
+                referencedColumnNames="id" referencedTableName="services"
                 constraintName="user_service_session_service_id_fk"/>
     </changeSet>
 
     <changeSet id="5.1" author="Markiian">
-        <comment>Add unique index for user_id and service_id</comment>
+        <comment>Add unique index for user_id and service_id and browser and ip_address</comment>
         <createIndex tableName="user_service_session"
-                     indexName="service_roles_user_service_hardware_uindex"
+                     indexName="service_roles_user_service_browser_ip_address_uindex"
                      unique="true">
             <column name="user_id" />
             <column name="service_id" />
-            <column name="hardware_id" />
+            <column name="browser" />
+            <column name="ip_address" />
         </createIndex>
+    </changeSet>
+
+    <changeSet author="Markiian" id="6">
+        <addAutoIncrement columnName="id" incrementBy="1" tableName="user_service_session"/>
     </changeSet>
 
 </databaseChangeLog>

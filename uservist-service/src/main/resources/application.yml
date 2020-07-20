@@ -8,15 +8,18 @@ uservist:
     - http://localhost:9080
   serviceKey: a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997
   tokenName: Authorization
-  tokenPrefix: Bearer
+  tokenPrefix: "Bearer "
 
 ## Spring settings
-spring.datasource:
-  # Database connection settings
-  url: jdbc:postgresql://localhost:5432/uservist
-  username: postgres
-  password: postgres
-  jpa.properties.hibernate.default_schema: uservist
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    # Database connection settings
+    url: jdbc:postgresql://localhost:5432/uservist
+    username: postgres
+    password: postgres
+    jpa.properties.hibernate.default_schema: uservist
 
   # Mail sending settings
   mail:

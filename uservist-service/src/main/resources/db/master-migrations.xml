@@ -8,14 +8,8 @@
 
     <property name="create" value="${dbPath}/create" />
     <property name="init" value="${dbPath}/init" />
-    <property name="202002" value="${dbPath}/202002" />
-    <property name="202003" value="${dbPath}/202003" />
-
-
 
     <include file="${create}/root.xml" />
     <include file="${init}/root.xml" />
-    <include file="${202002}/root.xml" />
-    <include file="${202003}/root.xml" />
 
 </databaseChangeLog>

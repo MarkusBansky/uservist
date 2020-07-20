@@ -7,19 +7,20 @@
     <changeSet id="1" author="Markiian">
         <comment>Create Users table</comment>
         <createTable tableName="users">
-            <column name="user_id" type="bigserial" />
+            <column name="id" type="bigserial" />
             <column name="first_name" type="varchar(200)" />
             <column name="last_name" type="varchar(200)" />
             <column name="username" type="varchar(200)" />
-            <column name="password_hash" type="varchar(256)" />
-            <column name="created_at" type="timestamptz" />
+            <column name="email" type="varchar(200)" />
+            <column name="password" type="varchar(512)" />
             <column name="updated_at" type="timestamptz" />
+            <column name="created_at" type="timestamptz" />
         </createTable>
     </changeSet>
 
     <changeSet id="2" author="Markiian">
         <comment>Add Primary Key to Users table</comment>
-        <addPrimaryKey tableName="users" columnNames="user_id" constraintName="users_id_pk" />
+        <addPrimaryKey tableName="users" columnNames="id" constraintName="users_id_pk" />
     </changeSet>
 
     <changeSet id="3.1" author="Markiian">
@@ -39,12 +40,12 @@
 
     <changeSet id="3.4" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="users" columnName="password_hash" />
+        <addNotNullConstraint tableName="users" columnName="email" />
     </changeSet>
 
     <changeSet id="3.5" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="users" columnName="created_at" />
+        <addNotNullConstraint tableName="users" columnName="password" />
     </changeSet>
 
     <changeSet id="3.6" author="Markiian">
@@ -52,9 +53,23 @@
         <addNotNullConstraint tableName="users" columnName="updated_at" />
     </changeSet>
 
-    <changeSet id="4" author="Markiian">
+    <changeSet id="3.7" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="users" columnName="created_at" />
+    </changeSet>
+
+    <changeSet id="4.1" author="Markiian">
         <comment>Add unique constraint for Username</comment>
         <addUniqueConstraint tableName="users" columnNames="username" constraintName="users_username_uindex" />
+    </changeSet>
+
+    <changeSet id="4.2" author="Markiian">
+        <comment>Add unique constraint for Email</comment>
+        <addUniqueConstraint tableName="users" columnNames="email" constraintName="users_email_uindex" />
+    </changeSet>
+
+    <changeSet author="Markiian" id="5">
+        <addAutoIncrement columnName="id" incrementBy="1" tableName="users"/>
     </changeSet>
 
 </databaseChangeLog>

@@ -7,18 +7,18 @@
     <changeSet id="1" author="Markiian">
         <comment>Create Services table</comment>
         <createTable tableName="services">
-            <column name="service_id" type="bigserial" />
+            <column name="id" type="bigserial" />
             <column name="name" type="varchar(200)" />
             <column name="description" type="varchar(200)" />
             <column name="key" type="varchar(256)" />
-            <column name="created_at" type="timestamptz" />
             <column name="updated_at" type="timestamptz" />
+            <column name="created_at" type="timestamptz" />
         </createTable>
     </changeSet>
 
     <changeSet id="2" author="Markiian">
         <comment>Add Primary Key to Services table</comment>
-        <addPrimaryKey tableName="services" columnNames="service_id" constraintName="service_id_pk" />
+        <addPrimaryKey tableName="services" columnNames="id" constraintName="service_id_pk" />
     </changeSet>
 
     <changeSet id="3.1" author="Markiian">
@@ -54,6 +54,10 @@
     <changeSet id="4.2" author="Markiian">
         <comment>Add unique constraint for key</comment>
         <addUniqueConstraint tableName="services" columnNames="key" constraintName="services_key_uindex" />
+    </changeSet>
+
+    <changeSet author="Markiian" id="5">
+        <addAutoIncrement columnName="id" incrementBy="1" tableName="services"/>
     </changeSet>
 
 </databaseChangeLog>

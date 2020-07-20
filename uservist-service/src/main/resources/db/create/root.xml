@@ -8,5 +8,7 @@
     <include file="${create}/create-services-table.xml" />
     <include file="${create}/create-service-roles-table.xml" />
     <include file="${create}/create-sessions-table.xml" />
+    <include file="${create}/create-user-service-invitations-table.xml" />
+    <include file="${create}/create-event-log-table.xml" />
 
 </databaseChangeLog>

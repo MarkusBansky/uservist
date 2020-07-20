@@ -10,7 +10,11 @@
             <column name="id" type="bigserial" />
             <column name="user_id" type="bigint" />
             <column name="service_id" type="bigint" />
+            <column name="invitor_id" type="bigint" />
+            <column name="key" type="varchar(512)" />
             <column name="role" type="varchar(200)" />
+            <column name="is_accepted" type="boolean" defaultValue="false" />
+            <column name="accepted_at" type="timestamptz" />
             <column name="expires_at" type="timestamptz" />
             <column name="created_at" type="timestamptz" />
         </createTable>
@@ -33,15 +37,25 @@
 
     <changeSet id="3.3" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="user_service_invitations" columnName="role" />
+        <addNotNullConstraint tableName="user_service_invitations" columnName="invitor_id" />
     </changeSet>
 
     <changeSet id="3.4" author="Markiian">
         <comment>Add not null constraint</comment>
-        <addNotNullConstraint tableName="user_service_invitations" columnName="created_at" />
+        <addNotNullConstraint tableName="user_service_invitations" columnName="role" />
     </changeSet>
 
     <changeSet id="3.5" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_invitations" columnName="key" />
+    </changeSet>
+
+    <changeSet id="3.6" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="user_service_invitations" columnName="created_at" />
+    </changeSet>
+
+    <changeSet id="3.7" author="Markiian">
         <comment>Add not null constraint</comment>
         <addNotNullConstraint tableName="user_service_invitations" columnName="expires_at" />
     </changeSet>
@@ -50,7 +64,7 @@
         <comment>Add foreign key</comment>
         <addForeignKeyConstraint
                 baseColumnNames="user_id" baseTableName="user_service_invitations"
-                referencedColumnNames="user_id" referencedTableName="users"
+                referencedColumnNames="id" referencedTableName="users"
                 constraintName="user_service_invitations_user_id_fk"/>
     </changeSet>
 
@@ -58,8 +72,20 @@
         <comment>Add foreign key</comment>
         <addForeignKeyConstraint
                 baseColumnNames="service_id" baseTableName="user_service_invitations"
-                referencedColumnNames="service_id" referencedTableName="services"
+                referencedColumnNames="id" referencedTableName="services"
                 constraintName="user_service_invitations_service_id_fk"/>
+    </changeSet>
+
+    <changeSet id="4.3" author="Markiian">
+        <comment>Add foreign key</comment>
+        <addForeignKeyConstraint
+                baseColumnNames="invitor_id" baseTableName="user_service_invitations"
+                referencedColumnNames="id" referencedTableName="users"
+                constraintName="user_service_invitations_invitor_id_fk"/>
+    </changeSet>
+
+    <changeSet author="Markiian" id="5">
+        <addAutoIncrement columnName="id" incrementBy="1" tableName="user_service_invitations"/>
     </changeSet>
 
 </databaseChangeLog>

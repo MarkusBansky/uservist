@@ -7,18 +7,18 @@
     <changeSet id="1" author="Markiian">
         <comment>Create ServiceRoles table</comment>
         <createTable tableName="service_roles">
-            <column name="service_role_id" type="bigserial" />
+            <column name="id" type="bigserial" />
             <column name="user_id" type="bigint" />
             <column name="service_id" type="bigint" />
             <column name="role" type="varchar(200)" />
-            <column name="created_at" type="timestamptz" />
             <column name="updated_at" type="timestamptz" />
+            <column name="created_at" type="timestamptz" />
         </createTable>
     </changeSet>
 
     <changeSet id="2" author="Markiian">
         <comment>Add Primary Key to ServiceRoles table</comment>
-        <addPrimaryKey tableName="service_roles" columnNames="service_role_id" constraintName="service_role_id_pk" />
+        <addPrimaryKey tableName="service_roles" columnNames="id" constraintName="service_role_id_pk" />
     </changeSet>
 
     <changeSet id="3.1" author="Markiian">
@@ -50,7 +50,7 @@
         <comment>Add foreign key</comment>
         <addForeignKeyConstraint
                 baseColumnNames="user_id" baseTableName="service_roles"
-                referencedColumnNames="user_id" referencedTableName="users"
+                referencedColumnNames="id" referencedTableName="users"
                 constraintName="service_roles_user_id_fk"/>
     </changeSet>
 
@@ -58,7 +58,7 @@
         <comment>Add foreign key</comment>
         <addForeignKeyConstraint
                 baseColumnNames="service_id" baseTableName="service_roles"
-                referencedColumnNames="service_id" referencedTableName="services"
+                referencedColumnNames="id" referencedTableName="services"
                 constraintName="service_roles_service_id_fk"/>
     </changeSet>
 
@@ -68,6 +68,10 @@
             <column name="user_id" />
             <column name="service_id" />
         </createIndex>
+    </changeSet>
+
+    <changeSet author="Markiian" id="6">
+        <addAutoIncrement columnName="id" incrementBy="1" tableName="service_roles"/>
     </changeSet>
 
 </databaseChangeLog>

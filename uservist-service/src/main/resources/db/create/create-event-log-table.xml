@@ -1,0 +1,55 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Markiian">
+        <comment>Create EventLog table</comment>
+        <createTable tableName="event_log">
+            <column name="id" type="bigserial" />
+            <column name="session_id" type="bigint" />
+            <column name="type" type="varchar(10)" />
+            <column name="message" type="text" />
+            <column name="created_at" type="timestamptz" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Markiian">
+        <comment>Add Primary Key to EventLog table</comment>
+        <addPrimaryKey tableName="event_log" columnNames="id" constraintName="event_log_id_pk" />
+    </changeSet>
+
+    <changeSet id="3.1" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="event_log" columnName="session_id" />
+    </changeSet>
+
+    <changeSet id="3.2" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="event_log" columnName="type" />
+    </changeSet>
+
+    <changeSet id="3.3" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="event_log" columnName="message" />
+    </changeSet>
+
+    <changeSet id="3.4" author="Markiian">
+        <comment>Add not null constraint</comment>
+        <addNotNullConstraint tableName="event_log" columnName="created_at" />
+    </changeSet>
+
+    <changeSet id="4.1" author="Markiian">
+        <comment>Add foreign key</comment>
+        <addForeignKeyConstraint
+                baseColumnNames="session_id" baseTableName="event_log"
+                referencedColumnNames="id" referencedTableName="user_service_session"
+                constraintName="user_service_session_session_id_fk"/>
+    </changeSet>
+
+    <changeSet author="Markiian" id="5">
+        <addAutoIncrement columnName="id" incrementBy="1" tableName="event_log"/>
+    </changeSet>
+
+</databaseChangeLog>

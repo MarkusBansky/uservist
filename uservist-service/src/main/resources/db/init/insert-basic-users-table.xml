@@ -11,7 +11,8 @@
             <column name="first_name" value="Uservist" />
             <column name="last_name" value="Administrator" />
             <column name="username" value="uservist" />
-            <column name="password_hash" value="a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997" />
+            <column name="email" value="uservist@example.com" />
+            <column name="password" value="a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997" />
             <column name="updated_at" valueComputed="now()" />
             <column name="created_at" valueComputed="now()" />
         </insert>

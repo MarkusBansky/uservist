@@ -1,11 +1,11 @@
 package com.markiian.benovskyi.auth.security;
 
+import com.markiian.benovskyi.auth.properties.UservistProperties;
 import com.markiian.benovskyi.auth.service.UserTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -19,14 +19,11 @@ import java.io.IOException;
 
 public class UservistAuthenticationFilter extends OncePerRequestFilter {
 
-    @Value("${uservist.service.tokenName}")
-    private String authenticationHeaderName;
-
-    @Value("${uservist.service.tokenPrefix}")
-    private String authenticationHeaderPrefix;
-
     @Autowired
     private UserTokenService userTokenService;
+
+    @Autowired
+    private UservistProperties uservistProperties;
 
     private final Logger LOGGER = LoggerFactory.getLogger(UservistAuthenticationFilter.class);
 
@@ -34,13 +31,13 @@ public class UservistAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException, RuntimeException {
 
-        String header = req.getHeader(authenticationHeaderName);
+        String header = req.getHeader(uservistProperties.getTokenName());
 
         String username = null;
         String authToken = null;
 
-        if (header != null && header.startsWith(authenticationHeaderPrefix)) {
-            authToken = header.replace(authenticationHeaderPrefix, "").trim();
+        if (header != null && header.startsWith(uservistProperties.getTokenPrefix())) {
+            authToken = header.replace(uservistProperties.getTokenPrefix(), "").trim();
             try {
                 username = userTokenService.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
@@ -66,4 +63,3 @@ public class UservistAuthenticationFilter extends OncePerRequestFilter {
         chain.doFilter(req, res);
     }
 }
-
