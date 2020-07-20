@@ -53,7 +53,7 @@ public class UservistAuthenticationFilter extends OncePerRequestFilter {
             if (userTokenService.validateToken(authToken)) {
                 WebAuthenticationDetails webDetails = new WebAuthenticationDetailsSource().buildDetails(req);
                 UservistAuthenticationToken authentication = userTokenService
-                        .getAuthenticationFromToken(authToken, webDetails.getRemoteAddress());
+                        .createAuthenticationFromToken(authToken, webDetails.getRemoteAddress());
 
                 LOGGER.info("Authenticated user {}, token {}, setting security context", username, authToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

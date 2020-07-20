@@ -11,6 +11,7 @@ import com.markiian.benovskyi.auth.persistance.model.User;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.auth.util.PasswordUtil;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.UserDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserUpdateDto;
 import it.ozimov.springboot.mail.service.exception.CannotSendEmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,19 +196,27 @@ public class UserService {
     }
 
 
-    public UserDto updateUser(UserDto userDto) {
-        LOGGER.info("Performing task to update user with dto: {}", userDto);
-        Optional<User> user = userDao.findByUserId(userDto.getId());
+    public UserDto updateUser(Long id, UserUpdateDto dto) {
+        LOGGER.info("Performing task to update user with id: {}", id);
+        Optional<User> optionalUser = userDao.findByUserId(id);
 
-        if (user.isEmpty()) {
-            LOGGER.warn("User with id {} from dto has not been found", userDto.getId());
+        if (optionalUser.isEmpty()) {
+            LOGGER.warn("User with id {} from dto has not been found", id);
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ApplicationConstants.USER_NOT_FOUND);
         }
 
-        User updatedUser = userDao.save(userMapper.toBase(user.get(), userDto));
+        User user = optionalUser.get();
 
-        LOGGER.info("Updated user, new user info: {}", updatedUser);
-        return userMapper.toDto(updatedUser);
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+
+        userDao.save(user);
+
+        LOGGER.info("Updated user with new firstName: {}, lastName: {}, email: {}",
+                user.getFirstName(), user.getLastName(), user.getEmail());
+
+        return userMapper.toDto(user);
     }
 
     /**

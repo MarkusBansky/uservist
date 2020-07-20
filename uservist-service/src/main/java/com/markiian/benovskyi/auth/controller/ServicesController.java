@@ -1,7 +1,6 @@
 package com.markiian.benovskyi.auth.controller;
 
 import com.markiian.benovskyi.auth.security.CurrentUser;
-import com.markiian.benovskyi.auth.service.ServicesPermissionService;
 import com.markiian.benovskyi.auth.service.ServicesService;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.uservist.api.uservist_api.api.ServicesApi;

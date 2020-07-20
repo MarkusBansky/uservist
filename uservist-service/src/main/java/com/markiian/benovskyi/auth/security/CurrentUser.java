@@ -1,6 +1,5 @@
 package com.markiian.benovskyi.auth.security;
 
-import com.markiian.benovskyi.auth.model.UserAuthentication;
 import com.markiian.benovskyi.auth.persistance.model.RoleType;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import org.springframework.security.core.Authentication;
