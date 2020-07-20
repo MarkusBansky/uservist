@@ -1,6 +1,6 @@
 package com.markiian.benovskyi.auth.service;
 
-import com.markiian.benovskyi.auth.mapper.UserMapper;
+import com.markiian.benovskyi.auth.persistance.mapper.UserMapper;
 import com.markiian.benovskyi.auth.model.UserAuthentication;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceRoleDao;

@@ -1,6 +1,6 @@
 package com.markiian.benovskyi.auth.service;
 
-import com.markiian.benovskyi.auth.mapper.ServiceMapper;
+import com.markiian.benovskyi.auth.persistance.mapper.ServiceMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.model.Service;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;

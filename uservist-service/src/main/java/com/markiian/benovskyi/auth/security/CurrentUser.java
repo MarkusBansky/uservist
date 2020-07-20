@@ -1,7 +1,7 @@
 package com.markiian.benovskyi.auth.security;
 
 import com.markiian.benovskyi.auth.model.UserAuthentication;
-import com.markiian.benovskyi.auth.persistance.model.Role;
+import com.markiian.benovskyi.auth.persistance.model.RoleType;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -63,7 +63,7 @@ public final class CurrentUser {
      * @param role Role to check.
      * @return True if user has ROLE_{role} authority.
      */
-    public static boolean hasRole(Role role) {
+    public static boolean hasRole(RoleType role) {
         String prefixed = "ROLE_" + role.getValue();
         return SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())

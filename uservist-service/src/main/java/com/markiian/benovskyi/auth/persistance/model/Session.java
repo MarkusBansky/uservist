@@ -4,6 +4,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_service_session", uniqueConstraints = {
@@ -26,6 +28,9 @@ public class Session {
 
     @Column(nullable = false)
     private String ipAddress;
+
+    @OneToMany
+    private Set<EventLog> eventLogs = new HashSet<>();
 
     @Column(nullable = false)
     private OffsetDateTime expiresAt;
@@ -71,6 +76,14 @@ public class Session {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public Set<EventLog> getEventLogs() {
+        return eventLogs;
+    }
+
+    public void setEventLogs(Set<EventLog> eventLogs) {
+        this.eventLogs = eventLogs;
     }
 
     public OffsetDateTime getExpiresAt() {

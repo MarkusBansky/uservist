@@ -30,6 +30,8 @@ tags:
       Or validate user token and return user information for that specific service.
   - name: Invitations
     description: Invitation controller to handle joiining service invitations.
+  - name: Events
+    description: Logs of events for specific session or user.
 
 components:
   securitySchemes:
@@ -50,10 +52,13 @@ components:
         password:
           type: string
           description: User's password hashed with SHA256.
-        hardwareId:
+        browser:
           type: string
           description: A unique user identifier for this specific machine.
-        key:
+        ipAddress:
+          type: string
+          description: IP address from requested machine.
+        service:
           type: string
           description: Service key identifier.
 
@@ -68,37 +73,16 @@ components:
           type: string
           description: User's unique session token.
 
-    GeneralErrorDto:
-      description:
-        Object that is returned in case of any error happening on the server side.
-        The code is HTTP code.
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          description: The HTTP response code.
-          type: integer
-          format: int32
-        message:
-          description: Message describing the error.
-          type: string
-
     UserRoleDto:
       description: Roles enum assignable to users for specific services.
       type: string
-      enum: [USER, MODER, ADMIN]
+      enum: [REVOKED, USER, MODER, ADMIN]
 
     UserDto:
       description:
         Defines user object, user can have diffirent permissions for diffirent roles.
         If user does not have a role then they do not have access to that service.
       type: object
-      required:
-        - firstName
-        - lastName
-        - username
       properties:
         id:
           description: User's unique identifier.
@@ -113,17 +97,9 @@ components:
         username:
           description: The internal shorted nickname of the user.
           type: string
-        password:
-          description: Encrypted users pasword hash.
-          type: string
         email:
           description: Email.
           type: string
-        serviceRoles:
-          description: User roles for services.
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceRoleDto'
         createdAt:
           description: The date and time this user was created at.
           type: string
@@ -133,15 +109,37 @@ components:
           type: string
           format: date-time
 
+    UserUpdateDto:
+      description: DTO used to update user information.
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+
+    UserCreateDto:
+      description: DTO used to create new user.
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
     ServiceDto:
       description:
         Object representing each Service registered in the system.
         Each service can have unique users and unique user logins.
       type: object
-      required:
-        - name
-        - description
-        - key
       properties:
         id:
           description: Unique identifier.
@@ -165,14 +163,30 @@ components:
           type: string
           format: date-time
 
+    ServiceUpdateDto:
+      description: DTO used to update service information.
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    ServiceCreateDto:
+      description: DTO to create new service.
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        ket:
+          type: string
+
     ServiceRoleDto:
       description:
         Describes an object with service key and a list of roles for this service for a specific user.
       type: object
-      required:
-        - userId
-        - serviceKey
-        - roles
       properties:
         service:
           $ref: '#/components/schemas/ServiceDto'
@@ -183,10 +197,6 @@ components:
       description:
         Describes a unique user logged session object. This is unique to user, service, hardwareId.
       type: object
-      required:
-        - user
-        - service
-        - hardwareId
       properties:
         id:
           description: Unique identifier.
@@ -196,46 +206,33 @@ components:
           $ref: '#/components/schemas/UserDto'
         service:
           $ref: '#/components/schemas/ServiceDto'
-        hardwareId:
+        browser:
           type: string
-          description: Unique hardware identifier.
-        token:
+          description: Broser.
+        ipAddress:
           type: string
-          description: Generated token.
+          description: Address of users machine.
         createdAt:
           type: string
           format: date-time
-        updatedAt:
-          type: string
-          format: date-time
 
-    UserServiceInvitationDto:
+    UserServiceInvitationCreateDto:
       description:
         Object being sent to API endpoint to send an email with an invitation link to invite a specific user.
       type: object
       required:
-        - username
+        - userId
         - serviceKey
       properties:
-        username:
-          description: Name of the user.
-          type: string
+        userId:
+          description: ID of the user.
+          type: integer
+          format: int64
         serviceKey:
           description: Key identifier of the service.
           type: string
         desiredRole:
           $ref: '#/components/schemas/UserRoleDto'
-
-    UserServiceInvitationLinkDto:
-      description:
-        Object containing generated link.
-      type: object
-      required:
-        - link
-      properties:
-        link:
-          description: Link to url.
-          type: string
 
 paths:
 
@@ -274,14 +271,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserServiceInvitationDto'
+              $ref: '#/components/schemas/UserServiceInvitationCreateDto'
       responses:
         200:
           description: Successfull invitation sent.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserServiceInvitationLinkDto'
         401:
           description: Missing or expired session.
         403:
@@ -330,7 +323,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ServiceDto'
+              $ref: '#/components/schemas/ServiceCreateDto'
       responses:
         200:
           description: Successfully created new service record.
@@ -342,33 +335,6 @@ paths:
           description: Missing or expired session.
         403:
           description: Missing required privileges.
-
-    put:
-      summary: Update service information.
-      operationId: servicesUpdateById
-      tags:
-        - Services
-      description:
-        Updates service record in the database with new information, if such record exists already, if not then error,
-        returns with a key property if user is admin.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ServiceDto'
-      responses:
-        200:
-          description: Service updated successfully, return the updated service object.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServiceDto'
-        401:
-          description: Missing or expired session.
-        403:
-          description: Missing required privileges.
-        404:
-          description: Such service does not exist. Could not update an unexisting service.
 
   /services/{id}:
     parameters:
@@ -400,6 +366,33 @@ paths:
           description: Missing required privileges.
         404:
           description: Such service does not exist.
+
+    put:
+      summary: Update service by ID.
+      operationId: servicesUpdateById
+      tags:
+        - Services
+      description:
+        Updates service record in the database with new information, if such record exists already, if not then error,
+        returns with a key property if user is admin.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateDto'
+      responses:
+        200:
+          description: Service updated successfully, return the updated service object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceDto'
+        401:
+          description: Missing or expired session.
+        403:
+          description: Missing required privileges.
+        404:
+          description: Such service does not exist. Could not update an unexisting service.
 
     delete:
       summary: Delete service by ID.
@@ -463,7 +456,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDto'
+              $ref: '#/components/schemas/UserCreateDto'
       responses:
         200:
           description: Successfully created a new user account.
@@ -475,31 +468,6 @@ paths:
           description: Missing or expired session.
         403:
           description: Missing required privileges.
-
-    put:
-      summary: Update user information by user ID.
-      operationId: usersUpdate
-      tags:
-        - Users
-      description: Update user by user ID. If user has enough permissions then user is updated successfully.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDto'
-      responses:
-        200:
-          description: Returns updated user information object.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserDto'
-        401:
-          description: Missing or expired session.
-        403:
-          description: Missing required privileges.
-        404:
-          description: Such service does not exist. Could not update an unexisting user.
 
   /users/{id}:
     parameters:
@@ -530,6 +498,31 @@ paths:
           description: Missing required privileges.
         404:
           description: Such service does not exist. Could not get an unexisting user.
+
+    put:
+      summary: Update user information by user ID.
+      operationId: usersUpdate
+      tags:
+        - Users
+      description: Update user by user ID. If user has enough permissions then user is updated successfully.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateDto'
+      responses:
+        200:
+          description: Returns updated user information object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        401:
+          description: Missing or expired session.
+        403:
+          description: Missing required privileges.
+        404:
+          description: Such service does not exist. Could not update an unexisting user.
 
     delete:
       summary: Delete user record by user ID.
@@ -578,12 +571,6 @@ paths:
             schema:
               type: object
               properties:
-                userId:
-                  type: integer
-                  format: int64
-                serviceId:
-                  type: integer
-                  format: int64
                 role:
                   $ref: '#/components/schemas/UserRoleDto'
       responses:
@@ -591,10 +578,6 @@ paths:
           description: Successfully created user permision for the service.
         401:
           description: Missing or expired session.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralErrorDto'
         403:
           description: Missing required privileges.
         404:

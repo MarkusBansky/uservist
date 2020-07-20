@@ -1,4 +1,4 @@
-package com.markiian.benovskyi.auth.mapper;
+package com.markiian.benovskyi.auth.persistance.mapper;
 
 import com.markiian.benovskyi.auth.persistance.model.Service;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceDto;

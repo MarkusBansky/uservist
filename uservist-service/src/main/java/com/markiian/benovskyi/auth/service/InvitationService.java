@@ -2,7 +2,7 @@ package com.markiian.benovskyi.auth.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
-import com.markiian.benovskyi.auth.mapper.UserRoleMapper;
+import com.markiian.benovskyi.auth.persistance.mapper.UserRoleMapper;
 import com.markiian.benovskyi.auth.persistance.dao.ServiceDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserDao;
 import com.markiian.benovskyi.auth.persistance.dao.UserServiceInvitationDao;

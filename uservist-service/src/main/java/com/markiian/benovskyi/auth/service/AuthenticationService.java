@@ -1,6 +1,6 @@
 package com.markiian.benovskyi.auth.service;
 
-import com.markiian.benovskyi.auth.mapper.UserAuthenticationMapper;
+import com.markiian.benovskyi.auth.persistance.mapper.UserAuthenticationMapper;
 import com.markiian.benovskyi.auth.security.CurrentUser;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationManager;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
