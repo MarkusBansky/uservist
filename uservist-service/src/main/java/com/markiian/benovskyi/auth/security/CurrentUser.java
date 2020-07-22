@@ -2,12 +2,11 @@ package com.markiian.benovskyi.auth.security;
 
 import com.markiian.benovskyi.auth.persistance.model.RoleType;
 import com.markiian.benovskyi.auth.util.ApplicationConstants;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserAuthenticationDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
@@ -19,12 +18,11 @@ public final class CurrentUser {
      * Checks if currently authenticated user is a service SUPER user.
      * @return True if it is equal to ApplicationConstants.SUPER_ADMIN_USERNAME.
      */
-    public static boolean isSuper() {
-        return SecurityContextHolder.getContext().getAuthentication().getName().equals(ApplicationConstants.SUPER_ADMIN_USERNAME);
-    }
-
-    public static boolean isSuper(Authentication auth) {
-        return auth.getName().equals(ApplicationConstants.SUPER_ADMIN_USERNAME);
+    public static boolean isSuperUser() {
+        return SecurityContextHolder
+                .getContext().getAuthentication()
+                .getName()
+                .equals(ApplicationConstants.SUPER_ADMIN_USERNAME);
     }
 
     /**
@@ -32,7 +30,9 @@ public final class CurrentUser {
      * @return A string representing authenticated user's username.
      */
     public static String getUsername() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        return SecurityContextHolder
+                .getContext().getAuthentication()
+                .getName();
     }
 
     /**
@@ -40,21 +40,10 @@ public final class CurrentUser {
      * @return A string representing service jey hash.
      */
     public static String getServiceKey() {
-        UserAuthentication details = (UserAuthentication) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        return details.getServiceKey();
-    }
-
-    public static String getServiceKey(Authentication auth) {
-        UserAuthentication details = (UserAuthentication) auth.getDetails();
-        return details.getServiceKey();
-    }
-
-    /**
-     * Extracts users authorities.
-     * @return A collection of SimpleGrantedAuthority's.
-     */
-    public static Collection<SimpleGrantedAuthority> getAuthorities() {
-        return (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        UserAuthenticationDto details = (UserAuthenticationDto) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getDetails();
+        return details.getService();
     }
 
     /**
@@ -64,7 +53,8 @@ public final class CurrentUser {
      */
     public static boolean hasRole(RoleType role) {
         String prefixed = "ROLE_" + role.getValue();
-        return SecurityContextHolder.getContext().getAuthentication()
+        return SecurityContextHolder
+                .getContext().getAuthentication()
                 .getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())
                 .contains(prefixed);
     }
@@ -74,6 +64,7 @@ public final class CurrentUser {
      * @return User Authentication object.
      */
     public static Authentication getAuth() {
-        return SecurityContextHolder.getContext().getAuthentication();
+        return SecurityContextHolder
+                .getContext().getAuthentication();
     }
 }

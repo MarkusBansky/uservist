@@ -29,8 +29,10 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Key;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -73,7 +75,7 @@ public class UserTokenService {
         return userMapper.toDto(user.get());
     }
 
-    public void saveUserSession(Authentication authentication, String token) throws Exception {
+    public void updateUserSession(Authentication authentication) throws Exception {
         UserAuthenticationDto authDto = (UserAuthenticationDto) authentication.getDetails();
 
         Optional<User> user = userDao.findByUsername(authDto.getUsername());
@@ -85,17 +87,20 @@ public class UserTokenService {
             throw new Exception("User or Service does not exist");
         }
 
-        // Try to find existing session, or create new object if it does not exist
-        Session session = sessionDao
+        // Find an existing session, if it exist then expire the existing session
+        Optional<Session> optionalSession = sessionDao
                 .findByUserAndServiceAndBrowserAndIpAddress(
-                        user.get(), service.get(), authDto.getBrowser(), authDto.getIpAddress())
-                .orElseGet(Session::new);
+                        user.get(), service.get(), authDto.getBrowser(), authDto.getIpAddress());
+        optionalSession.ifPresent(sessionDao::delete);
+
+        // Create new session
+        Session session = new Session();
 
         session.setUser(user.get());
         session.setService(service.get());
         session.setBrowser(authDto.getBrowser());
         session.setIpAddress(authDto.getIpAddress());
-        session.setExpiresAt(getExpiresAtFromToken(token).toInstant().atOffset(ZoneOffset.UTC));
+        session.setExpiresAt(OffsetDateTime.now().plusDays(1));
 
         session = sessionDao.save(session);
         LOGGER.debug("Created new login session: {}", session);

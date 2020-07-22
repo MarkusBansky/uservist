@@ -134,6 +134,8 @@ components:
           type: string
         password:
           type: string
+        serviceKey:
+          type: string
 
     ServiceDto:
       description:

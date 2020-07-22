@@ -25,7 +25,7 @@ public class MailingService {
         this.emailService = emailService;
     }
 
-    public void sendRegistrationEmail(User user, String password)
+    public void sendRegistrationEmail(User user)
             throws UnsupportedEncodingException, CannotSendEmailException {
         final InternetAddress fromAddress = new InternetAddress(
                 "no-reply@uservist.com", "Uservist No-Reply");
@@ -50,7 +50,6 @@ public class MailingService {
         final Map<String, Object> modelObject = new HashMap<>();
         modelObject.put("email", user.getEmail());
         modelObject.put("username", user.getUsername());
-        modelObject.put("password", password);
 
         emailService.send(email, "registration-email.ftl", modelObject);
     }
