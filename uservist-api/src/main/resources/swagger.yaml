@@ -182,7 +182,7 @@ components:
           type: string
         description:
           type: string
-        ket:
+        key:
           type: string
 
     ServiceRoleDto:

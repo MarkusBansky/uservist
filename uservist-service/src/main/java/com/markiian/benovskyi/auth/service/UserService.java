@@ -55,6 +55,19 @@ public class UserService {
     }
 
     /**
+     * Try to get user by their username. If user exists then the optional would contain user object.
+     * @param username Username to search for user.
+     * @return Optional user object.
+     */
+    public Optional<User> getUserByUsername(String username) {
+        Optional<User> optionalUser = userDao.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            LOGGER.info(ApplicationConstants.USER_NOT_FOUND);
+        }
+        return optionalUser;
+    }
+
+    /**
      * Get all users for specific service.
      * @param page The page of users to receive.
      * @param serviceKey The key for the service.
