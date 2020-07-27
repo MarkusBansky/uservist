@@ -78,6 +78,26 @@ components:
       type: string
       enum: [REVOKED, USER, MODER, ADMIN]
 
+
+    UsersPageDto:
+      description: Page with users.
+      type: object
+      properties:
+        currentPage:
+          type: integer
+        numberOfPages:
+          type: integer
+          format: int64
+        numberOfItems:
+          type: integer
+          format: int64
+        itemsPerPage:
+          type: integer
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDto'
+
     UserDto:
       description:
         Defines user object, user can have diffirent permissions for diffirent roles.
@@ -136,6 +156,25 @@ components:
           type: string
         serviceKey:
           type: string
+
+    ServicesPageDto:
+      description: Represents a page of services.
+      type: object
+      properties:
+        currentPage:
+          type: integer
+        numberOfPages:
+          type: integer
+          format: int64
+        numberOfItems:
+          type: integer
+          format: int64
+        itemsPerPage:
+          type: integer
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceDto'
 
     ServiceDto:
       description:
@@ -305,9 +344,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ServiceDto'
+                $ref: '#/components/schemas/ServicesPageDto'
         401:
           description: Missing or expired session.
         403:
@@ -440,9 +477,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserDto'
+                $ref: '#/components/schemas/UsersPageDto'
         401:
           description: Missing or expired session.
         403:

@@ -5,6 +5,7 @@ import com.markiian.benovskyi.uservist.api.uservist_api.api.ServicesApi;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceCreateDto;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceDto;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceUpdateDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.ServicesPageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,8 +27,8 @@ public class ServicesController implements ServicesApi {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity servicesGetAll(@NotNull @Valid Integer page) {
-        return ResponseEntity.ok(servicesService.getAllServices(page));
+    public ResponseEntity<ServicesPageDto> servicesGetAll(@NotNull @Valid Integer page) {
+        return ResponseEntity.ok(servicesService.getServicesPage(page));
     }
 
     @Override

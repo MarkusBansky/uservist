@@ -12,13 +12,11 @@ import com.markiian.benovskyi.auth.util.ApplicationConstants;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceCreateDto;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceDto;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.ServiceUpdateDto;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.ServicesPageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -44,24 +42,27 @@ public class ServicesService {
         this.serviceRoleDao = serviceRoleDao;
     }
 
-    public Page<ServiceDto> getAllServices(Integer page) {
-        LOGGER.debug("Performing task to get all available services");
-        Pageable pageRequest = PageRequest.of(page, PAGE_SIZE);
+    public ServicesPageDto getServicesPage(Integer page) {
+        LOGGER.debug("Performing task to get all available services for page: {}", page);
+
+        Pageable pageRequest = PageRequest.of(page, PAGE_SIZE, Sort.by("id"));
         Page<Service> services = serviceDao.findAll(pageRequest);
 
         LOGGER.debug("Received {} services from the database", services.getTotalElements());
-        Page<ServiceDto> resultPage = new PageImpl(
-                services.stream().map(serviceMapper::toDto).collect(Collectors.toList()),
-                pageRequest,
-                services.getTotalElements());
+        ServicesPageDto dto = new ServicesPageDto();
+        dto.setCurrentPage(page);
+        dto.setItemsPerPage(PAGE_SIZE);
+        dto.setNumberOfItems(services.getTotalElements());
+        dto.setNumberOfPages((long) services.getTotalPages());
+        dto.setServices(services.get().map(serviceMapper::toDto).collect(Collectors.toList()));
 
-        LOGGER.debug("Constructed service dto response page for: {}; services: {}", page, resultPage);
-        return resultPage;
+        LOGGER.debug("Constructed service dto response page for page {} of services: {}", page, dto.getNumberOfPages());
+        return dto;
     }
 
     public ServiceDto getServiceById(Long id) {
         LOGGER.debug("Performing task to get service by it's unique ID {}", id);
-        Optional<Service> service = serviceDao.findByServiceId(id);
+        Optional<Service> service = serviceDao.findById(id);
 
         if (service.isEmpty()) {
             LOGGER.warn("Service for id {} is empty and does not exist", id);
@@ -120,7 +121,7 @@ public class ServicesService {
      */
     public ServiceDto updateExistingService(Long id, ServiceUpdateDto dto) {
         LOGGER.debug("Performing task to update service with id {}", id);
-        Optional<Service> optionalService = serviceDao.findByServiceId(id);
+        Optional<Service> optionalService = serviceDao.findById(id);
 
         if (optionalService.isEmpty()) {
             LOGGER.warn("Service for update has not been found");
@@ -145,7 +146,7 @@ public class ServicesService {
      */
     public void deleteService(Long id) {
         LOGGER.debug("Performing task to delete service by id {}", id);
-        Optional<Service> optionalService = serviceDao.findByServiceId(id);
+        Optional<Service> optionalService = serviceDao.findById(id);
 
         if (optionalService.isEmpty()) {
             LOGGER.warn("Service for update has not been found");
