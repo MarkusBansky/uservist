@@ -2,13 +2,12 @@ package com.markiian.benovskyi.auth.security;
 
 import com.markiian.benovskyi.auth.properties.UservistProperties;
 import com.markiian.benovskyi.auth.service.UserTokenService;
+import com.markiian.benovskyi.uservist.api.uservist_api.model.UserAuthenticationDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -39,7 +38,9 @@ public class UservistAuthenticationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith(uservistProperties.getTokenPrefix())) {
             authToken = header.replace(uservistProperties.getTokenPrefix(), "").trim();
             try {
-                username = userTokenService.getUsernameFromToken(authToken);
+                UservistAuthenticationToken token = userTokenService.createAuthenticationFromToken(authToken);
+                UserAuthenticationDto details = (UserAuthenticationDto) token.getDetails();
+                username = details.getUsername();
             } catch (IllegalArgumentException e) {
                 LOGGER.error("An error occurred during getting username from token", e);
             } catch (ExpiredJwtException e) {
@@ -51,9 +52,8 @@ public class UservistAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (userTokenService.validateToken(authToken)) {
-                WebAuthenticationDetails webDetails = new WebAuthenticationDetailsSource().buildDetails(req);
                 UservistAuthenticationToken authentication = userTokenService
-                        .createAuthenticationFromToken(authToken, webDetails.getRemoteAddress());
+                        .createAuthenticationFromToken(authToken);
 
                 LOGGER.info("Authenticated user {}, token {}, setting security context", username, authToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

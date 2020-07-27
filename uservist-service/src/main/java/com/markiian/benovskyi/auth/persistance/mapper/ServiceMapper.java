@@ -8,17 +8,8 @@ import org.springframework.stereotype.Component;
 public class ServiceMapper implements Mapper<Service, ServiceDto> {
     @Override
     public ServiceDto toDto(Service service) {
-        return toDto(new ServiceDto(), service);
-    }
-
-    @Override
-    public Service toBase(ServiceDto serviceDto) {
-        return toBase(new Service(), serviceDto);
-    }
-
-    @Override
-    public ServiceDto toDto(ServiceDto serviceDto, Service service) {
-        serviceDto.setId(service.getServiceId());
+        ServiceDto serviceDto = new ServiceDto();
+        serviceDto.setId(service.getId());
         serviceDto.setKey(service.getKey());
         serviceDto.setName(service.getName());
         serviceDto.setDescription(service.getDescription());
@@ -28,12 +19,7 @@ public class ServiceMapper implements Mapper<Service, ServiceDto> {
     }
 
     @Override
-    public Service toBase(Service service, ServiceDto serviceDto) {
-        service.setKey(serviceDto.getKey());
-        service.setName(serviceDto.getName());
-        service.setDescription(serviceDto.getDescription());
-        service.setUpdatedAt(serviceDto.getUpdatedAt());
-        service.setCreatedAt(serviceDto.getCreatedAt());
-        return service;
+    public Service toBase(ServiceDto serviceDto) {
+        return null;
     }
 }

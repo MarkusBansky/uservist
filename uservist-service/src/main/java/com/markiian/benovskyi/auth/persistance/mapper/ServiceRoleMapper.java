@@ -18,18 +18,14 @@ public class ServiceRoleMapper implements Mapper<ServiceRole, ServiceRoleDto> {
 
     @Override
     public ServiceRoleDto toDto(ServiceRole serviceRole) {
-        return toDto(new ServiceRoleDto(), serviceRole);
+        ServiceRoleDto dto = new ServiceRoleDto();
+        dto.setService(serviceMapper.toDto(serviceRole.getService()));
+        dto.setRole(userRoleMapper.toDto(serviceRole.getRole()));
+        return dto;
     }
 
     @Override
-    public ServiceRoleDto toDto(ServiceRoleDto userServiceRoleDto, ServiceRole serviceRole) {
-        userServiceRoleDto.setService(serviceMapper.toDto(serviceRole.getService()));
-        userServiceRoleDto.setRole(userRoleMapper.toDto(serviceRole.getRole()));
-        return userServiceRoleDto;
-    }
-
-    @Override
-    public ServiceRole toBase(ServiceRole serviceRole, ServiceRoleDto userServiceRoleDto) {
+    public ServiceRole toBase(ServiceRoleDto serviceRoleDto) {
         return null;
     }
 }
