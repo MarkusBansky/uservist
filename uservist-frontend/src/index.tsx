@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './utils/serviceWorker';
+import {Provider} from "react-redux";
+import store from "./store/store";
+import LoginPage from "./pages/auth/login";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <LoginPage />
+  </Provider>,
   document.getElementById('root')
 );
 
