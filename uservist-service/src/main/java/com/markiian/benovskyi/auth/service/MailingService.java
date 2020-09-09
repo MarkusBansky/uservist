@@ -28,7 +28,7 @@ public class MailingService {
     public void sendRegistrationEmail(User user)
             throws UnsupportedEncodingException, CannotSendEmailException {
         final InternetAddress fromAddress = new InternetAddress(
-                "no-reply@uservist.com", "Uservist No-Reply");
+                "no-reply@markiian-benovskyi.com", "[Uservist] No-Reply");
         InternetAddress address = new InternetAddress(
                 user.getEmail(),
                 user.getFirstName().concat(" ").concat(user.getLastName()));
@@ -48,6 +48,7 @@ public class MailingService {
 
         //Defining the model object for the given Freemarker template
         final Map<String, Object> modelObject = new HashMap<>();
+        modelObject.put("title", "Welcome to Uservist services");
         modelObject.put("email", user.getEmail());
         modelObject.put("username", user.getUsername());
 

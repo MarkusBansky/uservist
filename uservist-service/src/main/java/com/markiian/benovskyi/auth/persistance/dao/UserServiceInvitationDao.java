@@ -11,5 +11,4 @@ import java.util.Optional;
 @Repository
 public interface UserServiceInvitationDao extends JpaRepository<Invitation, Long> {
     Optional<Invitation> findByUserAndService(User user, Service service);
-    Optional<Invitation> findByToken(String token);
 }

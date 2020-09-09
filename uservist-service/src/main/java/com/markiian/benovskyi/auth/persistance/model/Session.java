@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user_service_session", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "service_id", "browser", "ip_address"})
+        @UniqueConstraint(columnNames = {"user_id", "service_id", "browser", "ipAddress"})
 })
 public class Session {
 

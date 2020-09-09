@@ -6,6 +6,7 @@ uservist:
   host: http://127.0.0.1
   allowedOrigins:
     - http://localhost:9080
+    - http://192.168.0.11:9080
   serviceKey: a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997
   tokenName: Authorization
   tokenPrefix: "Bearer "
@@ -23,9 +24,14 @@ spring:
 
   # Mail sending settings
   mail:
-    host: localhost
-    port: 1025
-    properties.mail.smtp.auth: false
+    host: smtp.gmail.com
+    port: 587
+
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      starttls.required: true
+
     scheduler:
       persistence:
         enabled: false
