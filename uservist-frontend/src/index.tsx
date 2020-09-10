@@ -4,6 +4,7 @@ import * as serviceWorker from './utils/serviceWorker';
 import {Provider} from "react-redux";
 import store from "./store/store";
 import LoginPage from "./pages/auth/login";
+import "./styles/index.scss";
 
 ReactDOM.render(
   <Provider store={store}>

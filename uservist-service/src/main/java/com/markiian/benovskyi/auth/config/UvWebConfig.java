@@ -28,7 +28,11 @@ public class UvWebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry
-                .addMapping("/auth/**");
+                .addMapping("/auth/**")
+                .allowedOrigins(uservistProperties.getAllowedOrigins())
+                .allowedMethods("GET,POST,HEAD,OPTIONS")
+                .allowCredentials(true)
+                .allowedHeaders("*");
         registry
                 .addMapping("/api/**")
                 .allowedOrigins(uservistProperties.getAllowedOrigins())

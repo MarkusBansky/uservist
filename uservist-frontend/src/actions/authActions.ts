@@ -1,5 +1,5 @@
 import UserAuthenticationDto from "../models/userAuthenticationDto";
-import {ReducerAction} from "./action";
+import {POST, ReducerAction} from "./action";
 import UserAuthenticationResponseDto from "../models/userAuthenticationResponseDto";
 import {createReducerAxiosAction} from "../utils/actionsUtils";
 import {authenticateActionTypes} from "../reducers/authReducer";
@@ -11,5 +11,5 @@ const pathToAuthenticate = '/auth/login';
  * @param data User authentication request data.
  */
 export function authenticate(data: UserAuthenticationDto): ReducerAction<UserAuthenticationResponseDto> {
-  return createReducerAxiosAction(authenticateActionTypes, pathToAuthenticate, data);
+  return createReducerAxiosAction(authenticateActionTypes, POST, pathToAuthenticate, data);
 }

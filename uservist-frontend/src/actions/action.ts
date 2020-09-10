@@ -1,3 +1,58 @@
+// Action method types
+export const GET = 'GET';
+export const POST = 'POST';
+export const PUT = 'PUT';
+export const DELETE = 'DELETE';
+
+/**
+ * A method type for axios http request to the API.
+ * Requests available are: GET, POST, PUT, DELETE.
+ */
+export type ReducerActionMethod = typeof GET | typeof POST | typeof PUT | typeof DELETE;
+
+/**
+ * Reducer payload request interface.
+ * When user makes a request this object must be present with fields set.
+ */
+interface ReducerActionPayloadRequest {
+  /**
+   * URL to the request endpoint is required.
+   */
+  url: string;
+
+  /**
+   * Method type is also required.
+   */
+  method: string;
+
+  /**
+   * Data is optional and not required for GET requests.
+   */
+  data?: Object
+}
+
+/**
+ * Generic payload received and passed from and to a reducer action.
+ */
+interface ReducerActionPayload<A> {
+  /**
+   * In making a request, client defines the name of the client. (not required for 1 client)
+   */
+  client?: string;
+
+  /**
+   * A payload request, used to define properties for user request
+   * to be made to the API endpoint.
+   */
+  request: ReducerActionPayloadRequest & Object;
+
+  /**
+   * If request has been handled it would contain data and that data would be stored in
+   * this property.
+   */
+  data?: A
+}
+
 /**
  * A generic axios object that handles data sent via requests and received by reducers.
  * This object must be returned from each action called for reducer.
@@ -33,7 +88,7 @@
  */
 export interface ReducerAction<A> {
   type: string | string[];
-  payload?: { client?: string, request: { url?: string } & Object, data?: A } & Object;
+  payload?: ReducerActionPayload<A> & Object;
   error?: { status?: number } & Object;
   meta?: { previousAction: Object };
 }
