@@ -1,11 +1,13 @@
 import React from "react";
 import CarbonHeader from "./carbonHeader";
 import CarbonFooter from "./carbonFooter";
-import {CarbonPageHeaderControl} from "./carbonPageHeader";
+import CarbonPageHeader, {CarbonPageHeaderControl} from "./carbonPageHeader";
+import "../styles/page.scss";
 
 export interface CarbonShellProperties {
   className: string;
   withHeader: boolean;
+  withFooter: boolean;
   headerText?: string;
   headerControls?: CarbonPageHeaderControl[];
 }
@@ -18,19 +20,29 @@ export default class CarbonShell extends React.Component<CarbonShellProperties, 
       return null;
     }
 
-    return null;
-    // return <CarbonHeader text={headerText} controls={headerControls}/>
+    return <CarbonPageHeader text={headerText} controls={headerControls}/>;
+  }
+
+  renderFooter() {
+    const {withFooter} = this.props;
+    if (!withFooter) {
+      return null;
+    }
+
+    return <CarbonFooter />;
   }
 
   render() {
     return (
-      <div className={'container ' + this.props.className}>
+      <div className={'page container'}>
         <CarbonHeader />
         <div className="bx--grid">
           {this.renderHeader()}
-          {this.props.children}
+          <div className={this.props.className}>
+            {this.props.children}
+          </div>
+          {this.renderFooter()}
         </div>
-        <CarbonFooter />
       </div>
     )
   }

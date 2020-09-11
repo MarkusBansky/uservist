@@ -1,4 +1,9 @@
-import {ReducerAction, ReducerActionMethod, ReducerActionTypes} from "../actions/action";
+import {
+  ReducerAction,
+  ReducerActionMethod,
+  ReducerActionPayload,
+  ReducerActionTypes
+} from "../actions/action";
 
 /**
  * Create user action types for HTTP Axios action from a basic name.
@@ -14,19 +19,23 @@ export function createReducerActionTypes(name: string): ReducerActionTypes {
  * @param method Request method for HTTP.
  * @param url Endpoint url.
  * @param data Optional data to be sent via request.
+ * @param useAuth Whether to use bearer token authentication.
  */
-export function createReducerAxiosAction(
+export function createReducerAxiosAction<A>(
   types: ReducerActionTypes,
   method: ReducerActionMethod,
-  url: string, data?: Object
-): ReducerAction<any> {
+  url: string,
+  data?: Object,
+  useAuth?: boolean
+): ReducerAction<ReducerActionPayload<A>> {
   return ({
-    type: types.typesArray(),
+    types: types.typesArray(),
     payload: {
       request: {
         url,
         method,
-        data
+        data,
+        useAuth
       }
     }
   });

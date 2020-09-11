@@ -1,1 +1,11 @@
 @import '../../node_modules/carbon-components/scss/globals/scss/styles';
+
+hr {
+  margin: 24px 0;
+  border: none;
+  border-bottom: 1px solid #cbcbcb;
+}
+
+.full-width {
+  width: 100%;
+}

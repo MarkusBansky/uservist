@@ -1,0 +1,24 @@
+.login-page {
+  width: 23rem;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+
+  .login-form {
+    padding: 48px;
+
+    h4 {
+      font-size: 1.25rem;
+      font-weight: 400;
+      line-height: 1.625rem;
+    }
+
+    p {
+      margin-top: 18px;
+      margin-bottom: 14px;
+    }
+  }
+}

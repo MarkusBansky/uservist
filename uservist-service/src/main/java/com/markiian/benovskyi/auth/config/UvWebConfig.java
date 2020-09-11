@@ -30,7 +30,7 @@ public class UvWebConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/auth/**")
                 .allowedOrigins(uservistProperties.getAllowedOrigins())
-                .allowedMethods("GET,POST,HEAD,OPTIONS")
+                .allowedMethods("*")
                 .allowCredentials(true)
                 .allowedHeaders("*");
         registry

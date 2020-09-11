@@ -4,10 +4,9 @@ import {
   HeaderMenuButton,
   HeaderMenuItem,
   HeaderName,
-  HeaderNavigation, HeaderSideNavItems, SideNav, SideNavItems,
+  HeaderNavigation,
   SkipToContent
 } from "carbon-components-react";
-import {authenticate} from "../actions/authActions";
 import {connect} from "react-redux";
 
 class CarbonHeader extends React.Component<any, any> {

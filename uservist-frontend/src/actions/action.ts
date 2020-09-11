@@ -1,4 +1,7 @@
 // Action method types
+import {AxiosError, AxiosResponse} from "axios";
+import RequestError from "../models/requestError";
+
 export const GET = 'GET';
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -14,7 +17,7 @@ export type ReducerActionMethod = typeof GET | typeof POST | typeof PUT | typeof
  * Reducer payload request interface.
  * When user makes a request this object must be present with fields set.
  */
-interface ReducerActionPayloadRequest {
+export interface ReducerActionPayloadRequest {
   /**
    * URL to the request endpoint is required.
    */
@@ -28,13 +31,18 @@ interface ReducerActionPayloadRequest {
   /**
    * Data is optional and not required for GET requests.
    */
-  data?: Object
+  data?: Object;
+
+  /**
+   * Define whether request made to backend requires a token to be passed by.
+   */
+  useAuth?: boolean;
 }
 
 /**
  * Generic payload received and passed from and to a reducer action.
  */
-interface ReducerActionPayload<A> {
+export interface ReducerActionPayload<A> {
   /**
    * In making a request, client defines the name of the client. (not required for 1 client)
    */
@@ -45,12 +53,6 @@ interface ReducerActionPayload<A> {
    * to be made to the API endpoint.
    */
   request: ReducerActionPayloadRequest & Object;
-
-  /**
-   * If request has been handled it would contain data and that data would be stored in
-   * this property.
-   */
-  data?: A
 }
 
 /**
@@ -86,10 +88,11 @@ interface ReducerActionPayload<A> {
  *      }
  *    }
  */
-export interface ReducerAction<A> {
-  type: string | string[];
-  payload?: ReducerActionPayload<A> & Object;
-  error?: { status?: number } & Object;
+export interface ReducerAction<A extends AxiosResponse | ReducerActionPayload<any>> {
+  type?: string;
+  types?: string[];
+  payload: A;
+  error?: AxiosError<RequestError>;
   meta?: { previousAction: Object };
 }
 
@@ -106,7 +109,7 @@ export class ReducerActionTypes {
   constructor(type: string) {
     this.REQUEST = type + '_REQUEST';
     this.SUCCESS = type + '_SUCCESS';
-    this.FAILURE = type + '_FAILURE';
+    this.FAILURE = type + '_FAIL';
   }
 
   typesArray() {
