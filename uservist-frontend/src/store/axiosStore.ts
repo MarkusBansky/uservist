@@ -2,7 +2,7 @@ import axios from "axios";
 import {get} from "lodash";
 import axiosMiddleware from "redux-axios-middleware";
 import {USERVIST_SERVICE_API_URL} from "../utils/constants";
-import produce from "immer";
+import UserToken from "../models/userToken";
 
 axios.defaults.headers.common['Authorization'] = null;
 
@@ -23,11 +23,11 @@ function interceptorRequest({getState, dispatch, getSourceAction}: any, req: any
   );
 
   if (needAuth) {
-    const token = get(getState(), 'authReducer.token');
-    
+    const token: UserToken = get(getState(), 'authReducer.token');
+
     if (token) {
-      console.log('Setting token to: ', `Bearer ${token}`);
-      req.headers.Authorization = `Bearer ${token}`;
+      console.log('Setting token to: ', `Bearer ${token.getToken()}`);
+      req.headers.Authorization = `Bearer ${token.getToken()}`;
     }
   }
 

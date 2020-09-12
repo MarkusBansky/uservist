@@ -17,12 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class UservistAuthenticationFilter extends OncePerRequestFilter {
+    private final UserTokenService userTokenService;
+    private final UservistProperties uservistProperties;
 
-    @Autowired
-    private UserTokenService userTokenService;
-
-    @Autowired
-    private UservistProperties uservistProperties;
+    protected UservistAuthenticationFilter(UserTokenService userTokenService, UservistProperties uservistProperties) {
+        this.userTokenService = userTokenService;
+        this.uservistProperties = uservistProperties;
+    }
 
     private final Logger LOGGER = LoggerFactory.getLogger(UservistAuthenticationFilter.class);
 

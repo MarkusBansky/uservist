@@ -1,20 +1,26 @@
 import produce from "immer";
-import {createReducerActionTypes} from "../utils/actionsUtils";
+import {createReducerActionType, createReducerActionTypes} from "../utils/actionsUtils";
 import {ReducerAction} from "../actions/action";
 import UserAuthenticationResponseDto from "../models/userAuthenticationResponseDto";
 import RequestError from "../models/requestError";
 import {AxiosResponse} from "axios";
 import moment from "moment";
+import UserToken from "../models/userToken";
+import Cookies from "js-cookie";
 
 // reducer action type constructed
 type AuthReducerActionType = UserAuthenticationResponseDto | undefined;
 
 // action types
 export const authenticateActionTypes = createReducerActionTypes('authenticateActionTypes');
+export const setTokenManuallyActionType = createReducerActionType('setTokenManuallyActionType');
+export const setAuthWarningActionType = createReducerActionType('setAuthWarningActionType');
+
 
 // reducer interface
 export interface AuthReducer {
-  token?: string;
+  token?: UserToken;
+  message?: string;
   error?: RequestError;
   loading: boolean;
 }
@@ -30,10 +36,13 @@ export const authReducer = (state = defaultState, action: ReducerAction<AxiosRes
     case authenticateActionTypes.REQUEST:
       draft.loading = true;
       draft.error = undefined;
+      draft.message = undefined;
       break;
     case authenticateActionTypes.SUCCESS:
-      console.log("Received response from login: ", action.payload.data);
-      draft.token = action.payload.data?.token;
+      if (action.payload.data) {
+        draft.token = new UserToken(action.payload.data.token);
+        Cookies.set('token', action.payload.data.token, { sameSite: 'strict' });
+      }
       draft.loading = false;
       break;
     case authenticateActionTypes.FAILURE:
@@ -50,6 +59,14 @@ export const authReducer = (state = defaultState, action: ReducerAction<AxiosRes
           path: action.error?.config.url || ''
         };
       }
+      break;
+
+    case setTokenManuallyActionType:
+      draft.token = new UserToken((action as any).data.token);
+      break;
+
+    case setAuthWarningActionType:
+      draft.message = (action as any).data.message;
       break;
   }
 });

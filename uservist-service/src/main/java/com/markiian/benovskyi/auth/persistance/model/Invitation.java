@@ -14,12 +14,15 @@ public class Invitation {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     @ManyToOne
+    @JoinColumn(name="service_id", nullable=false)
     private Service service;
 
     @ManyToOne
+    @JoinColumn(name="invitor_id", nullable=false)
     private User invitor;
 
     @Column(nullable = false)

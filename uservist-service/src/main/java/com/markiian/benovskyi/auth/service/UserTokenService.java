@@ -9,6 +9,7 @@ import com.markiian.benovskyi.auth.persistance.model.Service;
 import com.markiian.benovskyi.auth.persistance.model.ServiceRole;
 import com.markiian.benovskyi.auth.persistance.model.Session;
 import com.markiian.benovskyi.auth.persistance.model.User;
+import com.markiian.benovskyi.auth.properties.UservistProperties;
 import com.markiian.benovskyi.auth.security.UservistAuthenticationToken;
 import com.markiian.benovskyi.auth.util.RoleUtil;
 import com.markiian.benovskyi.uservist.api.uservist_api.model.UserAuthenticationDto;
@@ -50,19 +51,19 @@ public class UserTokenService {
     private final String BROWSER_KEY = "browser";
     private final String IP_KEY = "ip";
 
-    private final static String SIGNING_KEY = "8x/A?D(G+KbPeShVmYq3t6v9y$B&E)H@";
-    private final static Integer ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24;
+    private final UservistProperties uservistProperties;
 
     private final Logger LOGGER = LoggerFactory.getLogger(UserTokenService.class);
 
     @Autowired
     public UserTokenService(SessionDao sessionDao, UserDao userDao, ServiceDao serviceDao,
-                            ServiceRoleDao serviceRoleDao, UserMapper userMapper) {
+                            ServiceRoleDao serviceRoleDao, UserMapper userMapper, UservistProperties uservistProperties) {
         this.sessionDao = sessionDao;
         this.userDao = userDao;
         this.serviceDao = serviceDao;
         this.serviceRoleDao = serviceRoleDao;
         this.userMapper = userMapper;
+        this.uservistProperties = uservistProperties;
     }
 
     public UserDto getUserFromUsername(String username) {
@@ -90,7 +91,7 @@ public class UserTokenService {
         // Find an existing session, if it exist then expire the existing session
         Optional<Session> optionalSession = sessionDao
                 .findByUserAndServiceAndBrowserAndIpAddress(
-                        user.get(), service.get(), authDto.getBrowser(), authDto.getIpAddress());
+                        user.get(), service.get(), authDto.getBrowser().substring(0, 200), authDto.getIpAddress());
         optionalSession.ifPresent(sessionDao::delete);
 
         // Create new session
@@ -98,7 +99,7 @@ public class UserTokenService {
 
         session.setUser(user.get());
         session.setService(service.get());
-        session.setBrowser(authDto.getBrowser());
+        session.setBrowser(authDto.getBrowser().substring(0, 200));
         session.setIpAddress(authDto.getIpAddress());
         session.setExpiresAt(OffsetDateTime.now().plusDays(1));
 
@@ -115,7 +116,7 @@ public class UserTokenService {
     public String generateToken(Authentication authentication) {
         UserAuthenticationDto authDto = (UserAuthenticationDto) authentication.getDetails();
 
-        byte[] keyBytes = Decoders.BASE64.decode(SIGNING_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(uservistProperties.getTokenSigningKey());
         Key key = Keys.hmacShaKeyFor(keyBytes);
 
         Optional<Service> optionalService = serviceDao.findByKey(authDto.getService());
@@ -132,7 +133,7 @@ public class UserTokenService {
                 .claim(ROLE_KEY, userServiceRole)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + uservistProperties.getTokenValidity() * 1000))
                 .compact();
 
         LOGGER.debug("Generated new token for: {}, token: {}", authentication.getName(), token);
@@ -206,7 +207,9 @@ public class UserTokenService {
      */
     private Optional<Claims> getClaims(String token) {
         try {
-            return Optional.of(Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token).getBody());
+            return Optional.of(Jwts.parser()
+                    .setSigningKey(uservistProperties.getTokenSigningKey())
+                    .parseClaimsJws(token).getBody());
         } catch (Exception e) {
             LOGGER.error("Error trying to get claims from jwt, [{}]", token);
             e.printStackTrace();

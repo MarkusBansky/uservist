@@ -14,6 +14,7 @@ public class EventLog {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name="session_id", nullable=false)
     private Session session;
 
     @Column(nullable = false)

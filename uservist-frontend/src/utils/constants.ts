@@ -1,2 +1,2 @@
 export const USERVIST_SERVICE_API_URL = 'http://192.168.0.28:9090';
-export const USERVIST_SERVICE_KEY = 'a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997';
+export const USERVIST_SERVICE_KEY = 'uservist';

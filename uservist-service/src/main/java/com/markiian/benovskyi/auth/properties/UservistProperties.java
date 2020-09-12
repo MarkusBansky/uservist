@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 public class UservistProperties {
     private String host;
     private String[] allowedOrigins;
-    private String serviceKey;
+    private String tokenSigningKey;
     private String tokenName;
     private String tokenPrefix;
+    private Integer tokenValidity;
 
     public String getHost() {
         return host;
@@ -28,12 +29,20 @@ public class UservistProperties {
         this.allowedOrigins = allowedOrigins;
     }
 
-    public String getServiceKey() {
-        return serviceKey;
+    public String getTokenSigningKey() {
+        return tokenSigningKey;
     }
 
-    public void setServiceKey(String serviceKey) {
-        this.serviceKey = serviceKey;
+    public void setTokenSigningKey(String tokenSigningKey) {
+        this.tokenSigningKey = tokenSigningKey;
+    }
+
+    public Integer getTokenValidity() {
+        return tokenValidity;
+    }
+
+    public void setTokenValidity(Integer tokenValidity) {
+        this.tokenValidity = tokenValidity;
     }
 
     public String getTokenName() {

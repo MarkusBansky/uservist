@@ -1,15 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './utils/serviceWorker';
-import {Provider} from "react-redux";
-import store from "./store/store";
-import LoginPage from "./pages/auth/login";
+import { Provider as ReduxProvider } from "react-redux";
+import { Router, Route } from "react-router-dom";
 import "./styles/index.scss";
+import store from "./store/store";
+import {requiresAuthentication} from "./components/authenticatedComponent";
+import {HOME_PATH, LOGIN_PATH} from "./utils/paths";
+import LoginPage from "./pages/auth/login";
+import HomePage from "./pages/home/home";
+import history from "./store/historyStore";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <LoginPage />
-  </Provider>,
+  <ReduxProvider store={store}>
+    <Router history={history}>
+      <Route path={HOME_PATH} exact component={requiresAuthentication(HomePage)} />
+      <Route path={LOGIN_PATH} exact component={LoginPage} />
+    </Router>
+  </ReduxProvider>,
   document.getElementById('root')
 );
 

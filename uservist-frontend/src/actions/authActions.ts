@@ -1,7 +1,7 @@
 import UserAuthenticationDto from "../models/userAuthenticationDto";
 import {POST} from "./action";
-import {createReducerAxiosAction} from "../utils/actionsUtils";
-import {authenticateActionTypes} from "../reducers/authReducer";
+import {createReducerAction, createReducerAxiosAction} from "../utils/actionsUtils";
+import {authenticateActionTypes, setAuthWarningActionType, setTokenManuallyActionType} from "../reducers/authReducer";
 
 const pathToAuthenticate = '/auth/login';
 
@@ -11,4 +11,20 @@ const pathToAuthenticate = '/auth/login';
  */
 export function authenticate(data: UserAuthenticationDto) {
   return createReducerAxiosAction<UserAuthenticationDto>(authenticateActionTypes, POST, pathToAuthenticate, data);
+}
+
+/**
+ * Mutate reducer state by setting token manually to the parameter value.
+ * @param token Token parameter value.
+ */
+export function setTokenManually(token: string) {
+  return createReducerAction(setTokenManuallyActionType, {token});
+}
+
+/**
+ * Mutate reducer to change authorization warning message.
+ * @param message The message.
+ */
+export function setAuthWarning(message: string) {
+  return createReducerAction(setAuthWarningActionType, {message});
 }

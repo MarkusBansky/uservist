@@ -16,6 +16,7 @@ public class UservistAuthenticationEntryPoint implements AuthenticationEntryPoin
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                "User cannot access requested resource. Not enough privileges or wrong bearer.");
     }
 }

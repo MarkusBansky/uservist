@@ -18,9 +18,11 @@ public class Session {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     @ManyToOne
+    @JoinColumn(name="service_id", nullable=false)
     private Service service;
 
     @Column(nullable = false)
@@ -29,10 +31,10 @@ public class Session {
     @Column(nullable = false)
     private String ipAddress;
 
-    @OneToMany
+    @OneToMany(mappedBy = "session")
     private Set<EventLog> eventLogs = new HashSet<>();
 
-    @Column(nullable = false)
+    @Column(name = "expired_at", nullable = false)
     private OffsetDateTime expiresAt;
 
     @CreationTimestamp

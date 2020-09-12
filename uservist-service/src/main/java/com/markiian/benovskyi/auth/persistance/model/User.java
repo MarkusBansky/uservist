@@ -34,13 +34,13 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private Set<ServiceRole> serviceRoles = new HashSet<>();
 
-    @OneToMany
-    private Set<ServiceRole> invites = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<Invitation> invites = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private Set<Session> sessions = new HashSet<>();
 
     @UpdateTimestamp
@@ -105,11 +105,11 @@ public class User {
         this.serviceRoles = serviceRoles;
     }
 
-    public Set<ServiceRole> getInvites() {
+    public Set<Invitation> getInvites() {
         return invites;
     }
 
-    public void setInvites(Set<ServiceRole> invites) {
+    public void setInvites(Set<Invitation> invites) {
         this.invites = invites;
     }
 

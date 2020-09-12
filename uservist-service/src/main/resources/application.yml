@@ -7,20 +7,25 @@ uservist:
   allowedOrigins:
     - http://localhost:9080
     - http://192.168.0.11:9080
-  serviceKey: a148d971d156a65538dc0ae8ac9faf9563b4201e33429ddcd5b346fbdbfc8997
+  tokenSigningKey: lF7hHKrfm3gHYlNc6L2FBuif0apReq34SFYdbPuIGag
   tokenName: Authorization
   tokenPrefix: "Bearer "
+  tokenValidity: 86400
 
 ## Spring settings
 spring:
   jpa:
+    show-sql: true
+    database: POSTGRESQL
+    properties.hibernate.default_schema: uservist
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
+    platform: postgres
+
     # Database connection settings
-    url: jdbc:postgresql://localhost:5432/uservist
+    url: jdbc:postgresql://192.168.0.28:5632/uservist
     username: postgres
-    password: postgres
-    jpa.properties.hibernate.default_schema: uservist
+    password: 17931548625
 
   # Mail sending settings
   mail:

@@ -8,6 +8,7 @@ import {
   SkipToContent
 } from "carbon-components-react";
 import {connect} from "react-redux";
+import {HOME_PATH} from "../utils/paths";
 
 class CarbonHeader extends React.Component<any, any> {
   render() {
@@ -21,11 +22,11 @@ class CarbonHeader extends React.Component<any, any> {
               onClick={onClickSideNavExpand}
               isActive={isSideNavExpanded}
             />
-            <HeaderName href="#" prefix="Uservist">
+            <HeaderName href={HOME_PATH} prefix="Uservist">
               Platform
             </HeaderName>
             <HeaderNavigation aria-label="Uservist [Platform]">
-              <HeaderMenuItem isCurrentPage href="#">
+              <HeaderMenuItem isCurrentPage href={HOME_PATH}>
                 Home
               </HeaderMenuItem>
               <HeaderMenuItem href="#">Docs</HeaderMenuItem>

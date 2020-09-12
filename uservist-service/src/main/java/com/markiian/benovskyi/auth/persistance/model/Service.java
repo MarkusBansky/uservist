@@ -28,7 +28,7 @@ public class Service {
     @Column(nullable = false)
     private String key;
 
-    @OneToMany
+    @OneToMany(mappedBy = "service")
     private Set<ServiceRole> serviceRoles = new HashSet<>();
 
     @UpdateTimestamp
