@@ -6,7 +6,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.4.RELEASE'
 }
 
-sourceCompatibility = 11
+sourceCompatibility = JavaVersion.VERSION_14
 
 group 'com.markiian.benovskyi'
 version '0.0.1'

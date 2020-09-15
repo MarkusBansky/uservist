@@ -12,8 +12,8 @@ allprojects {
     apply plugin: "net.researchgate.release"
     apply plugin: "org.openapi.generator"
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = JavaVersion.VERSION_14
+    targetCompatibility = JavaVersion.VERSION_14
 
     ext {
         springBootVersion = "2.3.0.RELEASE"
