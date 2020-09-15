@@ -26,12 +26,10 @@ function interceptorRequest({getState, dispatch, getSourceAction}: any, req: any
     const token: UserToken = get(getState(), 'authReducer.token');
 
     if (token) {
-      console.log('Setting token to: ', `Bearer ${token.getToken()}`);
       req.headers.Authorization = `Bearer ${token.getToken()}`;
     }
   }
 
-  console.log('req', req);
   return req;
 }
 

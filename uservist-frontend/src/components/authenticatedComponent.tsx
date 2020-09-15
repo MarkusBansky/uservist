@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import UserToken from "../models/userToken";
 import {LOGIN_PATH} from "../utils/paths";
 import {getCurrentUserInformation, setAuthWarning, setTokenManually} from "../actions/authActions";
+import UserDto from "../models/userDto";
+import ReducerMessage from "../models/reducerMessage";
 
 /**
  * AuthenticatedComponent class is connected to reducers and
@@ -17,7 +19,18 @@ interface AuthenticatedComponentProps {
    * User auth token obtained from auth service and stored in reducer.
    * Also this token is being saved into cookies and can be recovered.
    */
-  token: UserToken;
+  token?: UserToken;
+
+  /**
+   * User object received via token, can be validated for 401 in a case
+   * there was an error in the token.
+   */
+  user?: UserDto;
+
+  /**
+   * Error message received from the reducer.
+   */
+  message?: ReducerMessage;
 
   /**
    * A reducer method used to set token from a string.
@@ -63,17 +76,17 @@ export function requiresAuthentication(Component: any) {
       // Run this check only if the token from reducer is wrong
       if (!token || !token.getToken() || token.isExpired()) {
         // Try to recover the token from the cookies
-        if (Cookies.get('token')) {
-          this.props.setTokenManually(Cookies.get('token') as string);
+        if (Cookies.get("token")) {
+          this.props.setTokenManually(Cookies.get("token") as string);
         }
         // if token is not found, display warning message and redirect to login page.
         else {
-          console.log('A valid user token could not be found, redirecting user to login page...');
+          console.log("A valid user token could not be found, redirecting user to login page...");
 
           if (token && token.isExpired()) {
-            this.props.setAuthWarning('Your login session has expired.');
+            this.props.setAuthWarning("Your login session has expired.");
           } else {
-            this.props.setAuthWarning('You need to be logged in to access that page!');
+            this.props.setAuthWarning("You need to be logged in to access that page!");
           }
 
           const anyProps = this.props as any;
@@ -87,12 +100,19 @@ export function requiresAuthentication(Component: any) {
      * If user's token is set and valid then user can be trusted as authenticated.
      */
     render() {
-      const { token, getCurrentUserInformation } = this.props;
+      const { token, user, message, getCurrentUserInformation } = this.props;
 
-      if (token && token.getToken() && !token.isExpired()) {
+      const isValidToken = token && token.getToken() && !token.isExpired();
+
+      if (isValidToken && user) {
+        return (<Component {...this.props} />);
+      } else if (isValidToken && !user && message && message.status === 401) {
+        this.props.setAuthWarning("Your token is not valid.");
+
+        const anyProps = this.props as any;
+        anyProps.history.push(encodeURI(`${LOGIN_PATH}?redirectTo=${anyProps.location.pathname}`));
+      } else {
         getCurrentUserInformation();
-
-        return (<Component {...this.props} />)
       }
 
       return null;
@@ -104,15 +124,17 @@ export function requiresAuthentication(Component: any) {
    * @param reducers Combined Reducers.
    */
   const mapState = (reducers: any) => ({
-    token: reducers.authReducer.token
+    token: reducers.authReducer.token,
+    user: reducers.authReducer.user,
+    message: reducers.authReducer.message
   });
 
   /**
    * Map two main methods to set token from string and to set user warning message.
    */
-  const mapDispatch = ({
+  const mapDispatch = {
     setTokenManually, setAuthWarning, getCurrentUserInformation
-  });
+  };
 
   /**
    * This call returns a wrapped component and connected with the router and props/dispatch functions.

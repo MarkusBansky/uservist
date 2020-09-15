@@ -2,7 +2,7 @@ import UserAuthenticationDto from "../models/userAuthenticationDto";
 import {GET, POST} from "./action";
 import {createReducerAction, createReducerAxiosAction} from "../utils/actionsUtils";
 import {
-  authenticateActionTypes,
+  authenticateActionTypes, clearTokenManuallyActionType,
   getCurrentUserActionTypes,
   setAuthWarningActionType,
   setTokenManuallyActionType
@@ -40,4 +40,11 @@ export function setTokenManually(token: string) {
  */
 export function setAuthWarning(message: string) {
   return createReducerAction(setAuthWarningActionType, {message});
+}
+
+/**
+ * Used to clear user token on purpose.
+ */
+export function clearTokenManually() {
+  return createReducerAction(clearTokenManuallyActionType);
 }

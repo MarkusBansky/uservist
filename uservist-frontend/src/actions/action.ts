@@ -1,6 +1,6 @@
 // Action method types
 import {AxiosError, AxiosResponse} from "axios";
-import RequestError from "../models/requestError";
+import ReducerMessage from "../models/reducerMessage";
 
 export const GET = 'GET';
 export const POST = 'POST';
@@ -92,7 +92,7 @@ export interface ReducerAction<A extends AxiosResponse | ReducerActionPayload<an
   type?: string;
   types?: string[];
   payload: A;
-  error?: AxiosError<RequestError>;
+  error?: AxiosError<ReducerMessage>;
   meta?: { previousAction: Object };
 }
 

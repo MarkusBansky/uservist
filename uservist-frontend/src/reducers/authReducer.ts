@@ -2,11 +2,13 @@ import produce from "immer";
 import {createReducerActionType, createReducerActionTypes} from "../utils/actionsUtils";
 import {ReducerAction} from "../actions/action";
 import UserAuthenticationResponseDto from "../models/userAuthenticationResponseDto";
-import RequestError from "../models/requestError";
+import ReducerMessage from "../models/reducerMessage";
 import {AxiosResponse} from "axios";
 import moment from "moment";
 import UserToken from "../models/userToken";
 import Cookies from "js-cookie";
+import UserDto from "../models/userDto";
+import userDto from "../models/userDto";
 
 // reducer action type constructed
 type AuthReducerActionType = UserAuthenticationResponseDto | undefined;
@@ -15,14 +17,17 @@ type AuthReducerActionType = UserAuthenticationResponseDto | undefined;
 export const authenticateActionTypes = createReducerActionTypes('authenticateActionTypes');
 export const getCurrentUserActionTypes = createReducerActionTypes('getCurrentUserActionTypes');
 export const setTokenManuallyActionType = createReducerActionType('setTokenManuallyActionType');
+export const clearTokenManuallyActionType = createReducerActionType('clearTokenManuallyActionType');
 export const setAuthWarningActionType = createReducerActionType('setAuthWarningActionType');
 
 
 // reducer interface
 export interface AuthReducer {
   token?: UserToken;
-  message?: string;
-  error?: RequestError;
+  user?: UserDto;
+
+  // general properties
+  message?: ReducerMessage;
   loading: boolean;
 }
 
@@ -36,7 +41,6 @@ export const authReducer = (state = defaultState, action: ReducerAction<AxiosRes
   switch(action.type) {
     case authenticateActionTypes.REQUEST:
       draft.loading = true;
-      draft.error = undefined;
       draft.message = undefined;
       break;
     case authenticateActionTypes.SUCCESS:
@@ -49,15 +53,17 @@ export const authReducer = (state = defaultState, action: ReducerAction<AxiosRes
     case authenticateActionTypes.FAILURE:
       draft.loading = false;
       draft.token = undefined;
-      draft.error = action.error?.response?.data;
+      draft.message = {
+        type: "error",
+        ...action.error?.response?.data as any
+      };
 
-      if (!draft.error) {
-        draft.error = {
+      if (!draft.message) {
+        draft.message = {
+          type: "error",
           status: action.error?.response?.status || 1,
           message: action.error?.message || 'Unknown error',
-          error: action.error?.message || 'Unknown error',
           timestamp: moment().unix(),
-          path: action.error?.config.url || ''
         };
       }
       break;
@@ -66,8 +72,43 @@ export const authReducer = (state = defaultState, action: ReducerAction<AxiosRes
       draft.token = new UserToken((action as any).data.token);
       break;
 
+    case clearTokenManuallyActionType:
+      draft.token = undefined;
+      break;
+
     case setAuthWarningActionType:
-      draft.message = (action as any).data.message;
+      draft.message = {
+        type: "warning",
+        status: 0,
+        message: (action as any).data.message,
+        timestamp: moment().unix()
+      }
+      break;
+
+    case getCurrentUserActionTypes.REQUEST:
+      draft.loading = true;
+      draft.message = undefined;
+      break;
+    case getCurrentUserActionTypes.SUCCESS:
+      draft.loading = false;
+      draft.user = new userDto(action.payload.data);
+      break;
+    case getCurrentUserActionTypes.FAILURE:
+      draft.loading = false;
+      draft.user = undefined;
+      draft.message = {
+        type: "error",
+        ...action.error?.response?.data as any
+      };
+
+      if (!draft.message) {
+        draft.message = {
+          type: "error",
+          status: action.error?.response?.status || 1,
+          message: action.error?.message || 'Unknown error',
+          timestamp: moment().unix(),
+        };
+      }
       break;
   }
 });

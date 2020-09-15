@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import {authenticate} from "../../actions/authActions";
+import {authenticate, clearTokenManually} from "../../actions/authActions";
 import UserAuthenticationDto from "../../models/userAuthenticationDto";
 import CarbonShell from "../../components/carbonShell";
 import {
@@ -10,23 +10,30 @@ import LoginForm from "./loginForm";
 import "../../styles/login.scss";
 import {USERVIST_SERVICE_KEY} from "../../utils/constants";
 import {AuthReducer} from "../../reducers/authReducer";
-import RequestError from "../../models/requestError";
+import ReducerMessage from "../../models/reducerMessage";
 import {ToastNotification} from "carbon-components-react";
 import UserToken from "../../models/userToken";
 import historyStore from "../../store/historyStore";
 import {HOME_PATH} from "../../utils/paths";
+import {toFirstUpperLetter} from "../../utils/textUtils";
+import Cookies from "js-cookie";
 
 const sha256 = require('sha256');
 
 interface LoginPageProps {
-  error?: RequestError;
-  warning?: string;
+  message?: ReducerMessage;
   token?: UserToken;
 
   authenticate: (data: UserAuthenticationDto) => void;
+  clearTokenManually: () => void;
 }
 
 class LoginPage extends React.Component<LoginPageProps, any> {
+  componentDidMount() {
+    Cookies.remove("token");
+    this.props.clearTokenManually();
+  }
+
   componentDidUpdate(prevProps: Readonly<LoginPageProps>, prevState: Readonly<any>, snapshot?: any) {
     if ((!prevProps.token && this.props.token) || (prevProps.token?.getToken() !== this.props.token?.getToken())) {
       let to = (this.props as any).match.params.redirectTo || HOME_PATH;
@@ -45,33 +52,17 @@ class LoginPage extends React.Component<LoginPageProps, any> {
     this.props.authenticate(dummy);
   }
 
-  renderError() {
-    const {error} = this.props;
-    if (!error) return null;
+  renderUserMessage() {
+    const {message} = this.props;
+    if (!message) return null;
 
     return (
       <div>
         <ToastNotification lowContrast hideCloseButton caption={null}
-                           kind={'error'} className={'full-width'}
-                           subtitle={<span>{error.message}</span>}
+                           kind={message.type} className={'full-width'}
+                           subtitle={<span>{message.message}</span>}
                            timeout={0}
-                           title={error.error}
-        />
-      </div>
-    )
-  }
-
-  renderWarning() {
-    const {warning} = this.props;
-    if (!warning) return null;
-
-    return (
-      <div>
-        <ToastNotification lowContrast hideCloseButton caption={null}
-                           kind={'warning'} className={'full-width'}
-                           subtitle={<span>{warning}</span>}
-                           timeout={0}
-                           title={'Warning'}
+                           title={toFirstUpperLetter(message.type)}
         />
       </div>
     )
@@ -82,17 +73,15 @@ class LoginPage extends React.Component<LoginPageProps, any> {
     return (
       <CarbonShell className={'login-page'} withHeader={false} withFooter={false}>
         <LoginForm onSubmit={this.handleLoginFormSubmit} />
-        {this.renderError()}
-        {this.renderWarning()}
+        {this.renderUserMessage()}
       </CarbonShell>
     )
   }
 }
 
-const mapDispatchToProps = { authenticate };
+const mapDispatchToProps = { authenticate, clearTokenManually };
 const mapStateToProps = ({ authReducer }: {authReducer: AuthReducer}) => ({
-  error: authReducer.error,
-  warning: authReducer.message,
+  message: authReducer.message,
   token: authReducer.token
 });
 
