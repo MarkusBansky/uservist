@@ -13,6 +13,7 @@ type AuthReducerActionType = UserAuthenticationResponseDto | undefined;
 
 // action types
 export const authenticateActionTypes = createReducerActionTypes('authenticateActionTypes');
+export const getCurrentUserActionTypes = createReducerActionTypes('getCurrentUserActionTypes');
 export const setTokenManuallyActionType = createReducerActionType('setTokenManuallyActionType');
 export const setAuthWarningActionType = createReducerActionType('setAuthWarningActionType');
 

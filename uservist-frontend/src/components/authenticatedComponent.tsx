@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import Cookies from "js-cookie";
 import UserToken from "../models/userToken";
 import {LOGIN_PATH} from "../utils/paths";
-import {setAuthWarning, setTokenManually} from "../actions/authActions";
+import {getCurrentUserInformation, setAuthWarning, setTokenManually} from "../actions/authActions";
 
 /**
  * AuthenticatedComponent class is connected to reducers and
@@ -31,6 +31,11 @@ interface AuthenticatedComponentProps {
    * @param message A string to be displayed on the login page as a warning to user.
    */
   setAuthWarning: (message: string) => any
+
+  /**
+   * Reducer action which requests current user information.
+   */
+  getCurrentUserInformation: () => any;
 }
 
 /**
@@ -82,9 +87,11 @@ export function requiresAuthentication(Component: any) {
      * If user's token is set and valid then user can be trusted as authenticated.
      */
     render() {
-      const { token } = this.props;
+      const { token, getCurrentUserInformation } = this.props;
 
       if (token && token.getToken() && !token.isExpired()) {
+        getCurrentUserInformation();
+
         return (<Component {...this.props} />)
       }
 
@@ -104,7 +111,7 @@ export function requiresAuthentication(Component: any) {
    * Map two main methods to set token from string and to set user warning message.
    */
   const mapDispatch = ({
-    setTokenManually, setAuthWarning
+    setTokenManually, setAuthWarning, getCurrentUserInformation
   });
 
   /**

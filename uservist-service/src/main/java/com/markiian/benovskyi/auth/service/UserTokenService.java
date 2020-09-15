@@ -131,6 +131,8 @@ public class UserTokenService {
                 .claim(USERNAME_KEY, authentication.getName())
                 .claim(SERVICE_KEY, authDto.getService())
                 .claim(ROLE_KEY, userServiceRole)
+                .claim(BROWSER_KEY, authDto.getBrowser().substring(0, 200))
+                .claim(IP_KEY, authDto.getIpAddress())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + uservistProperties.getTokenValidity() * 1000))

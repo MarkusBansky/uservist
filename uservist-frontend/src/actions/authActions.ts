@@ -1,9 +1,15 @@
 import UserAuthenticationDto from "../models/userAuthenticationDto";
-import {POST} from "./action";
+import {GET, POST} from "./action";
 import {createReducerAction, createReducerAxiosAction} from "../utils/actionsUtils";
-import {authenticateActionTypes, setAuthWarningActionType, setTokenManuallyActionType} from "../reducers/authReducer";
+import {
+  authenticateActionTypes,
+  getCurrentUserActionTypes,
+  setAuthWarningActionType,
+  setTokenManuallyActionType
+} from "../reducers/authReducer";
 
 const pathToAuthenticate = '/auth/login';
+const pathToCurrentUser = '/auth/current';
 
 /**
  * Make a request to authenticate endpoint of the service.
@@ -11,6 +17,13 @@ const pathToAuthenticate = '/auth/login';
  */
 export function authenticate(data: UserAuthenticationDto) {
   return createReducerAxiosAction<UserAuthenticationDto>(authenticateActionTypes, POST, pathToAuthenticate, data);
+}
+
+/**
+ * Maker request to get current user information by token.
+ */
+export function getCurrentUserInformation() {
+  return createReducerAxiosAction<any>(getCurrentUserActionTypes, GET, pathToCurrentUser, undefined, true);
 }
 
 /**
