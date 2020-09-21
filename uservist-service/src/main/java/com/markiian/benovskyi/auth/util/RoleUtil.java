@@ -9,8 +9,12 @@ import java.util.stream.Collectors;
 
 public final class RoleUtil {
 
-    private static final List<RoleType> SORTED_TYPES =
-            List.of(RoleType.REVOKED, RoleType.USER, RoleType.MODER, RoleType.ADMIN);
+    private static final List<RoleType> SORTED_TYPES = List.of(
+            RoleType.REVOKED,
+            RoleType.USER,
+            RoleType.MODER,
+            RoleType.ADMIN
+    );
 
     public static List<SimpleGrantedAuthority> getAuthoritiesFromServiceRole(ServiceRole serviceRole) {
         if (serviceRole == null) {
@@ -24,17 +28,11 @@ public final class RoleUtil {
     }
 
     private static Integer getRoleLevel(RoleType role) {
-        switch (role) {
-            case REVOKED:
-                return 1;
-            case USER:
-                return 2;
-            case MODER:
-                return 3;
-            case ADMIN:
-                return 4;
-        }
-
-        return 0;
+        return switch (role) {
+            case REVOKED -> 1;
+            case USER -> 2;
+            case MODER -> 3;
+            case ADMIN -> 4;
+        };
     }
 }
