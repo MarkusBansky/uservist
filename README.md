@@ -1,5 +1,14 @@
 # Uservist
 
+#### Requirements
+
+- Java 14+
+- Gradle 6+
+- Docker (preferred)
+- Go (preferred)
+
+## About
+
 Uservist is a simple local service, or better say a group of services that can be used to manage users for multiple services.
 This projects consists of several modules.
 
