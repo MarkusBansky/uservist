@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Markiian">
+        <comment>Insert basic roles for users</comment>
+
+        <insert tableName="service_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM uservist.users WHERE username='uservist')" />
+            <column name="service_id" valueComputed="(SELECT id FROM uservist.services WHERE name='Uservist')" />
+            <column name="role" value="ADMIN" />
+            <column name="updated_at" valueComputed="now()" />
+            <column name="created_at" valueComputed="now()" />
+        </insert>
+
+        <rollback>
+            <delete tableName="users" />
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

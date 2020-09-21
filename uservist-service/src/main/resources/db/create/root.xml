@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <include file="${create}/create-users-table.xml" />
+    <include file="${create}/create-services-table.xml" />
+    <include file="${create}/create-service-roles-table.xml" />
+    <include file="${create}/create-sessions-table.xml" />
+    <include file="${create}/create-user-service-invitations-table.xml" />
+    <include file="${create}/create-event-log-table.xml" />
+
+</databaseChangeLog>
