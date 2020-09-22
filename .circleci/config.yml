@@ -55,7 +55,19 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: gradle dependencies
+      - run:
+          name: Resolve API dependencies
+          working_directory: ~/repo/uservist-api
+          command: gradle dependencies
+
+      - run: 
+          name: Build API
+          working_directory: ~/repo/uservist-api
+          command: gradle build publishToMavenLocal
+
+      - run: 
+          name: Resolve Service dependencies
+          command: gradle dependencies
 
       - save_cache:
           paths:
@@ -63,7 +75,9 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # run tests!
-      - run: gradle test
+      - run: 
+          name: Rune Tests
+          command: gradle test
 
 workflows:
   build-test:
