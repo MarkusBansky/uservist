@@ -103,7 +103,7 @@ task migrations {
     if (System.getenv('MIGRATIONS_CONFIG')) {
         migrationsConfig = System.getenv('MIGRATIONS_CONFIG')
     }
-    
+
     // This task loads the development properties file
     def props = new Properties()
     file(migrationsConfig).withInputStream { props.load(it) }
