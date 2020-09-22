@@ -99,45 +99,14 @@ liquibase {
     }
 }
 
-task dev {
-    // This task loads the development properties file
-    def props = new Properties()
-    file("development.properties").withInputStream { props.load(it) }
-
-    doLast {
-        println "Applying local postgres DB migrations setup"
-        print "Changelog File "
-        println props.getProperty("lb.changelogFile")
-        print "Database URL "
-        println props.getProperty("lb.dbUrl")
-        print "Username "
-        println props.getProperty("lb.username")
-        print "Scheme "
-        println props.getProperty("lb.scheme")
-        print "LB Scheme "
-        println props.getProperty("lb.lbScheme")
-
-        liquibase {
-            //noinspection GrUnresolvedAccess
-            activities {
-                //noinspection GroovyAssignabilityCheck
-                main {
-                    changeLogFile props.getProperty("lb.changelogFile")
-                    url props.getProperty("lb.dbUrl")
-                    username props.getProperty("lb.username")
-                    password props.getProperty("lb.password")
-                    defaultSchemaName props.getProperty("lb.scheme")
-                    liquibaseSchemaName props.getProperty("lb.lbScheme")
-                }
-            }
-        }
+task migrations {
+    if (System.getenv('MIGRATIONS_CONFIG')) {
+        migrationsConfig = System.getenv('MIGRATIONS_CONFIG')
     }
-}
 
-task prod {
     // This task loads the development properties file
     def props = new Properties()
-    file("production.properties").withInputStream { props.load(it) }
+    file(migrationsConfig).withInputStream { props.load(it) }
 
     doLast {
         println "Applying local postgres DB migrations setup"
