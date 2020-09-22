@@ -4,7 +4,29 @@
 #
 version: 2
 jobs:
-  build:
+  buildApi:
+    docker:
+      - image: circleci/openjdk:14-jdk-buster
+    working_directory: ~/repo/uservist-api
+    environment:
+      JVM_OPTS: -Xmx1200m
+      TERM: dumb
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+      - run: gradle dependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - run: gradle build publishToMavenLocal
+
+  buildTestService:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:14-jdk-buster
@@ -41,3 +63,9 @@ jobs:
 
       # run tests!
       - run: gradle test
+
+workflows:
+  build-test:
+    jobs:
+      - buildApi
+      - buildTestService
