@@ -8,32 +8,32 @@ import styles from './styles.module.css';
 
 const features = [
   {
-    title: 'Easy to Use',
-    imageUrl: 'img/undraw_docusaurus_mountain.svg',
+    title: 'Build yourself',
+    // imageUrl: 'img/buildFromScratch.png',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Uservist has been designed to be easily built by the end-user and deployed to a docker container.
+        You can build the project simply by cloning it and running the universal build script <code>build.go</code>.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
+    title: 'REST principles',
+    // imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Uservist is build upon <b>REST</b> principles and is available through the simple wll-documented API.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    imageUrl: 'img/undraw_docusaurus_react.svg',
+    title: 'Powered by Java + React',
+    // imageUrl: 'img/undraw_docusaurus_react.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        The back-end services are developed using <b>Java</b> & <b>Spring Boot</b>, on the other hand the front-end is
+        developed using <b>React</b> and <b>Typescript</b>. Each contains easily customizable components as well as the
+        database migrations.
       </>
     ),
   },
