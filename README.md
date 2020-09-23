@@ -1,7 +1,7 @@
 # Uservist
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8ec750b312cc44cc8fa1a91c9f6c8acd)](https://www.codacy.com/manual/benovskym/uservist/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MarkusBansky/uservist&amp;utm_campaign=Badge_Grade)
-[![CircleCI](https://circleci.com/gh/circleci/uservist.svg?style=svg)](https://circleci.com/gh/circleci/uservist)
+[![CircleCI](https://circleci.com/gh/MarkusBansky/uservist.svg?style=shield)](https://circleci.com/gh/MarkusBansky/uservist)
 
 #### Requirements
 
