@@ -22,18 +22,18 @@ public class AuthenticationController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<UserSessionTokenDto> authenticate(@Valid UserAuthenticationDto userAuthenticationDto) {
+    public ResponseEntity<UserSessionTokenDto> authLogin(@Valid UserAuthenticationDto userAuthenticationDto) {
         return ResponseEntity.ok(authenticationService.authenticateUser(userAuthenticationDto));
     }
 
     @Override
-    public ResponseEntity<Void> validate(@Valid UserSessionTokenDto userSessionTokenDto) {
+    public ResponseEntity<Void> authValidate(@Valid UserSessionTokenDto userSessionTokenDto) {
         authenticationService.validateUserToken(userSessionTokenDto);
         return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity<UserDto> getCurrentUser() {
+    public ResponseEntity<UserDto> authCurrentUser() {
         return ResponseEntity.ok(authenticationService.getCurrentUser());
     }
 }

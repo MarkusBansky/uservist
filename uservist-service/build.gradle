@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'application'
-    id 'org.liquibase.gradle' version '2.0.3'
+    id 'org.liquibase.gradle' version '2.0.4'
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'org.springframework.boot' version '2.2.4.RELEASE'
 }
@@ -21,50 +21,58 @@ repositories {
 
 dependencies {
     // Logs
-    implementation 'org.slf4j:slf4j-log4j12:2.0.0-alpha1'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation      'org.slf4j:slf4j-log4j12:2.0.0-alpha1'
+    implementation      'net.logstash.logback:logstash-logback-encoder:6.3'
 
     // Postgres Database
-    runtimeOnly 'org.postgresql:postgresql'
-    liquibaseRuntime 'org.liquibase:liquibase-core:3.8.1'
-    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
-    liquibaseRuntime 'javax.xml.bind:jaxb-api:2.3.1'
-    liquibaseRuntime 'ch.qos.logback:logback-core:1.2.3'
-    liquibaseRuntime 'ch.qos.logback:logback-classic:1.2.3'
-    liquibaseRuntime 'org.postgresql:postgresql'
+    implementation         'org.postgresql:postgresql'
+
+    // Migrations
+    liquibaseRuntime    'org.liquibase:liquibase-core:4.0.0'
+    liquibaseRuntime    'org.liquibase:liquibase-groovy-dsl:3.0.0'
+    liquibaseRuntime    'javax.xml.bind:jaxb-api:2.3.1'
+    liquibaseRuntime    'ch.qos.logback:logback-core:1.2.3'
+    liquibaseRuntime    'ch.qos.logback:logback-classic:1.2.3'
+    liquibaseRuntime    'org.postgresql:postgresql'
 
     // Spring Boot Starter
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.1.7.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation      'org.springframework.boot:spring-boot-starter-web'
+    implementation      'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation      'org.springframework.boot:spring-boot-starter-actuator:2.1.7.RELEASE'
+    implementation      'org.springframework.boot:spring-boot-starter-security'
 
     // RSS and WEBPage reader
-    implementation 'javax.xml.bind:jaxb-api:2.3.0'
-    implementation 'javax.activation:activation:1.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
-    implementation 'org.jsoup:jsoup:1.13.1'
-    implementation 'com.github.chimbori:crux:2.2.0'
+    implementation      'javax.xml.bind:jaxb-api:2.3.0'
+    implementation      'javax.activation:activation:1.1'
+    implementation      'org.glassfish.jaxb:jaxb-runtime:2.3.0'
+    implementation      'org.jsoup:jsoup:1.13.1'
+    implementation      'com.github.chimbori:crux:2.2.0'
 
     // Testing
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
-    testImplementation 'org.mockito:mockito-core:3.+'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    testImplementation      'org.projectlombok:lombok:1.18.12'
+    testImplementation      'org.junit.jupiter:junit-jupiter:5.4.2'
+    testImplementation      'org.mockito:mockito-core:3.+'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testImplementation(     'org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 
     // The auth api
-    implementation 'com.markiian.benovskyi.uservist:uservist-api:0.1'
+    implementation      'com.markiian.benovskyi.uservist:uservist-api:0.1'
 
     // Security / JWT
-    implementation 'com.google.guava:guava:28.2-jre'
-    implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.10.7'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.10.7'
-    implementation 'org.passay:passay:1.6.0'
+    implementation      'com.google.guava:guava:28.2-jre'
+    implementation      'io.jsonwebtoken:jjwt-api:0.10.7'
+    implementation      'io.jsonwebtoken:jjwt-impl:0.10.7'
+    implementation      'io.jsonwebtoken:jjwt-jackson:0.10.7'
+    implementation      'org.passay:passay:1.6.0'
 
     // Email
-    implementation 'it.ozimov:spring-boot-email-core:0.6.3'
+    implementation      'it.ozimov:spring-boot-email-core:0.6.3'
+
+    // Lombok
+    implementation      'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
 }
 
 repositories {
@@ -99,9 +107,11 @@ liquibase {
     }
 }
 
-task migrations {
-    if (System.getenv('MIGRATIONS_CONFIG')) {
+task migration {
+    if (System.getenv('MIGRATIONS_CONFIG') != null) {
+        print "Loading migration config: "
         migrationsConfig = System.getenv('MIGRATIONS_CONFIG')
+        println migrationsConfig
     }
 
     // This task loads the development properties file
