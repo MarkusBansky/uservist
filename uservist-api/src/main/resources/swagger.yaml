@@ -623,7 +623,7 @@ paths:
   /auth/current:
     get:
       summary: Get authenticated user info.
-      operationId: getCurrentUser
+      operationId: authCurrentUser
       tags:
         - Authentication
       description:
@@ -639,7 +639,7 @@ paths:
   /auth/login:
     post:
       summary: Authenticate user.
-      operationId: authenticate
+      operationId: authLogin
       tags:
         - Authentication
       description:
@@ -662,7 +662,7 @@ paths:
   /auth/validate:
     post:
       summary: Validate user authentication.
-      operationId: validate
+      operationId: authValidate
       tags:
         - Authentication
       description: Calls to validate user token and service key for a valid session.
