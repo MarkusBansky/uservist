@@ -16,10 +16,10 @@ func main() {
     usage := `Command line tool to build Uservist Service docker image.
 
 Usage:
-  go buildDocker.go
-  go buildDocker.go -f | --force
-  go buildDocker.go -h | --help
-  go buildDocker.go --version
+  go run buildDocker.go
+  go run buildDocker.go -f | --force
+  go run buildDocker.go -h | --help
+  go run buildDocker.go --version
 
 Options:
   -h --help     Show this screen.

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "uservist")
 public class UservistProperties {
     private String host;
-    private String[] allowedOrigins;
     private String tokenSigningKey;
     private String tokenName;
     private String tokenPrefix;
@@ -19,14 +18,6 @@ public class UservistProperties {
 
     public void setHost(String host) {
         this.host = host;
-    }
-
-    public String[] getAllowedOrigins() {
-        return allowedOrigins;
-    }
-
-    public void setAllowedOrigins(String[] allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
     }
 
     public String getTokenSigningKey() {

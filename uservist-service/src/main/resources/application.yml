@@ -4,9 +4,6 @@ server.port: 9090
 # Project specific properties
 uservist:
   host: http://127.0.0.1
-  allowedOrigins:
-    - http://localhost:9080
-    - http://192.168.0.11:9080
   tokenSigningKey: lF7hHKrfm3gHYlNc6L2FBuif0apReq34SFYdbPuIGag
   tokenName: Authorization
   tokenPrefix: "Bearer "

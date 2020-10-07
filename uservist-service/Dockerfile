@@ -5,7 +5,7 @@ FROM adoptopenjdk:14-jre-openj9
 MAINTAINER Markiian Benovskyi
 
 # environment variables
-ENV DB_HOST localhost
+ENV DB_HOST 127.0.0.1
 ENV DB_PORT 5432
 ENV DB_PASSWORD postgres
 ENV DB_USER postgres
@@ -30,4 +30,4 @@ COPY ${JAR_FILE} uservist-service.jar
 EXPOSE 9090
 
 # set entry point for java app
-ENTRYPOINT ["/bin/bash", "-c", "java", "-Dspring.datasource.url=jdbc:postgresql://$DB_HOST:$DB_PORT/$DB_NAME", "-Dspring.datasource.username=$DB_USER", "-Dspring.datasource.password=$DB_PASSWORD", "-Dspring.datasource.jpa.properties.hibernate.default_schema=$DB_SCHEMA", "-Dspring.mail.username=$MAIL_USERNAME", "-Dspring.mail.password=$MAIL_PASSWORD", "-jar uservist-service.jar"]
+ENTRYPOINT java -Dspring.datasource.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME} -Dspring.datasource.username=${DB_USER} -Dspring.datasource.password=${DB_PASSWORD} -Dspring.datasource.jpa.properties.hibernate.default_schema=${DB_SCHEMA} -Dspring.mail.username=${MAIL_USERNAME} -Dspring.mail.password=${MAIL_PASSWORD} -jar uservist-service.jar
