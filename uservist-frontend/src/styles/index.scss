@@ -1,5 +1,20 @@
 @import '../../node_modules/carbon-components/scss/globals/scss/styles';
 
+@import '~@carbon/type/scss/type';
+@import '~@carbon/type/scss/font-face/mono';
+@import '~@carbon/type/scss/font-face/sans';
+
+@include carbon--type-reset();
+@include carbon--font-face-mono();
+@include carbon--font-face-sans();
+
+//@include carbon--type-style('body-short-01');
+//@include carbon--type-style('body-long-01');
+
+p {
+  padding-bottom: 16px;
+}
+
 hr {
   margin: 24px 0;
   border: none;

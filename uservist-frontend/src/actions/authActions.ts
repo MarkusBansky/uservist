@@ -16,14 +16,25 @@ const pathToCurrentUser = '/auth/current';
  * @param data User authentication request data.
  */
 export function authenticate(data: UserAuthenticationDto) {
-  return createReducerAxiosAction<UserAuthenticationDto>(authenticateActionTypes, POST, pathToAuthenticate, data);
+  return createReducerAxiosAction<UserAuthenticationDto>(
+    authenticateActionTypes,
+    POST,
+    pathToAuthenticate,
+    data
+  );
 }
 
 /**
  * Maker request to get current user information by token.
  */
 export function getCurrentUserInformation() {
-  return createReducerAxiosAction<any>(getCurrentUserActionTypes, GET, pathToCurrentUser, undefined, true);
+  return createReducerAxiosAction<any>(
+    getCurrentUserActionTypes,
+    GET,
+    pathToCurrentUser,
+    undefined,
+    true
+  );
 }
 
 /**
@@ -31,7 +42,10 @@ export function getCurrentUserInformation() {
  * @param token Token parameter value.
  */
 export function setTokenManually(token: string) {
-  return createReducerAction(setTokenManuallyActionType, {token});
+  return createReducerAction(
+    setTokenManuallyActionType,
+    {token}
+  );
 }
 
 /**
@@ -39,12 +53,17 @@ export function setTokenManually(token: string) {
  * @param message The message.
  */
 export function setAuthWarning(message: string) {
-  return createReducerAction(setAuthWarningActionType, {message});
+  return createReducerAction(
+    setAuthWarningActionType,
+    {message}
+  );
 }
 
 /**
  * Used to clear user token on purpose.
  */
 export function clearTokenManually() {
-  return createReducerAction(clearTokenManuallyActionType);
+  return createReducerAction(
+    clearTokenManuallyActionType
+  );
 }
